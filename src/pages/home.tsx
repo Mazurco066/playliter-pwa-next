@@ -9,8 +9,6 @@ import { HomeView } from 'presentation/ui/views'
 
 // Home component
 const Home: NextPageWithLayout = () => {
-
-
   // Page JSX
   return (
     <main>

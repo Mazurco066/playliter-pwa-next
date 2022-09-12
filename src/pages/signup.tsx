@@ -1,6 +1,7 @@
 // Dependencies
 import Head from 'next/head'
 import { ReactElement } from 'react'
+import { useUser } from 'infra/services/session'
 
 // Layout and Components
 import { NextPageWithLayout } from './_app'
@@ -9,6 +10,13 @@ import { SignUpView } from 'presentation/ui/views'
 
 // Sign in component
 const SignUp: NextPageWithLayout = () => {
+  // Check if user is already logged in
+  const { mutateUser } = useUser({
+    redirectTo: '/home',
+    redirectIfFound: true
+  })
+
+  // Page JSX
   return (
     <main>
       <Head>
