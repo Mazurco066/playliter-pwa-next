@@ -1,5 +1,4 @@
 // Dependencies
-import Head from 'next/head'
 import { FC } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -24,14 +23,9 @@ const LogInView: FC = () => {
     formState: { errors },
   } = useForm()
 
-  // Page JSX
+  // View JSX
   return (
     <div>
-      <Head>
-        <title>Playliter</title>
-        <meta name="description" content="Band manager app" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <Container>
         <Heading as="h2" size="xl" mb="5">
           Login

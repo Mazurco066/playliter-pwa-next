@@ -5,27 +5,22 @@ import { ReactElement } from 'react'
 // Layout and Components
 import { NextPageWithLayout } from './_app'
 import { SecureLayout } from 'presentation/ui/_layouts'
-
-// Hooks
-import { useUser } from 'infra/services/session'
+import { HomeView } from 'presentation/ui/views'
 
 // Home component
 const Home: NextPageWithLayout = () => {
-  // Retrieve user from session
-  const { user } = useUser({
-    redirectTo: '/login'
-  })
+
 
   // Page JSX
   return (
-    <div>
+    <main>
       <Head>
-        <title>Playliter</title>
+        <title>Playliter - Home</title>
         <meta name="description" content="Band manager app" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <p>Home: { JSON.stringify(user) }</p>      
-    </div>
+      <HomeView />
+    </main>
   )
 }
 

@@ -5,18 +5,19 @@ import { ReactElement } from 'react'
 // Layout and Components
 import { NextPageWithLayout } from './_app'
 import { AccountLayout } from 'presentation/ui/_layouts'
+import { SignUpView } from 'presentation/ui/views'
 
 // Sign in component
 const SignUp: NextPageWithLayout = () => {
   return (
-    <div>
+    <main>
       <Head>
-        <title>Playliter</title>
-        <meta name="description" content="Band manager app" />
+        <title>Playliter - SignUp</title>
+        <meta name="description" content="SignUp into Playliter" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <p>Sign up</p>
-    </div>
+      <SignUpView />
+    </main>
   )
 }
 
