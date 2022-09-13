@@ -1,6 +1,8 @@
 // Dependencies
 import { FC } from 'react'
 import { useForm } from 'react-hook-form'
+import { useUser } from 'infra/services/session'
+import { fetchJson } from 'infra/services/http'
 
 // Layout and Components
 import {
@@ -17,11 +19,26 @@ import {
 // Sign in component
 const LogInView: FC = () => {
   // Hooks
+  const { mutateUser } = useUser()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm()
+
+  // Actions
+  const onSubmit = async (data: any) => {
+    console.log(data)
+    try {
+      mutateUser(await fetchJson('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }))
+    } catch (error) {
+      console.error('An unexpected error happened:', error)
+    }
+  }
 
   // View JSX
   return (
@@ -30,8 +47,8 @@ const LogInView: FC = () => {
         <Heading as="h2" size="xl" mb="5">
           Login
         </Heading>
-        <form onSubmit={handleSubmit((data) => console.log(data))}>
-          <FormControl mb="5">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl mb="5" isRequired>
             <FormLabel>Usuário</FormLabel>
             <Input type='text' {...register('username', { required: true })} />
             {errors.username ? (

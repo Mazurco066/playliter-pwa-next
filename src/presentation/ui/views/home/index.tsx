@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useUser } from 'infra/services/session'
 
 // Layout and Components
 import {
@@ -9,12 +10,15 @@ import {
 
 // Sign in component
 const HomeView: FC = () => {
+  // Hooks
+  const { user } = useUser()
+
   // View JSX
   return (
     <div>
       <Container>
         <Heading as="h2" size="xl" mb="5">
-          Home
+          Home - { user?.name }
         </Heading>
       </Container>
     </div>

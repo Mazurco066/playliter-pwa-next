@@ -7,7 +7,16 @@ import { NextApiRequest, NextApiResponse } from 'next'
 // Logout using nextjs api and iron session
 function logoutRoute(req: NextApiRequest, res: NextApiResponse<User>) {
   req.session.destroy()
-  res.json({ isLoggedIn: false, login: '', avatarUrl: '' })
+  res.json({
+    isLoggedIn: false,
+    isEmailconfirmed: false,
+    name: '',
+    username: '',
+    avatar: '',
+    token: '',
+    email: '',
+    id: ''
+  })
 }
 
 // Exporting logout service

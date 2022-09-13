@@ -11,7 +11,7 @@ import { SignUpView } from 'presentation/ui/views'
 // Sign in component
 const SignUp: NextPageWithLayout = () => {
   // Check if user is already logged in
-  const { mutateUser } = useUser({
+  useUser({
     redirectTo: '/home',
     redirectIfFound: true
   })

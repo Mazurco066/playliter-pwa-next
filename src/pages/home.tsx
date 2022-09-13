@@ -1,6 +1,7 @@
 // Dependencies
 import Head from 'next/head'
 import { ReactElement } from 'react'
+import { useUser } from 'infra/services/session'
 
 // Layout and Components
 import { NextPageWithLayout } from './_app'
@@ -9,6 +10,9 @@ import { HomeView } from 'presentation/ui/views'
 
 // Home component
 const Home: NextPageWithLayout = () => {
+  // Check if user authorization is expired
+  useUser({ redirectTo: '/login' })
+
   // Page JSX
   return (
     <main>

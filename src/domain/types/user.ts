@@ -1,5 +1,10 @@
 export type User = {
   isLoggedIn: boolean
-  login: string
-  avatarUrl: string
+  isEmailconfirmed: boolean
+  name: string
+  username: string
+  avatar: string
+  token: string
+  email?: string
+  id: string
 }

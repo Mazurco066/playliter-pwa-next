@@ -2,6 +2,8 @@
 import type { AppProps } from 'next/app'
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
+import { SWRConfig } from 'swr'
+import { fetchJson } from 'infra/services/http'
 
 // Component packages
 import NextNProgress from 'nextjs-progressbar'
@@ -24,15 +26,24 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   // Global JSX
   return (  
-    <ChakraProvider>
-      <NextNProgress
-        color="#8257e5"
-        startPosition={0.3}
-        stopDelayMs={200}
-        height={3}
-      />
-      { getLayout(<Component {...pageProps} />) }
-    </ChakraProvider>
+    <SWRConfig
+      value={{
+        fetcher: fetchJson,
+        onError: (err) => {
+          console.error(err)
+        }
+      }}
+    >
+      <ChakraProvider>
+        <NextNProgress
+          color="#8257e5"
+          startPosition={0.3}
+          stopDelayMs={200}
+          height={3}
+        />
+        { getLayout(<Component {...pageProps} />) }
+      </ChakraProvider>
+    </SWRConfig>
   ) 
 }
 
