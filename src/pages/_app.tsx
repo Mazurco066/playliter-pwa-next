@@ -2,12 +2,15 @@
 import type { AppProps } from 'next/app'
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
+
+// Fetch data packages
 import { SWRConfig } from 'swr'
 import { fetchJson } from 'infra/services/http'
 
 // Component packages
+import theme from 'presentation/theme'
 import NextNProgress from 'nextjs-progressbar'
-import { ChakraProvider  } from '@chakra-ui/react'
+import { ChakraProvider, ColorModeScript  } from '@chakra-ui/react'
 
 // Layout wrapper
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -34,7 +37,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         }
       }}
     >
-      <ChakraProvider>
+      <ChakraProvider theme={theme} cssVarsRoot="body">
         <NextNProgress
           color="#8257e5"
           startPosition={0.3}
@@ -42,6 +45,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           height={3}
         />
         { getLayout(<Component {...pageProps} />) }
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       </ChakraProvider>
     </SWRConfig>
   ) 

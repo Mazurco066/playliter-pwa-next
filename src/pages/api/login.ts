@@ -3,7 +3,7 @@ import type { User } from '../../domain/types'
 import { withIronSessionApiRoute } from 'iron-session/next'
 import { sessionOptions } from 'infra/services/session'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { fetchJson } from 'infra/services/http'
+import { FetchError, fetchJson } from 'infra/services/http'
 
 // Login using nextjs api and iron session
 async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
@@ -16,7 +16,9 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
-    })    
+    })
+
+    console.log('[debug] response', response)
 
     // Retrieve user data from response
     const { data: {
@@ -51,6 +53,9 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
     res.json(user)
 
   } catch (error) {
+    if (error instanceof FetchError) {
+      res.status(error.response.status).json({ message: error.message })
+    }
     res.status(500).json({ message: (error as Error).message })
   }
 }

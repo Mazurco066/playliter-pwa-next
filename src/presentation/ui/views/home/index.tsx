@@ -4,6 +4,7 @@ import { useUser } from 'infra/services/session'
 
 // Layout and Components
 import {
+  Avatar,
   Container,
   Heading
 } from '@chakra-ui/react'
@@ -18,7 +19,7 @@ const HomeView: FC = () => {
     <div>
       <Container>
         <Heading as="h2" size="xl" mb="5">
-          Home - { user?.name }
+          <Avatar src={user?.avatar} name={user?.name} />
         </Heading>
       </Container>
     </div>

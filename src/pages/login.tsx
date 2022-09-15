@@ -18,14 +18,14 @@ const LogIn: NextPageWithLayout = () => {
 
   // Page JSX
   return (
-    <main>
+    <>
       <Head>
         <title>Playliter - Login</title>
         <meta name="description" content="Sign in into Playliter" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <LoginInView />
-    </main>
+    </>
   )
 }
 
