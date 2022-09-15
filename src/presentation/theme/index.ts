@@ -2,6 +2,9 @@
 import { extendTheme, ThemeConfig } from '@chakra-ui/react'
 import { mode, Styles } from '@chakra-ui/theme-tools'
 
+// Custom component styles
+import { ButtonStyles as Button } from './components'
+
 // Application color theme
 const colors = {
   primary: {
@@ -51,7 +54,7 @@ const config: ThemeConfig = {
 }
 
 // Application components overwrite
-const components = {}
+const components = { Button }
 
 // Create app custom theme for chackra based on selected colors
 const theme = extendTheme({

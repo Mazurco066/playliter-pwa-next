@@ -1,5 +1,5 @@
 // Dependencies
-import type { User } from '../../domain/types'
+import type { User } from 'domain/types'
 import { withIronSessionApiRoute } from 'iron-session/next'
 import { sessionOptions } from 'infra/services/session'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -15,10 +15,8 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
     const response = await fetchJson(`${process.env.API_BASE_URL}/auth/authenticate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password })
     })
-
-    console.log('[debug] response', response)
 
     // Retrieve user data from response
     const { data: {
