@@ -10,13 +10,13 @@ export const AccountLayout: FC<{ children: ReactNode }> = ({ children }) => {
   // JSX
   return (
     <Grid
-      templateRows='100px 1fr 80px'
+      templateRows='80px 1fr 80px'
       minHeight='100vh'
     >
       <GridItem>
         <Header />
       </GridItem>
-      <GridItem>
+      <GridItem py="5">
         {children}
       </GridItem>
       <GridItem>

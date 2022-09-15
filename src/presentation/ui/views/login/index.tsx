@@ -15,19 +15,23 @@ import {
   FormHelperText,
   Heading,
   Input,
-  useToast
+  useToast,
+  useColorModeValue
 } from '@chakra-ui/react'
 
 // Sign in component
 const LogInView: FC = () => {
   // Hooks
-  const { mutateUser } = useUser()
   const toast = useToast()
+  const { mutateUser } = useUser()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm()
+
+  // Color hooks
+  const bgBox = useColorModeValue('gray.50', 'gray.800')
 
   // Actions
   const onSubmit = async (data: any) => {
@@ -66,7 +70,7 @@ const LogInView: FC = () => {
       <Heading as="h2" size="xl" mb="5" color='secondary'>
         Login
       </Heading>
-      <Box p="5" borderRadius="lg">
+      <Box p="5" borderRadius="lg" bg={bgBox}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl mb="5" isRequired>
             <FormLabel>Usuário</FormLabel>

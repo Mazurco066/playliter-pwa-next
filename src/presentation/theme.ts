@@ -35,8 +35,8 @@ const styles: Styles = {
       minHeight: '100%'
     },
     body: {
-      bg: mode('#f5f5f5', '#212121')(props),
-      color: mode('#212121', '#f5f5f5')(props)
+      bg: mode('gray.100', 'gray.900')(props),
+      color: mode('gray.900', 'gray.100')(props)
     },
     '#__next': {
       minHeight: '100%'
