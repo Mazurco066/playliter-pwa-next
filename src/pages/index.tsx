@@ -5,7 +5,7 @@ import { useUser } from 'infra/services/session'
 
 // Layout and Components
 import { NextPageWithLayout } from './_app'
-import { AccountLayout } from 'presentation/ui/_layouts'
+import { LandingLayout } from 'presentation/ui/_layouts'
 import { LandingView } from 'presentation/ui/views'
 
 // Landing component
@@ -32,9 +32,9 @@ const Landing: NextPageWithLayout = () => {
 // Applying layout
 Landing.getLayout = function getLayout(page: ReactElement) {
   return (
-    <AccountLayout>
+    <LandingLayout>
       {page}
-    </AccountLayout>
+    </LandingLayout>
   )
 }
 

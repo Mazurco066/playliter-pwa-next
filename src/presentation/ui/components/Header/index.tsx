@@ -3,11 +3,7 @@ import { FC } from 'react'
 
 // Components
 import { ThemeSwitch } from 'presentation/ui/components'
-import {
-  Container,
-  Flex,
-  Heading
-} from '@chakra-ui/react'
+import { Container, Flex } from '@chakra-ui/react'
 
 // Header component
 export const Header: FC = () => {

@@ -2,7 +2,8 @@
 import { FC, ReactNode }from 'react'
 
 // Components
-import { Box } from '@chakra-ui/react'
+import { Grid, GridItem } from '@chakra-ui/react'
+import { TopBar, Footer } from 'presentation/ui/components'
 
 // Layout component
 export const SecureLayout: FC<{ children: ReactNode }> = ({
@@ -11,8 +12,19 @@ export const SecureLayout: FC<{ children: ReactNode }> = ({
 
   // JSX
   return (
-    <Box>
-      {children}
-    </Box>
+    <Grid
+      templateRows='80px 1fr 60px'
+      minHeight='100vh'
+    >
+      <GridItem>
+        <TopBar />
+      </GridItem>
+      <GridItem py="5">
+        {children}
+      </GridItem>
+      <GridItem>
+        <Footer />
+      </GridItem>
+    </Grid>
   )
 }
