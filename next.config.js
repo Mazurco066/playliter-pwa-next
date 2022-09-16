@@ -13,6 +13,10 @@ const withPWA = require('next-pwa')({
 const nextConfig = withPWA({
   reactStrictMode: true,
   swcMinify: true,
+  // Disable eslint during builds
+  eslint: {
+    ignoreDuringBuilds: true
+  },
   // Secure headers
   async headers() {
     return [
