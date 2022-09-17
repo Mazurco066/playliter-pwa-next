@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useUser } from 'infra/services/session'
 
 // Types
 import type { InviteType } from 'domain/models'
@@ -7,6 +8,7 @@ import type { InviteType } from 'domain/models'
 // Components
 import { FaBell } from 'react-icons/fa'
 import { Icon } from '@chakra-ui/icons'
+import { ConfirmationEmailNotification, Invite } from 'presentation/ui/components'
 import {
   Badge,
   Box,
@@ -18,20 +20,26 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
-  useColorModeValue,
-  Text
+  useColorModeValue
 } from '@chakra-ui/react'
 
 // Footer component
-export const Invitations: FC<{
+export const Notifications: FC<{
   invites: InviteType[]
 }> = ({
   invites
 }) => {
+  // Hooks
+  const { user } = useUser()
+
   // Color Hooks
+  const colorText = useColorModeValue('gray.900', 'gray.100')
   const bgPopover = useColorModeValue('gray.50', 'gray.800')
   const borderPopover = useColorModeValue('gray.200', 'gray.600')
 
+  // Utils
+  const notificationsCount = invites.length + (user?.isEmailconfirmed ? 0 : 1)
+  
   // JSX
   return (
     <Popover
@@ -46,7 +54,7 @@ export const Invitations: FC<{
             variant="outline"
           />
           {
-            invites.length > 0 && (
+            notificationsCount > 0 && (
               <Badge
                 colorScheme="red"
                 position="absolute"
@@ -54,7 +62,7 @@ export const Invitations: FC<{
                 top="-1"
                 right="-1"
               >
-                {invites.length}
+                {notificationsCount}
               </Badge>
             )
           }
@@ -65,11 +73,14 @@ export const Invitations: FC<{
         bg={bgPopover}
         borderColor={borderPopover}
         width="200px"
+        maxHeight="400px"
+        overflowY="auto"
       >
         <PopoverHeader
           pt="4"
           fontWeight='bold'
           border='0'
+          color={colorText}
         >
           Notificações
         </PopoverHeader>
@@ -77,20 +88,21 @@ export const Invitations: FC<{
         <PopoverCloseButton mt="2" />
         <PopoverBody>
           {
+            // E-mail confirmation reminder
+            !user?.isEmailconfirmed && (
+              <ConfirmationEmailNotification 
+                onClick={() => console.log('Confirm E-mail')}
+              />
+            )
+          }
+          {
             // Invitations list
             invites.map((invite: InviteType) => (
-              <Box
-                key={invite.id}          
-                mb="2"
-                _last={{
-                  mb: "0"
-                }}
-              >
-                <Text>Convite para banda:</Text>
-                <Text fontWeight="bold" color="secondary.500">
-                  {invite.band.title}
-                </Text>
-              </Box>
+              <Invite
+                key={invite.id}
+                invite={invite}
+                onClick={() => console.log(`Invite id: ${invite.id}`)}
+              />
             ))
           }
         </PopoverBody>

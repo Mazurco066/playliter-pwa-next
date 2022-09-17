@@ -6,7 +6,7 @@ import { fetchJson } from 'infra/services/http'
 
 // Components
 import {
-  Invitations,
+  Notifications,
   UserMenu,
   ThemeSwitch
 } from 'presentation/ui/components'
@@ -59,7 +59,7 @@ export const TopBar: FC = () => {
           </Heading>
         </Flex>
         <HStack spacing="2">
-          <Invitations
+          <Notifications
             invites={pendingInvites || []}
           />
           <ThemeSwitch />
