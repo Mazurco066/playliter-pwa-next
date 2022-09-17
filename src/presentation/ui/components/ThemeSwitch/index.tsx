@@ -2,7 +2,7 @@
 import { FC } from 'react'
 
 // Components
-import { Button, useColorMode } from '@chakra-ui/react'
+import { IconButton, useColorMode } from '@chakra-ui/react'
 import { SunIcon, MoonIcon } from '@chakra-ui/icons'
 
 // Footer component
@@ -12,8 +12,11 @@ export const ThemeSwitch: FC = () => {
 
   // JSX
   return (
-    <Button variant="outline" onClick={() => toggleColorMode()}>
-      { colorMode === 'dark' ? <SunIcon /> : <MoonIcon /> }
-    </Button>
+    <IconButton
+      aria-label="theme-switch"
+      icon={colorMode === 'dark' ? <SunIcon /> : <MoonIcon />}
+      onClick={() => toggleColorMode()}
+      variant="outline"
+    />
   )
 }

@@ -3,12 +3,14 @@ import { FC } from 'react'
 import { useUser } from 'infra/services/session'
 
 // Components
-import { UserMenu } from 'presentation/ui/components'
+import { UserMenu, ThemeSwitch } from 'presentation/ui/components'
 import {
   Avatar,
   Container,
+  Divider,
   Flex,
-  Heading
+  Heading,
+  HStack
 } from '@chakra-ui/react'
 
 // TopBar component
@@ -36,8 +38,12 @@ export const TopBar: FC = () => {
             {user?.name}
           </Heading>
         </Flex>
-        <UserMenu />
+        <HStack spacing="2">
+          <ThemeSwitch />
+          <UserMenu />
+        </HStack>
       </Flex>
+      <Divider orientation="horizontal" />
     </Container> 
   )
 }
