@@ -1,9 +1,9 @@
 export type AccountType = {
-  avatar: string,
+  id: string,
   createdAt: string,
   updatedAt: string,
+  avatar: string,
   email: string,
-  id: string,
   isEmailconfirmed: boolean,
   name: string,
   role: string,

@@ -10,8 +10,8 @@ export const AccountLayout: FC<{ children: ReactNode }> = ({ children }) => {
   // JSX
   return (
     <Grid
-      templateRows='80px 1fr 60px'
-      minHeight='100vh'
+      templateRows="80px 1fr 60px"
+      minHeight="100vh"
       backgroundImage="img/arts/top.svg"
       backgroundRepeat="no-repeat"
       backgroundSize="100%"
