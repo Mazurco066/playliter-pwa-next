@@ -1,10 +1,13 @@
 // Dependencies
+import NextLink from 'next/link'
 import { FC } from 'react'
 import { useRouter } from 'next/router'
 
+// Types
+import type { BottomNav } from 'domain/types'
+
 // Components
 import { Icon } from '@chakra-ui/icons'
-import { FaCompactDisc, FaHome, FaUsers } from 'react-icons/fa'
 import {
   Container,
   Flex,
@@ -14,41 +17,12 @@ import {
   useColorModeValue
 } from '@chakra-ui/react'
 
-// Routes
-const navigation: {
-  label: string,
-  icon: any,
-  path: string
-  activePaths: string[]
-}[] = [
-  {
-    label: 'Bandas',
-    icon: FaUsers,
-    path: '/bands',
-    activePaths: [
-      '/bands'
-    ]
-  },
-  {
-    label: 'Home',
-    icon: FaHome,
-    path: '/home',
-    activePaths: [
-      '/home'
-    ]
-  },
-  {
-    label: 'Músicas',
-    icon: FaCompactDisc,
-    path: '/songs',
-    activePaths: [
-      '/songs'
-    ]
-  }
-]
-
 // BottomNavigation component
-export const BottomNavigation: FC = () => {
+export const BottomNavigation: FC<{
+  navigation: BottomNav[]
+}> = ({
+  navigation
+}) => {
   // Hooks
   const router = useRouter()
 
@@ -58,7 +32,6 @@ export const BottomNavigation: FC = () => {
 
   // Utils
   const currentRoute = router.route
-  console.log('[deb]', currentRoute)
 
   // JSX
   return (
@@ -70,20 +43,12 @@ export const BottomNavigation: FC = () => {
         justifyContent="space-around"
       >
         {
-          navigation.map(({
-            label,
-            icon,
-            path,
-            activePaths
-          }: {
-            label: string,
-            icon: any,
-            path: string,
-            activePaths: string[]
-          }, i) => (
+          navigation.map(({ label, icon, path, activePaths }: BottomNav, i) => (
             <Link
-              key={i}
               href={path}
+              as={NextLink}
+              key={i}
+              cursor="pointer"
               _hover={{
                 textDecoration: "none",
               }}
