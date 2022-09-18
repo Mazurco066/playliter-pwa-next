@@ -6,10 +6,10 @@ import { useUser } from 'infra/services/session'
 // Layout and Components
 import { NextPageWithLayout } from '../_app'
 import { SecureLayout } from 'presentation/ui/_layouts'
-import { SongsView } from 'presentation/ui/views'
+import { ProfileView } from 'presentation/ui/views'
 
-// Songs component
-const Songs: NextPageWithLayout = () => {
+// Profile component
+const Profile: NextPageWithLayout = () => {
   // Check if user authorization is expired
   useUser({ redirectTo: '/login' })
 
@@ -17,21 +17,21 @@ const Songs: NextPageWithLayout = () => {
   return (
     <main>
       <Head>
-        <title>Playliter - Músicas</title>
-        <meta name="description" content="Public songs" />
+        <title>Playliter - Perfil</title>
+        <meta name="description" content="Meu perfil" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <SongsView />
+      <ProfileView />
     </main>
   )
 }
 
 // Applying layout
-Songs.getLayout = function getLayout(page: ReactElement) {
+Profile.getLayout = function getLayout(page: ReactElement) {
   return (
     <SecureLayout
-      pageTitle="Músicas"
-      pageSubtitle="Públicas"
+      pageTitle="Meu Perfil"
+      pageSubtitle=""
     >
       {page}
     </SecureLayout>
@@ -39,4 +39,4 @@ Songs.getLayout = function getLayout(page: ReactElement) {
 }
 
 // Exporting component
-export default Songs
+export default Profile

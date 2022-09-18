@@ -51,7 +51,7 @@ export const Notifications: FC<{
           <IconButton
             aria-label="notifications-toggle"
             icon={<Icon as={FaBell} />}
-            variant="outline"
+            variant="ghost"
           />
           {
             notificationsCount > 0 && (

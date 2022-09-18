@@ -3,6 +3,7 @@ import ForgotPasswordView from './forgotPassword'
 import HomeView from './home'
 import LandingView from './landing'
 import LoginInView from './login'
+import ProfileView from './profile'
 import SignUpView from './signup'
 import SongsView from './songs'
 
@@ -12,6 +13,7 @@ export {
   HomeView,
   LandingView,
   LoginInView,
+  ProfileView,
   SignUpView,
   SongsView
 }

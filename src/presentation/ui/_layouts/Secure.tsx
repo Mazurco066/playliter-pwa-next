@@ -1,12 +1,13 @@
 // Dependencies
 import { FC, ReactNode }from 'react'
+import { useRouter } from 'next/router'
 
 // Types
 import type { BottomNav } from 'domain/types'
 
 // Components
 import { Grid, GridItem } from '@chakra-ui/react'
-import { TopBar, BottomNavigation } from 'presentation/ui/components'
+import { TopBar, TopNavigation, BottomNavigation } from 'presentation/ui/components'
 import { FaCompactDisc, FaHome, FaUsers } from 'react-icons/fa'
 
 // Secure navigation settings
@@ -38,9 +39,17 @@ const navigation: BottomNav[] = [
 ]
 
 // Layout component
-export const SecureLayout: FC<{ children: ReactNode }> = ({
-  children
+export const SecureLayout: FC<{
+  children: ReactNode,
+  pageTitle?: string,
+  pageSubtitle?: string
+}> = ({
+  children,
+  pageTitle = '',
+  pageSubtitle = ''
 }) => {
+  // Hooks
+  const router = useRouter()
 
   // JSX
   return (
@@ -49,7 +58,19 @@ export const SecureLayout: FC<{ children: ReactNode }> = ({
       minHeight="100vh"
     >
       <GridItem>
-        <TopBar />
+        {
+          router.route === '/profile' ? (
+            <TopBar
+              pageTitle={pageTitle}
+              pageSubtitle={pageSubtitle}
+            />
+          ) : (
+            <TopNavigation
+              pageTitle={pageTitle}
+              pageSubtitle={pageSubtitle}
+            />
+          )
+        }
       </GridItem>
       <GridItem py="5">
         {children}

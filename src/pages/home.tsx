@@ -29,7 +29,10 @@ const Home: NextPageWithLayout = () => {
 // Applying layout
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
-    <SecureLayout>
+    <SecureLayout
+      pageTitle="Playliter"
+      pageSubtitle="App"
+    >
       {page}
     </SecureLayout>
   )

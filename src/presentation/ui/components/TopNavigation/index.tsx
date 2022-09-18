@@ -1,27 +1,30 @@
 // Dependencies
 import useSWR from 'swr'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { FC } from 'react'
+import { useUser } from 'infra/services/session'
 import { fetchJson } from 'infra/services/http'
 
 // Components
 import { ArrowBackIcon } from '@chakra-ui/icons'
-import { Notifications, UserMenu, ThemeSwitch } from 'presentation/ui/components'
 import {
+  Avatar,
+  AvatarBadge,
   Container,
   Divider,
   Flex,
   Heading,
-  HStack,
   IconButton,
+  Link,
   Text
 } from '@chakra-ui/react'
 
 // Fetchers
 const invitesFetcher = (url: string) => fetchJson(url, { method: 'GET' })
 
-// TopBar component
-export const TopBar: FC<{
+// TopNavigation component
+export const TopNavigation: FC<{
   pageTitle: string,
   pageSubtitle: string
 }> = ({
@@ -30,11 +33,15 @@ export const TopBar: FC<{
 }) => {
   // Hooks
   const router = useRouter()
+  const { user } = useUser()
 
   // HTTP Requests by SWR
   const {
     data: pendingInvites
   } = useSWR('api/bands/invites', invitesFetcher)
+
+  // Utils
+  const notificationsCount = pendingInvites?.length + (user?.isEmailconfirmed ? 0 : 1)
 
   // JSX
   return (
@@ -80,11 +87,37 @@ export const TopBar: FC<{
             )
           }
         </Flex>
-        <HStack spacing="2">
-          <Notifications invites={pendingInvites || []}/>
-          <ThemeSwitch />
-          <UserMenu />
-        </HStack>
+        <Link as={NextLink} href="/profile">
+          <Avatar
+            src={user?.avatar}
+            name={user?.name}
+            ml="3"
+          >
+            {
+              notificationsCount > 0 && (
+                <AvatarBadge
+                  bg='tomato'
+                  boxSize='1.25em'
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Text
+                    color="gray.100"
+                    as="small"
+                    fontSize="0.65rem"
+                    fontWeight="bold"
+                    textAlign="center"
+                    pr="0.07rem"
+                  >
+                    {notificationsCount}
+                  </Text>
+                </AvatarBadge>
+              )
+            }            
+          </Avatar>
+        </Link>
+        
       </Flex>
       <Divider orientation="horizontal" />
     </Container> 

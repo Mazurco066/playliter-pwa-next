@@ -16,7 +16,7 @@ export const ThemeSwitch: FC = () => {
       aria-label="theme-switch"
       icon={colorMode === 'dark' ? <SunIcon /> : <MoonIcon />}
       onClick={() => toggleColorMode()}
-      variant="outline"
+      variant="ghost"
     />
   )
 }

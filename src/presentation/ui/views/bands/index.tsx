@@ -1,5 +1,7 @@
 // Dependencies
+import useSWR from 'swr'
 import { FC } from 'react'
+import { fetchJson } from 'infra/services/http'
 
 // Layout and Components
 import {
@@ -7,8 +9,17 @@ import {
   Heading
 } from '@chakra-ui/react'
 
+// Fetchers
+const bandsFetcher = (url: string) => fetchJson(url, { method: 'GET' })
+
 // Bands list component
 const BandsView: FC = () => {
+  // HTTP Requests by SWR
+  const {
+    data: bands,
+    error: bandsError
+  } = useSWR('api/bands/list', bandsFetcher)
+
   // View JSX
   return (
     <div>

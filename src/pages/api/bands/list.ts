@@ -5,11 +5,11 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { FetchError, fetchJson } from 'infra/services/http'
 
 // Login using nextjs api and iron session
-async function pendingInvitesRoute(req: NextApiRequest, res: NextApiResponse) {
+async function listBandsRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     try {
       // Request login endpoint
-      const response = await fetchJson(`${process.env.API_BASE_URL}/invitations/pending_invites`, {
+      const response = await fetchJson(`${process.env.API_BASE_URL}/bands/get`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -36,4 +36,4 @@ async function pendingInvitesRoute(req: NextApiRequest, res: NextApiResponse) {
 }
 
 // Exporting login service
-export default withIronSessionApiRoute(pendingInvitesRoute, sessionOptions)
+export default withIronSessionApiRoute(listBandsRoute, sessionOptions)

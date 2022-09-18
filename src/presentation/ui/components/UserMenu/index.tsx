@@ -29,7 +29,7 @@ export const UserMenu: FC = () => {
         as={IconButton}
         aria-label='Options'
         icon={<HamburgerIcon />}
-        variant='outline'
+        variant='ghost'
       />
       <MenuList>
         <MenuItem icon={<Icon as={FaUser} />}>

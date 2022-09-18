@@ -9,7 +9,7 @@ import { SecureLayout } from 'presentation/ui/_layouts'
 import { BandsView } from 'presentation/ui/views'
 
 // Bands component
-const Home: NextPageWithLayout = () => {
+const Bands: NextPageWithLayout = () => {
   // Check if user authorization is expired
   useUser({ redirectTo: '/login' })
 
@@ -17,7 +17,7 @@ const Home: NextPageWithLayout = () => {
   return (
     <main>
       <Head>
-        <title>Playliter - Home</title>
+        <title>Playliter - Bandas</title>
         <meta name="description" content="Band manager app" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -27,13 +27,16 @@ const Home: NextPageWithLayout = () => {
 }
 
 // Applying layout
-Home.getLayout = function getLayout(page: ReactElement) {
+Bands.getLayout = function getLayout(page: ReactElement) {
   return (
-    <SecureLayout>
+    <SecureLayout
+      pageTitle="Minhas Bandas"
+      pageSubtitle=""
+    >
       {page}
     </SecureLayout>
   )
 }
 
 // Exporting component
-export default Home
+export default Bands
