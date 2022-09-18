@@ -27,16 +27,20 @@ export const BottomNavigation: FC<{
   const router = useRouter()
 
   // Color hooks
-  const colorActive = useColorModeValue('primary.500', 'secondary.500')
+  const colorActive = useColorModeValue('secondary.500', 'secondary.500')
   const colorNormal = useColorModeValue('gray.900', 'gray.100')
+  const bgNavigation = useColorModeValue('gray.50', 'gray.800')
 
   // Utils
   const currentRoute = router.route
 
   // JSX
   return (
-    <Container height="full">
-      <Divider orientation="horizontal" />
+    <Container
+      height="full"
+      bg={bgNavigation}
+      borderTopRadius="2xl"
+    >
       <Flex
         height="full"
         alignItems="center" 

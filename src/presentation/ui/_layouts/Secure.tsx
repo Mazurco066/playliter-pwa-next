@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import type { BottomNav } from 'domain/types'
 
 // Components
-import { Grid, GridItem } from '@chakra-ui/react'
+import { Grid, GridItem, Box } from '@chakra-ui/react'
 import { TopBar, TopNavigation, BottomNavigation } from 'presentation/ui/components'
 import { FaCompactDisc, FaHome, FaUsers } from 'react-icons/fa'
 
@@ -55,7 +55,8 @@ export const SecureLayout: FC<{
   return (
     <Grid
       templateRows="80px 1fr 80px"
-      minHeight="100vh"
+      templateColumns="100%"
+      height="full"      
     >
       <GridItem>
         {
@@ -72,7 +73,11 @@ export const SecureLayout: FC<{
           )
         }
       </GridItem>
-      <GridItem py="5">
+      <GridItem
+        py="5"
+        maxHeight="100%"
+        overflowY="auto"
+      >
         {children}
       </GridItem>
       <GridItem>

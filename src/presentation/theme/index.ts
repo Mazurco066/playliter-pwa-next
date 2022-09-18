@@ -35,14 +35,18 @@ const colors = {
 const styles: Styles = {
   global: (props: any) => ({
     html: {
-      minHeight: '100%'
+      height: '100%',
+      overflowX: 'hidden'
     },
     body: {
       bg: mode('gray.100', 'gray.900')(props),
-      color: mode('gray.900', 'gray.100')(props)
+      color: mode('gray.900', 'gray.100')(props),
+      height: '100%',
+      overflowX: 'hidden'
     },
     '#__next': {
-      minHeight: '100%'
+      height: '100%',
+      overflowX: 'hidden'
     }
   })
 }

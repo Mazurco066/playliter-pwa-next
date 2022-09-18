@@ -92,6 +92,7 @@ export const TopNavigation: FC<{
             src={user?.avatar}
             name={user?.name}
             ml="3"
+            cursor="pointer"
           >
             {
               notificationsCount > 0 && (
