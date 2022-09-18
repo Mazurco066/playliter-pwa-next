@@ -8,8 +8,14 @@ import { FetchError, fetchJson } from 'infra/services/http'
 async function listBandsRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     try {
+
+      // Retrieve parameters
+      const limit = req.query?.limit || 0
+      const offset = req.query?.offset || 0
+
       // Request login endpoint
-      const response = await fetchJson(`${process.env.API_BASE_URL}/bands/get`, {
+      const url = `${process.env.API_BASE_URL}/bands/get?limit=${limit}&offset=${offset}`
+      const response = await fetchJson(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

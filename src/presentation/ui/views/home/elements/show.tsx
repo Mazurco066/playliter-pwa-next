@@ -7,6 +7,7 @@ import {
   Box,
   Flex,
   Heading,
+  Image,
   Text,
   useColorModeValue
 } from '@chakra-ui/react'
@@ -30,7 +31,8 @@ export const ShowItem: FC<{
   return (
     <Box
       data-group
-      p="5"
+      minWidth="162px"
+      maxWidth="162px"
       position="relative"
       borderRadius="lg"
       cursor="pointer"
@@ -38,45 +40,56 @@ export const ShowItem: FC<{
       bg={bgBox}
       onClick={onClick}
       _hover={{
-        bgGradient: 'linear(to-l, secondary.600, primary.600)'
+        opacity: "0.8"
       }}
     >
-      <Flex alignItems="center">
-        <Box flexGrow="1">
-          <Badge
-            variant="outline"
-            colorScheme="primary"
-            mb="2"
-            transition="all 0.3s"
-            _groupHover={{
-              color: 'gray.100'
-            }}
-          >
-            { date.split('T')[0].split('-').reverse().join('/') }
-          </Badge>
-          <Heading
-            mb="1"
-            as="h4"
-            size="sm"
-            transition="all 0.3s"
-            _groupHover={{
-              color: 'gray.100'
-            }}
-          >
-            {title}
-          </Heading>
-          <Text
-            color="secondary.500"
-            fontWeight="semibold"
-            transition="all 0.3s"
-            _groupHover={{
-              color: 'gray.100'
-            }}
-          >
-            {band}
-          </Text>
-        </Box>
-      </Flex>
+      <Badge
+        variant="outline"
+        colorScheme="gray"
+        color="white"
+        transition="all 0.3s"
+        position="absolute"
+        top="1.5"
+        right="1.5"
+      >
+        { date.split('T')[0].split('-').reverse().join('/') }
+      </Badge>
+      <Box
+        minHeight="128px"
+        bgGradient="linear(to-b, secondary.600, primary.600)"
+        borderTopRadius="lg"
+      >
+        <Flex
+          justifyContent="center"
+          alignItems="center"
+          pt="6"
+        >
+          <Image 
+            src="img/arts/white/concert.svg"
+            alt="Concert image"
+            width="96px"
+            height="96px"
+            objectFit="cover"
+          />
+        </Flex>
+      </Box>
+      <Box py="5" px="3">
+        <Heading
+          mb="1"
+          as="h4"
+          size="sm"
+          transition="all 0.3s"
+        >
+          {title}
+        </Heading>
+        <Text
+          color="secondary.500"
+          fontWeight="semibold"
+          transition="all 0.3s"
+        >
+          {band}
+        </Text>
+      </Box>
     </Box>
   )
 }
