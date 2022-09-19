@@ -6,12 +6,8 @@ import type { BandType } from 'domain/models'
 
 // Components
 import {
-  Badge,
   Box,
-  Flex,
-  Heading,
   Image,
-  Text,
   Tooltip,
   useColorModeValue
 } from '@chakra-ui/react'

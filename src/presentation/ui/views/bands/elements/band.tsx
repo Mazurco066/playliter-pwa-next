@@ -31,7 +31,7 @@ export const BandItem: FC<{
   const colorBorder = useColorModeValue('gray.50', 'gray.800')
 
   // Destruct band data
-  const { admins, title, description, logo, owner } = band
+  const { admins, title, logo, owner } = band
 
   // Utils
   const role = owner.id === user?.id 
