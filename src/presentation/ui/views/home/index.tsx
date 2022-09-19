@@ -1,6 +1,7 @@
 // Dependencies
 import useSWR from 'swr'
 import { FC } from 'react'
+import { useRouter } from 'next/router'
 import { useUser } from 'infra/services/session'
 import { fetchJson } from 'infra/services/http'
 
@@ -27,6 +28,7 @@ const bandsFetcher = (url: string) => fetchJson(`${url}?limit=3`, { method: 'GET
 // Sign in component
 const HomeView: FC = () => {
   // Hooks
+  const router = useRouter()
   const { user } = useUser()
 
   // Color hooks
@@ -103,6 +105,15 @@ const HomeView: FC = () => {
             {
               bands.length > 0 && (
                 <>
+                  <Heading
+                    as="h3"
+                    size="md"
+                    textAlign="left"
+                    textTransform="uppercase"
+                    mb="4"
+                  >
+                    Minhas Bandas
+                  </Heading>
                   <Box
                     px="3"
                     py="5"
@@ -110,15 +121,6 @@ const HomeView: FC = () => {
                     borderRadius="lg"
                     bgColor={bgBox}
                   >
-                    <Heading
-                      as="h3"
-                      size="md"
-                      textAlign="center"
-                      textTransform="uppercase"
-                      mb="4"
-                    >
-                      Minhas Bandas
-                    </Heading>
                     <Flex
                       gap="1.25rem"
                       justifyContent="center"
@@ -140,7 +142,7 @@ const HomeView: FC = () => {
                         cursor="pointer"
                         transition="all 0.3s"
                         bgGradient="linear(to-t, secondary.600, primary.600)"
-                        onClick={() => console.log('[goto] bands')}
+                        onClick={() => router.push('/bands')}
                         _hover={{
                           opacity: "0.8"
                         }}
