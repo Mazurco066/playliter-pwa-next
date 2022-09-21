@@ -1,6 +1,7 @@
 // Unified export components
 export * from './BottomNavigation'
 export * from './ConfirmEmailNotification'
+export * from './FileUpload'
 export * from './Footer'
 export * from './Header'
 export * from './Invite'

@@ -3,7 +3,7 @@ import useSWR from 'swr'
 import { FC } from 'react'
 import { useRouter } from 'next/router'
 import { useUser } from 'infra/services/session'
-import { fetchJson } from 'infra/services/http'
+import { fetchJsonFromOrigin } from 'infra/services/http'
 
 // Types
 import type { BandType, ShowType } from 'domain/models'
@@ -22,8 +22,8 @@ import {
 } from '@chakra-ui/react'
 
 // Fetchers
-const showsFetcher = (url: string) => fetchJson(url, { method: 'GET' })
-const bandsFetcher = (url: string) => fetchJson(`${url}?limit=3`, { method: 'GET' })
+const showsFetcher = (url: string) => fetchJsonFromOrigin(url, { method: 'GET' })
+const bandsFetcher = (url: string) => fetchJsonFromOrigin(`${url}?limit=3`, { method: 'GET' })
 
 // Sign in component
 const HomeView: FC = () => {

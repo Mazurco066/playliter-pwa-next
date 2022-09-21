@@ -2,7 +2,7 @@
 import { FC } from 'react'
 import { useForm } from 'react-hook-form'
 import { useUser } from 'infra/services/session'
-import { fetchJson, FetchError } from 'infra/services/http'
+import { fetchJsonFromOrigin, FetchError } from 'infra/services/http'
 import { useRouter } from 'next/router'
 
 // Layout and Components
@@ -46,7 +46,7 @@ const LogInView: FC = () => {
   // Actions
   const onSubmit = async (data: any) => {
     try {
-      mutateUser(await fetchJson('/api/login', {
+      mutateUser(await fetchJsonFromOrigin('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

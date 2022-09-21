@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { useForm } from 'react-hook-form'
 import { useUser } from 'infra/services/session'
 import { useRouter } from 'next/router'
-import { FetchError, fetchJson } from 'infra/services/http'
+import { FetchError, fetchJsonFromOrigin } from 'infra/services/http'
 import type { AccountType } from 'domain/models'
 
 // Layout and Components
@@ -58,7 +58,7 @@ const SignUpView: FC = () => {
     try {
 
       // Request api via server side
-      const response: AccountType = await fetchJson(`api/accounts/create`, {
+      const response: AccountType = await fetchJsonFromOrigin(`api/accounts/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...data })
@@ -74,7 +74,7 @@ const SignUpView: FC = () => {
       })
 
       // Authenticate user
-      mutateUser(await fetchJson('/api/login', {
+      mutateUser(await fetchJsonFromOrigin('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -86,7 +86,6 @@ const SignUpView: FC = () => {
     } catch (error) {
       if (error instanceof FetchError) {
         if ([400].includes(error.response.status)) {
-          console.log(error.message)
           toast({
             title: 'Ops.. Há campos em uso!',
             description: 'Usuário ou E-mail informados já estão em uso por outra pessoa!',     

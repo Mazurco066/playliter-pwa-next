@@ -1,7 +1,8 @@
 // Dependencies
 import useSWR from 'swr'
 import { FC } from 'react'
-import { fetchJson } from 'infra/services/http'
+import { useRouter } from 'next/router'
+import { fetchJsonFromOrigin } from 'infra/services/http'
 
 // Types
 import { BandType } from 'domain/models'
@@ -19,18 +20,21 @@ import {
 } from '@chakra-ui/react'
 
 // Fetchers
-const bandsFetcher = (url: string) => fetchJson(url, { method: 'GET' })
+const bandsFetcher = (url: string) => fetchJsonFromOrigin(url, { method: 'GET' })
 
 // Bands list component
 const BandsView: FC = () => {
+  // Hooks
+  const router = useRouter()
+
+  // Color hooks
+  const colorSubtile = useColorModeValue('gray.500', 'gray.400')
+
   // HTTP Requests by SWR
   const {
     data: bands,
     error: bandsError
   } = useSWR('api/bands/list', bandsFetcher)
-
-  // Color hooks
-  const colorSubtile = useColorModeValue('gray.500', 'gray.400')
 
   // View JSX
   return (
@@ -55,7 +59,7 @@ const BandsView: FC = () => {
           variant="fade"
           width="full"
           mb="5"
-          onClick={() => console.log('[new band]')}
+          onClick={() => router.push('/bands/save')}
         >
           Criar banda
         </Button>

@@ -17,7 +17,8 @@ const navigation: BottomNav[] = [
     icon: FaUsers,
     path: '/bands',
     activePaths: [
-      '/bands'
+      '/bands',
+      '/bands/save'
     ]
   },
   {
