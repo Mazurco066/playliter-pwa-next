@@ -90,7 +90,7 @@ const BandsView: FC = () => {
                   <BandItem
                     key={band.id}
                     band={band}
-                    onClick={() => console.log(`Band id: ${band.id}`)}
+                    onClick={() => router.push(`/bands/${band.id}`)}
                   />
                 )) }
               </Grid>

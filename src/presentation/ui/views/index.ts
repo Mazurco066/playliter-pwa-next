@@ -1,3 +1,4 @@
+import BandView from './band'
 import BandsView from './bands'
 import ForgotPasswordView from './forgotPassword'
 import HomeView from './home'
@@ -9,6 +10,7 @@ import SignUpView from './signup'
 import SongsView from './songs'
 
 export {
+  BandView,
   BandsView,
   ForgotPasswordView,
   HomeView,

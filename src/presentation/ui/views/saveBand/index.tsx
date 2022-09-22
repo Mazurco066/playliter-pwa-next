@@ -100,7 +100,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id }) => {
 
       // Notify user about created band
       toast({
-        title: 'Seja bem vindo!',
+        title: 'Sucesso!',
         description: `Sua banda de nome ${response.title} foi salva com sucesso!`,
         status: 'success',
         duration: 2000,
