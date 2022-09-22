@@ -1,7 +1,12 @@
 // Dependencies
-import { FC } from 'react'
+import useSWR from 'swr'
+import { FC, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { FetchError, fetchJsonFromOrigin } from 'infra/services/http'
+
+// Types
+import type { BandType } from 'domain/models'
 
 // Layout and Components
 import { Icon } from '@chakra-ui/icons'
@@ -21,32 +26,89 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
+// Fetchers
+const bandFetcher = (url: string) => fetchJsonFromOrigin(url, { method: 'GET' })
+
+// Generic msg
+const genericMsg: UseToastOptions = {
+  title: 'Erro interno.',
+  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
+  status: 'error',
+  duration: 5000,
+  isClosable: true
+}
+
 // Save band component
-const SaveBandView: FC<{
-  id?: string
-}> = ({
-  id
-}) => {
+const SaveBandView: FC<{ id?: string }> = ({ id }) => {
   // Hooks
+  const router = useRouter()
   const toast = useToast()
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm()
 
+  // Requests
+  const {
+    data: band,
+    error: bandError
+  } = useSWR(id ? `api/bands/get?id=${id}` : null, bandFetcher)
+
+  // Set form values if an id was received
+  useEffect(() => {
+    if (band) {
+      const options = { shouldValidate: true, shouldDirty: true }
+      setValue('title', band.title, options)
+      setValue('description', band.title, options)
+    }
+  }, [band])
+
+  // Notify user about error while fetching his banda data
+  useEffect(() => {
+    if (bandError) {
+      if (bandError instanceof FetchError) {
+        if ([404].includes(bandError.response.status)) {
+          toast({
+            title: 'Banda não encontrada.',
+            description: 'A banda informada não foi encontrada em sua conta!',
+            status: 'info',
+            duration: 5000,
+            isClosable: true
+          })
+        } else {
+          toast(genericMsg)
+        }
+      } else {
+        toast(genericMsg)
+      }
+      router.push('../../bands')
+    }
+  }, [bandError])
+
   // Actions
   const onSubmit = async (data: any) => {
-    // Generic msg
-    const genericMsg: UseToastOptions = {
-      title: 'Erro interno.',
-      description: "Um erro inesperado ocorreu! Entre em contato com algum administrador do App.",
-      status: 'error',
-      duration: 5000,
-      isClosable: true
-    }
-
     try {
+
+      // Request api via server side
+      const response: BandType = await fetchJsonFromOrigin('api/bands/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: id ? JSON.stringify({ id, ...data }) : JSON.stringify({ ...data })
+      })
+
+      // Notify user about created band
+      toast({
+        title: 'Seja bem vindo!',
+        description: `Sua banda de nome ${response.title} foi salva com sucesso!`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+      // Redirect to band page
+      router.push(id ? '../../bands' : '../bands')
 
     } catch (error) {
       if (error instanceof FetchError) {
@@ -73,7 +135,11 @@ const SaveBandView: FC<{
       <Container>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FileUpload />
-          <FormControl isRequired mb="5">
+          <FormControl
+            isDisabled={(id && !band) as boolean}
+            isRequired
+            mb="5"
+          >
             <FormLabel>Nome da banda</FormLabel>
             <InputGroup>
               <InputLeftElement
@@ -81,6 +147,7 @@ const SaveBandView: FC<{
                 children={<Icon as={FaSignature} />}
               />
               <Input
+                disabled={(id && !band) as boolean}
                 type="text"
                 placeholder="Nome da banda"
                 minLength={2}
@@ -93,7 +160,11 @@ const SaveBandView: FC<{
               <FormHelperText>Insira um nome para identificar sua banda.</FormHelperText>
             )}
           </FormControl>
-          <FormControl isRequired mb="5">
+          <FormControl
+            isDisabled={(id && !band) as boolean}
+            isRequired
+            mb="5"
+          >
             <FormLabel>Descrição</FormLabel>
             <InputGroup>
               <InputLeftElement
@@ -101,6 +172,7 @@ const SaveBandView: FC<{
                 children={<Icon as={FaFileSignature} />}
               />
               <Textarea
+                disabled={(id && !band) as boolean}
                 placeholder="Descrição da banda"
                 pl="10"
                 minLength={2}

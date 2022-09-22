@@ -61,7 +61,7 @@ export async function fetchJsonFromOrigin<JSON = any>(
 ): Promise<JSON> {
 
   const baseUrl: string = location.origin as string
-  const response = await fetch(`${baseUrl.endsWith('/') ? `${baseUrl}` : `${baseUrl}/`}/${input}`, init)
+  const response = await fetch(`${baseUrl.endsWith('/') ? `${baseUrl}` : `${baseUrl}/`}${input}`, init)
 
   // if the server replies, there's always some data in json
   // if there's a network error, it will throw at the previous line
