@@ -3,8 +3,8 @@ import { FC } from 'react'
 import { useForm } from 'react-hook-form'
 import { useUser } from 'infra/services/session'
 import { useRouter } from 'next/router'
-import { FetchError, fetchJsonFromOrigin } from 'infra/services/http'
-import type { AccountType } from 'domain/models'
+import { useMutation } from '@tanstack/react-query'
+import { requestClient } from 'infra/services/http'
 
 // Layout and Components
 import { Icon } from '@chakra-ui/icons'
@@ -28,6 +28,15 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
+// Generic msg
+const genericMsg: UseToastOptions = {
+  title: 'Erro interno.',
+  description: "Um erro inesperado ocorreu! Entre em contato com algum administrador do App.",
+  status: 'error',
+  duration: 5000,
+  isClosable: true
+}
+
 // Sign in component
 const SignUpView: FC = () => {
   // Hooks
@@ -44,58 +53,55 @@ const SignUpView: FC = () => {
   const bgBox = useColorModeValue('gray.50', 'gray.800')
   const logoImg =  useColorModeValue('logo-black.svg', 'logo.svg')
 
+  // SignUp request
+  const { isLoading, mutateAsync } = useMutation((data: any) => {
+    return requestClient('/api/accounts/create', 'post', data)
+  })
+
+  // Login request
+  const { isLoading: isLogging, mutateAsync: mutateUserAsync } = useMutation((data: any) => {
+    return requestClient('/api/login', 'post', data)
+  })
+
   // Actions
   const onSubmit = async (data: any) => {
-    // Generic msg
-    const genericMsg: UseToastOptions = {
-      title: 'Erro interno.',
-      description: "Um erro inesperado ocorreu! Entre em contato com algum administrador do App.",
-      status: 'error',
-      duration: 5000,
-      isClosable: true
-    }
+    // Request api via server side
+    const response = await mutateAsync({ ...data })
 
-    try {
-
-      // Request api via server side
-      const response: AccountType = await fetchJsonFromOrigin(`api/accounts/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data })
-      })
+    // Verify if it was successfull
+    if ([200, 201].includes(response.status)) {
 
       // Notify user about created account
       toast({
         title: 'Seja bem vindo!',
-        description: `Sua conta foi criado com sucesso ${response.name}`,
+        description: `Sua conta foi criado com sucesso ${response.data?.name}`,
         status: 'success',
         duration: 2000,
         isClosable: true
       })
 
       // Authenticate user
-      mutateUser(await fetchJsonFromOrigin('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: response.username,
-          password: data.password
-        })
-      }))
+      const loginResponse = await mutateUserAsync({
+        username: response.data?.username,
+        password: data.password
+      })
 
-    } catch (error) {
-      if (error instanceof FetchError) {
-        if ([400].includes(error.response.status)) {
-          toast({
-            title: 'Ops.. Há campos em uso!',
-            description: 'Usuário ou E-mail informados já estão em uso por outra pessoa!',     
-            status: 'warning',
-            duration: 3500,
-            isClosable: true
-          })
-        } else {
-          toast(genericMsg)
-        }
+      // Verify if authentication was successfull
+      if ([200].includes(loginResponse.status)) {
+        mutateUser(loginResponse.data)
+      } else {
+        router.push('/login')
+      }
+
+    } else {
+      if ([400].includes(response.status)) {
+        toast({
+          title: 'Ops.. Há campos em uso!',
+          description: 'Usuário ou E-mail informados já estão em uso por outra pessoa!',     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
       } else {
         toast(genericMsg)
       }
@@ -115,7 +121,7 @@ const SignUpView: FC = () => {
         </Flex>
         <Box p="5" borderRadius="lg" bg={bgBox}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isRequired mb="5">
+            <FormControl isRequired mb="5" isDisabled={isLoading || isLogging}>
               <FormLabel>Nome</FormLabel>
               <InputGroup>
                 <InputLeftElement
@@ -135,7 +141,7 @@ const SignUpView: FC = () => {
                 <FormHelperText>Nome que será mostrado no app.</FormHelperText>
               )}
             </FormControl>
-            <FormControl isRequired mb="5">
+            <FormControl isRequired mb="5" isDisabled={isLoading || isLogging}>
               <FormLabel>Usuário</FormLabel>
               <InputGroup>
                 <InputLeftElement
@@ -155,7 +161,7 @@ const SignUpView: FC = () => {
                 <FormHelperText>Usuário que será usado na autenticação.</FormHelperText>
               )}
             </FormControl>
-            <FormControl isRequired mb="5">
+            <FormControl isRequired mb="5" isDisabled={isLoading || isLogging}>
               <FormLabel>E-mail</FormLabel>
               <InputGroup>
                 <InputLeftElement
@@ -174,7 +180,7 @@ const SignUpView: FC = () => {
                 <FormHelperText>E-mail que será usado para redefinição de senha.</FormHelperText>
               )}
             </FormControl>
-            <FormControl isRequired mb="5">
+            <FormControl isRequired mb="5" isDisabled={isLoading || isLogging}>
               <FormLabel>Senha</FormLabel>
               <InputGroup>
                 <InputLeftElement
@@ -195,6 +201,7 @@ const SignUpView: FC = () => {
               )}
             </FormControl>
             <Button
+              disabled={isLoading || isLogging}
               variant="fade"
               type="submit"
               width="full"

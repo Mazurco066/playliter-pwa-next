@@ -1,8 +1,9 @@
 // Dependencies
 import { FC } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
-import { FetchError, fetchJson } from 'infra/services/http'
+import { requestClient } from 'infra/services/http'
 
 // Layout and Components
 import { Icon } from '@chakra-ui/icons'
@@ -27,40 +28,38 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
+// Generic msg
+const genericMsg: UseToastOptions = {
+  title: 'Erro interno.',
+  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
+  status: 'error',
+  duration: 5000,
+  isClosable: true
+}
+
 // Sign in component
 const ForgotPasswordView: FC = () => {
   // Hooks
   const router = useRouter()
   const toast = useToast()
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm()
+  const { register, handleSubmit, formState: { errors } } = useForm()
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
   const logoImg =  useColorModeValue('logo-black.svg', 'logo.svg')
 
+  // Forget password request
+  const { isLoading, mutateAsync } = useMutation((data: any) => {
+    return requestClient('/api/accounts/forgot_password', 'post', data)
+  })
+
   // Actions
   const onSubmit = async (data: any) => {
-    // Generic msg
-    const genericMsg: UseToastOptions = {
-      title: 'Erro interno.',
-      description: "Um erro inesperado ocorreu! Entre em contato com algum administrador do App.",
-      status: 'error',
-      duration: 5000,
-      isClosable: true
-    }
+    // Request api via server side
+    const response = await mutateAsync({ ...data })
 
-    try {
-
-      // Request api via server side
-      await fetchJson(`api/accounts/forgot_password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data })
-      })
+    // Verify if it was successfull
+    if ([200].includes(response.status)) {
 
       // Notify user about recovery E-mail
       toast({
@@ -74,20 +73,15 @@ const ForgotPasswordView: FC = () => {
       // Redirect to login
       router.push('/login')
 
-    } catch (error) {
-      if (error instanceof FetchError) {
-        if ([404].includes(error.response.status)) {
-          console.log(error.message)
-          toast({
-            title: 'Ops.. A conta informada não existe!',
-            description: 'Não há contas cadastradas no E-mail informado!',     
-            status: 'warning',
-            duration: 3000,
-            isClosable: true
-          })
-        } else {
-          toast(genericMsg)
-        }
+    } else {
+      if ([404].includes(response.status)) {
+        toast({
+          title: 'Ops.. A conta informada não existe!',
+          description: 'Não há contas cadastradas no E-mail informado!',     
+          status: 'warning',
+          duration: 3000,
+          isClosable: true
+        })
       } else {
         toast(genericMsg)
       }
@@ -114,7 +108,7 @@ const ForgotPasswordView: FC = () => {
               Sem problemas😁. Informe o E-mail vinculado a sua conta para receber uma
               notificação para redefinição de sua senha.
             </Text>
-            <FormControl isRequired mb="5">
+            <FormControl isRequired mb="5" isDisabled={isLoading}>
               <FormLabel>E-mail</FormLabel>
               <InputGroup>
                 <InputLeftElement
@@ -134,6 +128,7 @@ const ForgotPasswordView: FC = () => {
               )}
             </FormControl>
             <Button
+              disabled={isLoading}
               variant="fade"
               type="submit"
               width="full"
