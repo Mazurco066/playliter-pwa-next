@@ -2,7 +2,7 @@
 import { FC } from 'react'
 import { useRouter } from 'next/router'
 import { useUser } from 'infra/services/session'
-import { fetchJson } from 'infra/services/http'
+import { requestClient } from 'infra/services/http'
 
 // Components
 import { FaDoorOpen, FaUser, FaUsers, FaCompactDisc } from 'react-icons/fa'
@@ -50,7 +50,7 @@ export const UserMenu: FC = () => {
           onClick={async (e) => {
             e.preventDefault()
             mutateUser(
-              await fetchJson('/api/logout', { method: 'POST' }),
+              await requestClient('/api/logout', 'post'),
               false
             )
             router.push('/login')

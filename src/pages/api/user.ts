@@ -1,5 +1,5 @@
 // Dependencies
-import type { User } from '../../domain/types'
+import type { User } from 'domain/types'
 import { withIronSessionApiRoute } from 'iron-session/next'
 import { sessionOptions } from 'infra/services/session'
 import { NextApiRequest, NextApiResponse } from 'next'

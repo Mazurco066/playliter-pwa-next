@@ -1,8 +1,8 @@
 // Dependencies
-import useSWR from 'swr'
-import { useRouter } from 'next/router'
 import { FC } from 'react'
-import { fetchJson } from 'infra/services/http'
+import { useRouter } from 'next/router'
+import { useQuery } from '@tanstack/react-query'
+import { requestClient } from 'infra/services/http'
 
 // Components
 import { ArrowBackIcon } from '@chakra-ui/icons'
@@ -17,9 +17,6 @@ import {
   Text
 } from '@chakra-ui/react'
 
-// Fetchers
-const invitesFetcher = (url: string) => fetchJson(url, { method: 'GET' })
-
 // TopBar component
 export const TopBar: FC<{
   pageTitle: string,
@@ -31,10 +28,13 @@ export const TopBar: FC<{
   // Hooks
   const router = useRouter()
 
-  // HTTP Requests by SWR
+  // HTTP Requests
   const {
     data: pendingInvites
-  } = useSWR('api/bands/invites', invitesFetcher)
+  } = useQuery(
+    ['invites'], 
+    () => requestClient('/api/bands/invites', 'get')
+  )
 
   // JSX
   return (
@@ -81,7 +81,7 @@ export const TopBar: FC<{
           }
         </Flex>
         <HStack spacing="2">
-          <Notifications invites={pendingInvites || []}/>
+          <Notifications invites={pendingInvites?.data || []}/>
           <ThemeSwitch />
           <UserMenu />
         </HStack>

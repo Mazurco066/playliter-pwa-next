@@ -1,8 +1,8 @@
 // Dependencies
-import useSWR from 'swr'
-import { useRouter } from 'next/router'
 import { FC, useEffect } from 'react'
-import { FetchError, fetchJsonFromOrigin } from 'infra/services/http'
+import { useRouter } from 'next/router'
+import { useQuery } from '@tanstack/react-query'
+import { requestClient } from 'infra/services/http'
 
 // Layout and Components
 import { Icon, DeleteIcon, EditIcon, SettingsIcon } from '@chakra-ui/icons'
@@ -30,9 +30,6 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Fetchers
-const bandFetcher = (url: string) => fetchJsonFromOrigin(url, { method: 'GET' })
-
 // Generic msg
 const genericMsg: UseToastOptions = {
   title: 'Erro interno.',
@@ -55,36 +52,35 @@ const BandView: FC<{ id: string }> = ({ id }) => {
   // Requests
   const {
     data: band,
-    error: bandError
-  } = useSWR(`api/bands/get?id=${id}`, bandFetcher)
+    isLoading: bandLoading
+  } = useQuery(
+    ['band'],
+    () => requestClient(`/api/bands/get?id=${id}`, 'get')
+  )
 
   // Notify user about error while fetching his banda data
   useEffect(() => {
-    if (bandError) {
-      if (bandError instanceof FetchError) {
-        if ([404].includes(bandError.response.status)) {
-          toast({
-            title: 'Banda não encontrada.',
-            description: 'A banda informada não foi encontrada em sua conta!',
-            status: 'info',
-            duration: 5000,
-            isClosable: true
-          })
-        } else {
-          toast(genericMsg)
-        }
+    if (band && band?.status !== 200) {
+      if ([404].includes(band.status)) {
+        toast({
+          title: 'Banda não encontrada.',
+          description: 'A banda informada não foi encontrada em sua conta!',
+          status: 'info',
+          duration: 5000,
+          isClosable: true
+        })
       } else {
         toast(genericMsg)
       }
       router.push('../bands')
     }
-  }, [bandError])
+  }, [band])
 
   // View JSX
   return (
     <div>
       <Container>
-        { (band && !bandError) ? (
+        { (band && !bandLoading) ? (
           <>
             <Box
               bgColor={bgBox}
@@ -124,7 +120,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                       </MenuItem>
                       <MenuItem
                         icon={<EditIcon />}
-                        onClick={() => router.push(`../bands/save/${band.id}`)}
+                        onClick={() => router.push(`../bands/save/${band?.data?.id}`)}
                       >
                         Editar
                       </MenuItem>
@@ -145,8 +141,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                   size="xl"
                   borderWidth="5px"
                   borderColor={bgBox}
-                  name={band.title}
-                  src={band.logo}
+                  name={band?.data?.title}
+                  src={band?.data?.logo}
                 />
               </Box>
               <Box
@@ -161,15 +157,15 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                   color="secondary.500"
                   mb="1"
                 >
-                  {band?.title}
+                  {band?.data?.title}
                 </Heading>
                 <Text mb="3">
-                  {band?.description}
+                  {band?.data?.description}
                 </Text>
                 <Text fontSize="sm">
                   Criada em{' '}
                   <Text as="strong" color="secondary.500">
-                    {band?.createdAt.split('T')[0].split('-').reverse().join('/')}
+                    {band?.data?.createdAt?.split('T')[0].split('-').reverse().join('/')}
                   </Text>
                 </Text>
               </Box>

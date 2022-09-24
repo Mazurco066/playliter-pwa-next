@@ -1,7 +1,7 @@
 // Dependencies
-import useSwrInfinite from 'swr/infinite'
 import { FC, useCallback, useEffect, useRef } from 'react'
-import { fetchJsonFromOrigin } from 'infra/services/http'
+import { useQuery } from '@tanstack/react-query'
+import { requestClient } from 'infra/services/http'
 
 // Types
 import type { SongType } from 'domain/models'
@@ -15,9 +15,6 @@ import {
   Heading
 } from '@chakra-ui/react'
 
-// Fetchers
-const songsFetcher = (url: string) => fetchJsonFromOrigin(url, { method: 'GET' })
-
 // Paging default values
 const PAGE_SIZE = 30
 
@@ -28,22 +25,12 @@ const SongsView: FC = () => {
 
   // Infinite request
   const {
-    data,
-    error: songsError,
-    mutate,
-    size,
-    setSize,
-    isValidating
-  } = useSwrInfinite(
-    (index) => {
-      console.log('[SWR] Request', index * PAGE_SIZE)
-      return `api/songs/public?limit=${PAGE_SIZE}&offset=${index * PAGE_SIZE}`
-    },
-    songsFetcher
+    data: songs,
+    isLoading: songsLoading
+  } = useQuery(
+    ['songs'],
+    () => requestClient(`/api/songs/public?limit=${PAGE_SIZE}`, 'get')
   )
-
-  // Retieving and typing infinite scroll flags
-  const songs: SongType[] = data ? [].concat(...data) : []
   
 
   // Notify ui when scroll reached page bottom
@@ -51,9 +38,8 @@ const SongsView: FC = () => {
     const target = entries[0]
     if (target.isIntersecting) {
       console.log('[observer] found page bottom')
-      setSize(size + 1)
     }
-  }, [data, songsError])
+  }, [])
 
   // Effects
   useEffect(() => {
@@ -81,14 +67,14 @@ const SongsView: FC = () => {
             Músicas Públicas
           </Heading>
         </Box>
-        {(data && !songsError) ? (
-          songs.length > 0 ? (
+        {(songs && !songsLoading) ? (
+          songs?.data?.length > 0 ? (
             <Grid
               templateColumns="repeat(2, 1fr)"
               gap="1rem"
               mb="5"
             >
-              {songs.map((song: SongType, i: number) => (
+              {songs?.data?.map((song: SongType, i: number) => (
                 <SongItem 
                   key={i}
                   song={song}

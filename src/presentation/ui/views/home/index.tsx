@@ -1,9 +1,9 @@
 // Dependencies
-import useSWR from 'swr'
 import { FC } from 'react'
 import { useRouter } from 'next/router'
+import { useQuery } from '@tanstack/react-query'
 import { useUser } from 'infra/services/session'
-import { fetchJsonFromOrigin } from 'infra/services/http'
+import { requestClient } from 'infra/services/http'
 
 // Types
 import type { BandType, ShowType } from 'domain/models'
@@ -21,10 +21,6 @@ import {
   useColorModeValue
 } from '@chakra-ui/react'
 
-// Fetchers
-const showsFetcher = (url: string) => fetchJsonFromOrigin(url, { method: 'GET' })
-const bandsFetcher = (url: string) => fetchJsonFromOrigin(`${url}?limit=3`, { method: 'GET' })
-
 // Sign in component
 const HomeView: FC = () => {
   // Hooks
@@ -35,15 +31,21 @@ const HomeView: FC = () => {
   const showSubtitleColor = useColorModeValue('gray.500', 'gray.400')
   const bgBox = useColorModeValue('gray.50', 'gray.800')
 
-  // HTTP Requests by SWR
+  // HTTP Requests
   const {
     data: pendingShows,
-    error: pendingShowsError
-  } = useSWR('api/shows/pending', showsFetcher)
+    isLoading: pendingShowsLoading
+  } = useQuery(
+    ['shows'],
+    () => requestClient('/api/shows/pending', 'get')
+  )
   const {
     data: bands,
-    error: bandsError
-  } = useSWR('api/bands/list', bandsFetcher)
+    isLoading: bandsLoading
+  } = useQuery(
+    ['bands'],
+    () => requestClient('/api/bands/list?limit=3', 'get')
+  )
 
   // View JSX
   return (
@@ -57,12 +59,12 @@ const HomeView: FC = () => {
           Bem vindo(a)<br/>{user?.name}! 
         </Heading>
         {/* Pending shows section */}
-        {pendingShows && !pendingShowsError ? (
+        {pendingShows?.data && !pendingShowsLoading ? (
           <>
             <Text color={showSubtitleColor} mb="3">
               { 
-                pendingShows?.length
-                  ? `Você tem ${pendingShows?.length} ${pendingShows?.length === 1 ? 'Apresentação pendente' : 'Apresentações pendentes'}`
+                pendingShows?.data?.length
+                  ? `Você tem ${pendingShows.data?.length} ${pendingShows.data?.length === 1 ? 'Apresentação pendente' : 'Apresentações pendentes'}`
                   : 'Não há apresentações pendentes.'
               }
             </Text>
@@ -73,7 +75,7 @@ const HomeView: FC = () => {
               overflowX="auto"
               mb="5"
             >
-              {pendingShows.map((show: ShowType) => (
+              {pendingShows?.data?.map((show: ShowType) => (
                 <ShowItem
                   key={show.id}
                   title={show.title}
@@ -100,10 +102,10 @@ const HomeView: FC = () => {
           </>
         )}
         {/* My bands section */}
-        {bands && !bandsError ? (
+        {bands?.data && !bandsLoading ? (
           <>
             {
-              bands.length > 0 && (
+              bands?.data?.length > 0 && (
                 <>
                   <Heading
                     as="h3"
@@ -126,7 +128,7 @@ const HomeView: FC = () => {
                       justifyContent="center"
                       alignItems="center"
                     >
-                      {bands.map((band: BandType) => (
+                      {bands?.data?.map((band: BandType) => (
                         <BandItem
                           key={band.id}
                           band={band}

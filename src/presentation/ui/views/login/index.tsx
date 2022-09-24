@@ -42,7 +42,10 @@ const LogInView: FC = () => {
   // Hooks
   const toast = useToast()
   const router = useRouter()
-  const { mutateUser } = useUser()
+  const { mutateUser } = useUser({
+    redirectTo: '/home',
+    redirectIfFound: true
+  })
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   // Color hooks
@@ -51,7 +54,6 @@ const LogInView: FC = () => {
 
   // Login request
   const { isLoading, mutateAsync } = useMutation((data: any) => {
-    console.log('[inside]', data)
     return requestClient('/api/login', 'post', data)
   })
 

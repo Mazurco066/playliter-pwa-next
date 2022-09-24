@@ -1,8 +1,8 @@
 // Dependencies
-import useSWR from 'swr'
 import { FC } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { fetchJsonFromOrigin } from 'infra/services/http'
+import { requestClient } from 'infra/services/http'
 
 // Types
 import { BandType } from 'domain/models'
@@ -19,9 +19,6 @@ import {
   useColorModeValue
 } from '@chakra-ui/react'
 
-// Fetchers
-const bandsFetcher = (url: string) => fetchJsonFromOrigin(url, { method: 'GET' })
-
 // Bands list component
 const BandsView: FC = () => {
   // Hooks
@@ -33,9 +30,12 @@ const BandsView: FC = () => {
   // HTTP Requests by SWR
   const {
     data: bands,
-    error: bandsError
-  } = useSWR('api/bands/list', bandsFetcher)
-
+    isLoading: bandsLoading
+  } = useQuery(
+    ['bands'],
+    () => requestClient('/api/bands/list', 'get')
+  )
+  
   // View JSX
   return (
     <div>
@@ -78,15 +78,15 @@ const BandsView: FC = () => {
         >
           Lista de bandas que você participa.
         </Text>
-        { bands && !bandsError ? (
+        { bands && !bandsLoading ? (
           <>
-            { bands.length > 0 ? (
+            { bands?.data?.length > 0 ? (
               <Grid
                 templateColumns="repeat(2, 1fr)"
                 gap="1rem"
                 mb="5"
               >
-                { bands.map((band: BandType) => (
+                { bands?.data?.map((band: BandType) => (
                   <BandItem
                     key={band.id}
                     band={band}

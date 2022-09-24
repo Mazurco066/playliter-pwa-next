@@ -1,10 +1,10 @@
 // Dependencies
-import useSWR from 'swr'
 import NextLink from 'next/link'
-import { useRouter } from 'next/router'
 import { FC } from 'react'
+import { useRouter } from 'next/router'
+import { useQuery } from '@tanstack/react-query'
 import { useUser } from 'infra/services/session'
-import { fetchJsonFromOrigin } from 'infra/services/http'
+import { requestClient } from 'infra/services/http'
 
 // Components
 import { ArrowBackIcon } from '@chakra-ui/icons'
@@ -20,9 +20,6 @@ import {
   Text
 } from '@chakra-ui/react'
 
-// Fetchers
-const invitesFetcher = (url: string) => fetchJsonFromOrigin(url, { method: 'GET' })
-
 // TopNavigation component
 export const TopNavigation: FC<{
   pageTitle: string,
@@ -35,13 +32,16 @@ export const TopNavigation: FC<{
   const router = useRouter()
   const { user } = useUser()
 
-  // HTTP Requests by SWR
+  // HTTP Requests
   const {
     data: pendingInvites
-  } = useSWR('api/bands/invites', invitesFetcher)
+  } = useQuery(
+    ['invites'], 
+    () => requestClient('/api/bands/invites', 'get')
+  )
 
   // Utils
-  const notificationsCount = pendingInvites?.length + (user?.isEmailconfirmed ? 0 : 1)
+  const notificationsCount = pendingInvites?.data?.length + (user?.isEmailconfirmed ? 0 : 1)
 
   // JSX
   return (
