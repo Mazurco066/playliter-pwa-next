@@ -3,7 +3,7 @@ import type { User } from '../../domain/types'
 import { withIronSessionApiRoute } from 'iron-session/next'
 import { sessionOptions } from 'infra/services/session'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { fetchJson, FetchError } from 'infra/services/http'
+import { requestApi } from 'infra/services/http'
 
 // Refresh user using nextjs api
 async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
@@ -21,16 +21,17 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
   
   // If session contains a user setup
   if (req.session.user) {
-    try {
 
-      // Validate if user is still valid
-      const response = await fetchJson(`${process.env.API_BASE_URL}/accounts/me`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${req.session.user?.token}`
-        }
-      })
+    // Validate if user is still valid
+    const response = await requestApi('/accounts/me', 'get', undefined, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${req.session.user?.token}`
+      }
+    })
+
+    // Verify if request was sucessfull
+    if (response.status < 400) {
 
       // Retrieve user data from response
       const { data: {
@@ -40,7 +41,7 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
         avatar,
         email,
         id
-      }} = response
+      }} = response.data
 
       // Update user on session
       const updatedUser: User = {
@@ -57,25 +58,21 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
       // Saving to session and returning updated user
       req.session.user = updatedUser
       await req.session.save()
-      res.json(updatedUser)
-
-    } catch (error) {
-      // Intercept unauthorized response
-      if (error instanceof FetchError) {
-        if ([401, 403].includes(error.response.status)) {
-          req.session.destroy()
-          res.json(blankUser)
-        }
+      res.status(200).json(updatedUser)
+  
+    } else {
+      if ([401, 403].includes(response.status)) {
+        req.session.destroy()
+        res.json(blankUser)
       } else {
-        res.json({
+        res.status(200).json({
           ...req.session.user,
           isLoggedIn: true
         })
       }
     }
-
   } else {
-    res.json(blankUser)
+    res.status(200).json(blankUser)
   }
 }
 

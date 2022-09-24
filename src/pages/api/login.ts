@@ -3,20 +3,30 @@ import type { User } from 'domain/types'
 import { withIronSessionApiRoute } from 'iron-session/next'
 import { sessionOptions } from 'infra/services/session'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { FetchError, fetchJson } from 'infra/services/http'
+import { requestApi } from 'infra/services/http'
 
 // Login using nextjs api and iron session
 async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
   // Retrieve login parameters
   const { username, password } = await req.body
 
-  try {
-    // Request login endpoint
-    const response = await fetchJson(`${process.env.API_BASE_URL}/auth/authenticate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    })
+  // Request login endpoint
+  const response = await requestApi(
+    '/auth/authenticate',
+    'post',
+    {
+      username,
+      password
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }
+  )
+
+  // Verify if request was sucessfull
+  if (response.status < 400) {
 
     // Retrieve user data from response
     const { data: {
@@ -29,7 +39,7 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
         email,
         id
       }
-    }} = response
+    }} = response.data
 
     // Define user  to save on session
     const user = {
@@ -48,13 +58,10 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
     await req.session.save()
 
     // Returns session user
-    res.json(user)
-
-  } catch (error) {
-    if (error instanceof FetchError) {
-      res.status(error.response.status).json({ message: error.message })
-    }
-    res.status(500).json({ message: (error as Error).message })
+    res.status(200).json(user)
+ 
+  } else {
+    res.status(response.status).json(response.data)
   }
 }
 

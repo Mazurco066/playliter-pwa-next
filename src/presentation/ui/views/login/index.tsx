@@ -1,8 +1,9 @@
 // Dependencies
 import { FC } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { useUser } from 'infra/services/session'
-import { fetchJsonFromOrigin, FetchError } from 'infra/services/http'
+import { requestClient } from 'infra/services/http'
 import { useRouter } from 'next/router'
 
 // Layout and Components
@@ -27,56 +28,54 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
+// Generic error msg
+const genericMsg: UseToastOptions = {
+  title: 'Erro interno.',
+  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
+  status: 'error',
+  duration: 5000,
+  isClosable: true
+}
+
 // Sign in component
 const LogInView: FC = () => {
   // Hooks
   const toast = useToast()
   const router = useRouter()
   const { mutateUser } = useUser()
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm()
+  const { register, handleSubmit, formState: { errors } } = useForm()
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
   const logoImg =  useColorModeValue('logo-black.svg', 'logo.svg')
 
+  // Login request
+  const { isLoading, mutateAsync } = useMutation((data: any) => {
+    console.log('[inside]', data)
+    return requestClient('/api/login', 'post', data)
+  })
+
   // Actions
   const onSubmit = async (data: any) => {
-    try {
-      mutateUser(await fetchJsonFromOrigin('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      }))
-    } catch (error) {
-      const genericMsg: UseToastOptions = {
-        title: 'Erro interno.',
-        description: "Um erro inesperado ocorreu! Entre em contato com algum administrador do App.",
-        status: 'error',
-        duration: 5000,
-        isClosable: true
-      }
-      if (error instanceof FetchError) {
-        if ([401, 403, 404].includes(error.response.status)) {
-          toast({
-            title: 'Autenticação inválida.',
-            description: "Usuário ou senha incorreto(s).",
-            status: 'error',
-            duration: 2000,
-            isClosable: true
-          })
-        } else {
-          toast(genericMsg)
-        } 
+    // Request api
+    const response = await mutateAsync(data)
+    if ([200].includes(response.status)) {
+      mutateUser(response.data)
+    } else {
+      if ([401, 403, 404].includes(response.status)) {
+        toast({
+          title: 'Autenticação inválida.',
+          description: "Usuário ou senha incorreto(s).",
+          status: 'info',
+          duration: 2000,
+          isClosable: true
+        })
       } else {
         toast(genericMsg)
       }
     }
   }
-
+  
   // View JSX
   return (
     <Container>
@@ -89,7 +88,7 @@ const LogInView: FC = () => {
       </Flex>
       <Box p="5" borderRadius="lg" bg={bgBox}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl mb="5">
+          <FormControl mb="5" isDisabled={isLoading}>
             <FormLabel>Usuário</FormLabel>
             <InputGroup>
               <InputLeftElement
@@ -108,7 +107,7 @@ const LogInView: FC = () => {
               <FormHelperText>Digite seu usuário dentro do app.</FormHelperText>
             )}
           </FormControl>
-          <FormControl mb="5">
+          <FormControl mb="5" isDisabled={isLoading}>
             <FormLabel>Senha</FormLabel>
             <InputGroup>
               <InputLeftElement
@@ -137,6 +136,7 @@ const LogInView: FC = () => {
             </Link>
           </Text>
           <Button
+            disabled={isLoading}
             variant="fade"
             type="submit"
             width="full"

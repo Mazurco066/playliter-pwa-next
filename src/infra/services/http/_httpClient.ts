@@ -1,3 +1,10 @@
+// Dependencies
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { asyncRequestHandler } from 'presentation/utils'
+
+// Types
+import type { APIResponse } from 'domain/types'
+
 // Fetch error class
 export class FetchError extends Error {
   response: Response
@@ -30,52 +37,47 @@ export class FetchError extends Error {
 }
 
 // Fetch method
-export default async function fetchJson<JSON = any>(
-  input: RequestInfo,
-  init?: RequestInit
-): Promise<JSON> {
+export async function requestApi(
+  url: string,
+  method: 'get' | 'post' | 'put' | 'patch' | 'delete', 
+  body?: {} | undefined,
+  config?: AxiosRequestConfig<{}> | undefined
+): Promise<AxiosResponse<any, APIResponse>> {
 
-  const response = await fetch(input, init)
+  // Retrieve base url
+  const baseUrl: string = process.env.API_BASE_URL || '' as string
+  const requestUrl = `${baseUrl}${url}`
 
-  // if the server replies, there's always some data in json
-  // if there's a network error, it will throw at the previous line
-  const data = await response.json()
+  // Using axios to request async
+  const response = await asyncRequestHandler(
+    ['post', 'put', 'patch'].includes(method)
+      ? axios[method](requestUrl, body, config)
+      : axios[method](requestUrl, config)
+  )
 
-  // response.ok is true when res.status is 2xx
-  // https://developer.mozilla.org/en-US/docs/Web/API/Response/ok
-  if (response.ok) {
-    return data
-  }
-
-  throw new FetchError({
-    message: response.statusText,
-    response,
-    data
-  })
+  // Return api response
+  return response
 }
 
 // Fetch Nextjs api
-export async function fetchJsonFromOrigin<JSON = any>(
-  input: RequestInfo,
-  init?: RequestInit
-): Promise<JSON> {
+export async function requestClient(
+  url: string,
+  method: 'get' | 'post' | 'put' | 'patch' | 'delete', 
+  body?: {} | undefined,
+  config?: AxiosRequestConfig<{}> | undefined
+): Promise<AxiosResponse<any, APIResponse>> {
 
+  // Retrieve base url
   const baseUrl: string = location.origin as string
-  const response = await fetch(`${baseUrl.endsWith('/') ? `${baseUrl}` : `${baseUrl}/`}${input}`, init)
+  const requestUrl = `${baseUrl}${url}`
+  
+  // Using axios to request async
+  const response = await asyncRequestHandler(
+    ['post', 'put', 'patch'].includes(method)
+      ? axios[method](requestUrl, body, config)
+      : axios[method](requestUrl, config)
+  )
 
-  // if the server replies, there's always some data in json
-  // if there's a network error, it will throw at the previous line
-  const data = await response.json()
-
-  // response.ok is true when res.status is 2xx
-  // https://developer.mozilla.org/en-US/docs/Web/API/Response/ok
-  if (response.ok) {
-    return data
-  }
-
-  throw new FetchError({
-    message: response.statusText,
-    response,
-    data
-  })
+  // Return api response
+  return response
 }

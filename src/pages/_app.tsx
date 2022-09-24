@@ -3,14 +3,16 @@ import type { AppProps } from 'next/app'
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
 
-// Fetch data packages
-import { SWRConfig } from 'swr'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { fetchJson } from 'infra/services/http'
 
 // Component packages
 import theme from 'presentation/theme'
 import NextNProgress from 'nextjs-progressbar'
-import { ChakraProvider, ColorModeScript  } from '@chakra-ui/react'
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
+
+// Create a client
+const queryClient: QueryClient = new QueryClient()
 
 // Layout wrapper
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -29,14 +31,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   // Global JSX
   return (  
-    <SWRConfig
-      value={{
-        fetcher: fetchJson,
-        onError: (err) => {
-          console.error(err)
-        }
-      }}
-    >
+    <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme} cssVarsRoot="body">
         <NextNProgress
           color="#8257e5"
@@ -47,7 +42,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         { getLayout(<Component {...pageProps} />) }
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       </ChakraProvider>
-    </SWRConfig>
+    </QueryClientProvider>
   ) 
 }
 
