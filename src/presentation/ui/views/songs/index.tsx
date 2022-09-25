@@ -1,6 +1,7 @@
 // Dependencies
-import { FC, useCallback, useEffect, useRef } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { FC, Fragment, useEffect } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -21,37 +22,49 @@ const PAGE_SIZE = 30
 // Public Songs component
 const SongsView: FC = () => {
   // Hooks
-  const loader = useRef(null)
+  const { ref, inView } = useInView()
 
-  // Infinite request
+  // Infinite scroll request
   const {
-    data: songs,
-    isLoading: songsLoading
-  } = useQuery(
+    status,
+    data,
+    isFetching,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage
+  } = useInfiniteQuery(
     ['songs'],
-    () => requestClient(`/api/songs/public?limit=${PAGE_SIZE}`, 'get')
+    async ({ pageParam = 0 }) => {
+      console.log('[infinite]', pageParam)
+      const response = await requestClient(`/api/songs/public?limit=${PAGE_SIZE}&offset=${pageParam * PAGE_SIZE}`, 'get')
+      console.log('[infinite response]', response)
+      return response.data
+    }, {
+      getPreviousPageParam: (firstPage) => {
+        console.log('[first page]', firstPage)
+        return firstPage.previousId ?? undefined
+      },
+      getNextPageParam: (lastPage) => {
+        console.log('[next page]', lastPage)
+        return lastPage.nextId ?? undefined
+      }
+    }
   )
-  
 
-  // Notify ui when scroll reached page bottom
-  const handleObserver: IntersectionObserverCallback = useCallback((entries: any) => {
-    const target = entries[0]
-    if (target.isIntersecting) {
-      console.log('[observer] found page bottom')
-    }
-  }, [])
-
-  // Effects
+  // Infinite scroll effect
   useEffect(() => {
-    const option: IntersectionObserverInit = {
-      root: null,
-      rootMargin: '20px',
-      threshold: 0
+    if (inView) {
+      fetchNextPage()
     }
-    const observer: IntersectionObserver = new IntersectionObserver(handleObserver, option)
-    if (loader.current) observer.observe(loader.current)
-  }, [])
+  }, [inView])
 
+  useEffect(() => {
+    console.log('[data updated]', data)
+  }, [data])
+  
   // View JSX
   return (
     <div>
@@ -67,26 +80,38 @@ const SongsView: FC = () => {
             Músicas Públicas
           </Heading>
         </Box>
-        {(songs && !songsLoading) ? (
-          songs?.data?.length > 0 ? (
+        {
+          status === 'loading' ? (
+            <>
+              <p>Loading...</p>
+            </>
+          ) : status === 'error' ? (
+            <span>Error: internal</span>
+          ) : (
             <Grid
               templateColumns="repeat(2, 1fr)"
               gap="1rem"
               mb="5"
             >
-              {songs?.data?.map((song: SongType, i: number) => (
-                <SongItem 
-                  key={i}
-                  song={song}
-                  onClick={() => console.log(`Song: ${song.id}`)}
-                />
-              ))}
+            {
+              data.pages.map((page) => (
+                <Fragment key={page.nextId}>
+                  {
+                    page?.map((song: SongType) => (
+                      <SongItem 
+                        key={song.id}
+                        song={song}
+                        onClick={() => console.log(`Song: ${song.id}`)}
+                      />
+                    ))
+                  }
+                </Fragment>
+              ))
+            }
             </Grid>
-          ) : null
-        ) : (
-          <p>Loading</p>
-        )}
-        <div id="page-end" ref={loader} />
+          )
+        }
+        <div id="page-end" ref={ref} />
       </Container>
     </div>
   )

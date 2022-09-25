@@ -3,7 +3,7 @@ import { FC, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import {requestClient } from 'infra/services/http'
+import { requestClient } from 'infra/services/http'
 
 // Layout and Components
 import { Icon } from '@chakra-ui/icons'
