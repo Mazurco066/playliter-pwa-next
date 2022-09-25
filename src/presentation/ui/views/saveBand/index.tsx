@@ -1,12 +1,9 @@
 // Dependencies
-import useSWR from 'swr'
 import { FC, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
-import { FetchError, fetchJsonFromOrigin } from 'infra/services/http'
-
-// Types
-import type { BandType } from 'domain/models'
+import { useQuery, useMutation } from '@tanstack/react-query'
+import {requestClient } from 'infra/services/http'
 
 // Layout and Components
 import { Icon } from '@chakra-ui/icons'
@@ -26,9 +23,6 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Fetchers
-const bandFetcher = (url: string) => fetchJsonFromOrigin(url, { method: 'GET' })
-
 // Generic msg
 const genericMsg: UseToastOptions = {
   title: 'Erro interno.',
@@ -39,7 +33,7 @@ const genericMsg: UseToastOptions = {
 }
 
 // Save band component
-const SaveBandView: FC<{ id?: string }> = ({ id }) => {
+const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
   // Hooks
   const router = useRouter()
   const toast = useToast()
@@ -53,55 +47,63 @@ const SaveBandView: FC<{ id?: string }> = ({ id }) => {
   // Requests
   const {
     data: band,
-    error: bandError
-  } = useSWR(id ? `api/bands/get?id=${id}` : null, bandFetcher)
-
+    isLoading: bandLoading
+  } = useQuery(
+    ['saveBand'],
+    () => requestClient(`/api/bands/get?id=${id}`, 'get'),
+    { enabled: id !== '' }
+  )
+  
   // Set form values if an id was received
   useEffect(() => {
-    if (band) {
+    if (band && band.data) {
       const options = { shouldValidate: true, shouldDirty: true }
-      setValue('title', band.title, options)
-      setValue('description', band.title, options)
+      setValue('title', band.data?.title, options)
+      setValue('description', band.data?.description, options)
     }
   }, [band])
 
+  // Clear form on startup
+  useEffect(() => {
+    const options = { shouldValidate: false, shouldDirty: true }
+    setValue('title', '', options)
+    setValue('description', '', options)
+  }, [])
+
   // Notify user about error while fetching his banda data
   useEffect(() => {
-    if (bandError) {
-      if (bandError instanceof FetchError) {
-        if ([404].includes(bandError.response.status)) {
-          toast({
-            title: 'Banda não encontrada.',
-            description: 'A banda informada não foi encontrada em sua conta!',
-            status: 'info',
-            duration: 5000,
-            isClosable: true
-          })
-        } else {
-          toast(genericMsg)
-        }
+    if (band && band?.status !== 200) {
+      if ([404].includes(band.status)) {
+        toast({
+          title: 'Banda não encontrada.',
+          description: 'A banda informada não foi encontrada em sua conta!',
+          status: 'info',
+          duration: 5000,
+          isClosable: true
+        })
       } else {
         toast(genericMsg)
       }
-      router.push('../../bands')
+      router.push('../bands')
     }
-  }, [bandError])
+  }, [band])
+
+  // Save band
+  const { isLoading, mutateAsync } = useMutation((data: any) => {
+    return requestClient('/api/bands/save', 'post', data)
+  })
 
   // Actions
   const onSubmit = async (data: any) => {
-    try {
+    // Request api via server side
+    const response = await mutateAsync(id ? { id, ...data } : { ...data })
 
-      // Request api via server side
-      const response: BandType = await fetchJsonFromOrigin('api/bands/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: id ? JSON.stringify({ id, ...data }) : JSON.stringify({ ...data })
-      })
-
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
       // Notify user about created band
       toast({
         title: 'Sucesso!',
-        description: `Sua banda de nome ${response.title} foi salva com sucesso!`,
+        description: `Sua banda de nome ${response?.data?.title} foi salva com sucesso!`,
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -110,19 +112,15 @@ const SaveBandView: FC<{ id?: string }> = ({ id }) => {
       // Redirect to band page
       router.push(id ? '../../bands' : '../bands')
 
-    } catch (error) {
-      if (error instanceof FetchError) {
-        if ([400].includes(error.response.status)) {
-          toast({
-            title: 'Ops.. Há campos inválidos!',
-            description: 'Por favor revise o preenchimento de seu formulário!',     
-            status: 'warning',
-            duration: 3500,
-            isClosable: true
-          })
-        } else {
-          toast(genericMsg)
-        }
+    } else {
+      if ([400].includes(response.status)) {
+        toast({
+          title: 'Ops.. Há campos inválidos!',
+          description: 'Por favor revise o preenchimento de seu formulário!',     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
       } else {
         toast(genericMsg)
       }
@@ -136,7 +134,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <FileUpload />
           <FormControl
-            isDisabled={(id && !band) as boolean}
+            isDisabled={isLoading || bandLoading}
             isRequired
             mb="5"
           >
@@ -147,7 +145,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id }) => {
                 children={<Icon as={FaSignature} />}
               />
               <Input
-                disabled={(id && !band) as boolean}
+                disabled={isLoading || bandLoading}
                 type="text"
                 placeholder="Nome da banda"
                 minLength={2}
@@ -161,7 +159,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id }) => {
             )}
           </FormControl>
           <FormControl
-            isDisabled={(id && !band) as boolean}
+            isDisabled={isLoading || bandLoading}
             isRequired
             mb="5"
           >
@@ -172,7 +170,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id }) => {
                 children={<Icon as={FaFileSignature} />}
               />
               <Textarea
-                disabled={(id && !band) as boolean}
+                disabled={isLoading || bandLoading}
                 placeholder="Descrição da banda"
                 pl="10"
                 minLength={2}
@@ -186,6 +184,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id }) => {
             )}
           </FormControl>
           <Button
+            disabled={isLoading || bandLoading}
             variant="fade"
             type="submit"
             width="full"
