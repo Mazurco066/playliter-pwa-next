@@ -12,8 +12,8 @@ async function listPublicSongsRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
 
     // Retrieve parameters
-    const limit = req.query?.limit || 0
-    const offset = req.query?.offset || 0
+    const limit = parseInt(req.query?.limit?.toString() || '0')
+    const offset = parseInt(req.query?.offset?.toString() || '0')
 
     // Request login endpoint
     const response = await requestApi(`/songs/public_songs?limit=${limit}&offset=${offset}`, 'get', undefined, {
@@ -26,10 +26,19 @@ async function listPublicSongsRoute(req: NextApiRequest, res: NextApiResponse) {
     // Verify if request was sucessfull
     if (response.status < 400) {
       // Retrieve user data from response
-      const { data: { data: songs } } = response.data
+      const { data: { total, data: songs } } = response.data
+
+      // Compute pagination
+      const previousOffset = (offset < limit) ? 0 : offset - limit
+      const nextOffset = (offset + limit)
 
       // Returns shows list
-      res.status(200).json(songs as SongType[])
+      res.status(200).json({
+        previousId: previousOffset,
+        data: songs,
+        nextId: nextOffset > total ? null : nextOffset,
+        total: total
+      })
 
     } else {
       res.status(response.status).json(response.data)

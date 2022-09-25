@@ -30,27 +30,16 @@ const SongsView: FC = () => {
     data,
     isFetching,
     isFetchingNextPage,
-    isFetchingPreviousPage,
     fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage
+    hasNextPage
   } = useInfiniteQuery(
     ['songs'],
     async ({ pageParam = 0 }) => {
-      console.log('[infinite]', pageParam)
-      const response = await requestClient(`/api/songs/public?limit=${PAGE_SIZE}&offset=${pageParam * PAGE_SIZE}`, 'get')
-      console.log('[infinite response]', response)
+      const response = await requestClient(`/api/songs/public?limit=${PAGE_SIZE}&offset=${pageParam}`, 'get')
       return response.data
     }, {
-      getPreviousPageParam: (firstPage) => {
-        console.log('[first page]', firstPage)
-        return firstPage.previousId ?? undefined
-      },
-      getNextPageParam: (lastPage) => {
-        console.log('[next page]', lastPage)
-        return lastPage.nextId ?? undefined
-      }
+      getPreviousPageParam: (firstPage) => firstPage.previousId ?? undefined,
+      getNextPageParam: (lastPage) => lastPage.nextId ?? undefined
     }
   )
 
@@ -97,7 +86,7 @@ const SongsView: FC = () => {
               data.pages.map((page) => (
                 <Fragment key={page.nextId}>
                   {
-                    page?.map((song: SongType) => (
+                    page?.data.map((song: SongType) => (
                       <SongItem 
                         key={song.id}
                         song={song}
