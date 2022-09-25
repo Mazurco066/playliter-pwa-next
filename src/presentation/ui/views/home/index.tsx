@@ -36,14 +36,14 @@ const HomeView: FC = () => {
     data: pendingShows,
     isLoading: pendingShowsLoading
   } = useQuery(
-    ['shows'],
+    ['shows_home'],
     () => requestClient('/api/shows/pending', 'get')
   )
   const {
     data: bands,
     isLoading: bandsLoading
   } = useQuery(
-    ['bands'],
+    ['bands_home'],
     () => requestClient('/api/bands/list?limit=3', 'get')
   )
 

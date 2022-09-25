@@ -14,9 +14,10 @@ async function listPublicSongsRoute(req: NextApiRequest, res: NextApiResponse) {
     // Retrieve parameters
     const limit = parseInt(req.query?.limit?.toString() || '0')
     const offset = parseInt(req.query?.offset?.toString() || '0')
+    const filter = req.query?.filter?.toString() || ''
 
     // Request login endpoint
-    const response = await requestApi(`/songs/public_songs?limit=${limit}&offset=${offset}`, 'get', undefined, {
+    const response = await requestApi(`/songs/public_songs?limit=${limit}&offset=${offset}&filter=${filter}`, 'get', undefined, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${req.session.user?.token}`
@@ -35,7 +36,7 @@ async function listPublicSongsRoute(req: NextApiRequest, res: NextApiResponse) {
       // Returns shows list
       res.status(200).json({
         previousId: previousOffset,
-        data: songs,
+        data: songs as SongType[],
         nextId: nextOffset > total ? null : nextOffset,
         total: total
       })

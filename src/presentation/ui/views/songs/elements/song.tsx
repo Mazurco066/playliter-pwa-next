@@ -10,7 +10,8 @@ import {
   GridItem,
   Image,
   useColorModeValue,
-  Text
+  Text,
+  Tooltip
 } from '@chakra-ui/react'
 
 // Component
@@ -23,6 +24,9 @@ export const SongItem: FC<{
 }) => {
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
+
+  // Destruct song data
+  const { title, writter, band: { title: publisher } } = song
 
   // JSX
   return (
@@ -70,23 +74,25 @@ export const SongItem: FC<{
           />
         </Box>
       </Box>
-      <Box
-        px="3"
-        py="4"
-        borderBottomRadius="lg"
-      >
-        <Text
-          fontWeight="bold"
-          textAlign="center"
+      <Tooltip label={`Publicado por: ${publisher}`}>
+        <Box
+          px="3"
+          py="4"
+          borderBottomRadius="lg"
         >
-          {song.title}
-        </Text>
-        <Text
-          textAlign="center"
-        >
-          {song.band.title}
-        </Text>
-      </Box>
+          <Text
+            fontWeight="bold"
+            textAlign="center"
+          >
+            {title}
+          </Text>
+          <Text
+            textAlign="center"
+          >
+            {writter}
+          </Text>
+        </Box>
+      </Tooltip>
     </GridItem>
   )
 }
