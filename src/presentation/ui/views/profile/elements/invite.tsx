@@ -5,7 +5,8 @@ import { FC } from 'react'
 import type { InviteType } from 'domain/models'
 
 // Components
-import { EmailIcon } from '@chakra-ui/icons'
+import { FaUserPlus } from 'react-icons/fa'
+import { Icon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
@@ -28,11 +29,11 @@ import {
 // Component
 export const InviteItem: FC<{
   invite: InviteType,
-  onClick?: () => void,
+  isLoading?: boolean,
   onResponse?: (response: string) => void
 }> = ({
   invite,
-  onClick = () => {},
+  isLoading = false,
   onResponse = () => {}
 }) => {
   // Color hooks
@@ -43,78 +44,94 @@ export const InviteItem: FC<{
  
   // JSX
   return (
-    <GridItem onClick={onClick}>
+    <GridItem>
       <Popover
         placement='bottom'
         closeOnBlur={false}
       >
-        <PopoverTrigger>
-          <Box
-            py="5"
-            px="5"
-            bgColor={bgBox}
-            borderRadius="lg"
-            cursor="pointer"
-            transition="all 0.3s"
-            _hover={{
-              opacity: "0.7"
-            }}
-          >
-            <Flex alignItems="center">
+        {({ onClose }) => (
+          <>
+            <PopoverTrigger>
               <Box
-                flex="0 0 auto"
-                mr="4"
-                display="flex"
-                alignItems="center"
+                py="5"
+                px="5"
+                bgColor={bgBox}
+                borderRadius="lg"
+                cursor="pointer"
+                transition="all 0.3s"
+                _hover={{
+                  opacity: "0.7"
+                }}
               >
-                <EmailIcon fontSize="xl" />
+                <Flex alignItems="center">
+                  <Box
+                    flex="0 0 auto"
+                    mr="4"
+                    display="flex"
+                    alignItems="center"
+                  >
+                    <Icon as={FaUserPlus} fontSize="xl" />
+                  </Box>
+                  <Box flexGrow="1">
+                    <Heading as="h4" size="sm" mb="1">
+                      Você foi convidado
+                    </Heading>
+                    <Text>
+                      a se juntar a banda{' '}
+                      <Text as="strong" color="secondary.500">
+                        {bandTitle}
+                      </Text>
+                    </Text>
+                  </Box>
+                </Flex>
               </Box>
-              <Box flexGrow="1">
-                <Heading as="h4" size="sm" mb="1">
-                  Você foi convidado
-                </Heading>
-                <Text>
-                  a se juntar a banda{' '}
-                  <Text as="strong" color="secondary.500">
-                    {bandTitle}
-                  </Text>
-                </Text>
-              </Box>
-            </Flex>
-          </Box>
-        </PopoverTrigger>
-        <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
-          <PopoverHeader pt={4} fontWeight='bold' border='0'>
-            Responder convite
-          </PopoverHeader>
-          <PopoverArrow />
-          <PopoverCloseButton />
-          <PopoverBody>
-            Deseja aceitar o convite e participar da banda {bandTitle}?
-          </PopoverBody>
-          <PopoverFooter
-            border='0'
-            display='flex'
-            alignItems='center'
-            justifyContent='space-between'
-            pb={4}
-          >
-            <ButtonGroup size='sm'>
-              <Button
-                onClick={() => onResponse('accepted')}
-                colorScheme='green'
+            </PopoverTrigger>
+            <PopoverContent
+              color='white'
+              bgGradient="linear(to-b, secondary.600, primary.600)"
+              borderColor='secondary.700'
+            >
+              <PopoverHeader pt={4} fontWeight='bold' border='0'>
+                Responder convite
+              </PopoverHeader>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverBody>
+                Deseja aceitar o convite e participar da banda {bandTitle}?
+              </PopoverBody>
+              <PopoverFooter
+                border='0'
+                display='flex'
+                alignItems='center'
+                justifyContent='space-between'
+                pb={4}
               >
-                Aceitar
-              </Button>
-              <Button
-                onClick={() => onResponse('denied')}
-                colorScheme='red'
-              >
-                Negar
-              </Button>
-            </ButtonGroup>
-          </PopoverFooter>
-        </PopoverContent>
+                <ButtonGroup size='sm'>
+                  <Button
+                    disabled={isLoading}
+                    colorScheme='green'
+                    onClick={() => {
+                      onResponse('accepted')
+                      onClose()
+                    }}
+                  >
+                    Aceitar
+                  </Button>
+                  <Button
+                    disabled={isLoading}
+                    colorScheme='red'
+                    onClick={() => {
+                      onResponse('denied')
+                      onClose()
+                    }}
+                  >
+                    Negar
+                  </Button>
+                </ButtonGroup>
+              </PopoverFooter>
+            </PopoverContent>
+          </>
+        )}
       </Popover>
     </GridItem>
   )

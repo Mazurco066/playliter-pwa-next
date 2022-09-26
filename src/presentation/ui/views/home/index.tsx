@@ -158,6 +158,7 @@ const HomeView: FC = () => {
                             textAlign="center"
                             fontSize="sm"
                             fontWeight="semibold"
+                            color="gray.50"
                           >
                             Ver<br/>mais
                           </Text>

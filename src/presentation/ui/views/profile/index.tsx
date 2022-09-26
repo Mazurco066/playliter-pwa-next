@@ -16,7 +16,6 @@ import {
   Box,
   Container,
   Editable,
-  EditablePreview,
   EditableInput,
   Flex,
   Grid,
@@ -24,42 +23,228 @@ import {
   Input,
   Skeleton,
   Text,
-  useColorModeValue
+  useColorModeValue,
+  useToast,
+  UseToastOptions
 } from '@chakra-ui/react'
 
+// Generic msg
+const genericMsg: UseToastOptions = {
+  title: 'Erro interno.',
+  description: "Um erro inesperado ocorreu! Entre em contato com algum administrador do App.",
+  status: 'error',
+  duration: 5000,
+  isClosable: true
+}
 
 // Bands list component
 const ProfileView: FC = () => {
   // Hooks
-  const { user } = useUser()
-  const [ name, setName ] = useState<string>()
+  const toast = useToast()
+  const { user, mutateUser } = useUser()
+  const [ name, setName ] = useState<string>('')
+  const [ userEmail, setUserEmail ] = useState<string>('')
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
 
   // Destruct user data
-  const { avatar, isEmailconfirmed } = user || {}
+  const { id, avatar, email, isEmailconfirmed } = user || {}
 
-  // HTTP Requests
+  // Pending Invites Requests
   const {
     data: pendingInvites,
-    isLoading: invitesLoading
+    isLoading: invitesLoading,
+    refetch: refetchInvites
   } = useQuery(
     ['invites'], 
     () => requestClient('/api/bands/invites', 'get')
   )
+
+  // Save account request
+  const {
+    isLoading: accountLoading,
+    mutateAsync: mutateUserAsync
+  } = useMutation((data: any) => {
+    return requestClient('/api/accounts/update', 'post', data)
+  })
+
+  // Respond invite request
+  const {
+    isLoading: inviteLoading,
+    mutateAsync: mutateInvite
+  } = useMutation((data: any) => {
+    return requestClient('/api/bands/respond_invite', 'post', data)
+  })
 
   // Utils
   const notificationsCount = (pendingInvites?.data?.length || 0) + (isEmailconfirmed ? 0 : 1)
 
   // Effects
   useEffect(() => {
-    if (user) setName(user.name)
+    if (user) {
+      setName(user.name)
+      setUserEmail(user.email)
+    }
   }, [user])
 
   // Actions
   const onNameSubmit = async (newValue: string) => {
-    setName(newValue)
+    // Name was not updated
+    if (newValue === user.name) return
+
+    // Validate if name as informed
+    if (!newValue || newValue.length <= 3) {
+      setName(user?.name || '')
+      return toast({
+        title: 'Nome inválido!',
+        description: 'Por favor insira um nome com no mínimo 3 caracteres!',     
+        status: 'warning',
+        duration: 3500,
+        isClosable: true
+      })
+    }
+
+    // Request account update
+    const accountResponse = await mutateUserAsync({
+      id: id,
+      avatar: avatar,
+      name: newValue,
+      email: email
+    })
+
+    // Verify if it was successfull
+    if ([200, 201].includes(accountResponse.status)) {
+      setName(newValue)
+
+      // Mutate session user
+      const updatedUser = {
+        ...user,
+        name: newValue
+      }
+      mutateUser(updatedUser)
+
+      // Notify user about name update
+      toast({
+        title: 'Sucesso!',
+        description: `O nome referente a sua conta foi alterado!`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+    } else {
+      setName(user?.name || '')
+      if ([400].includes(accountResponse.status)) {
+        toast({
+          title: 'Informação!',
+          description: 'Nenhum dado da conta foi atualizado!',     
+          status: 'info',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
+
+  const onEmailSubmit = async (newValue: string) => {
+    // E-mail was not updated
+    if (newValue === user.email) return
+
+    // Validate if name as informed
+    if (!newValue || !/\S+@\S+\.\S+/.test(newValue)) {
+      setUserEmail(user?.email || '')
+      return toast({
+        title: 'E-mail inválido!',
+        description: 'Por favor insira um endereço de E-mail válido!',     
+        status: 'warning',
+        duration: 3500,
+        isClosable: true
+      })
+    }
+
+    // Request account update
+    const accountResponse = await mutateUserAsync({
+      id: id,
+      avatar: avatar,
+      name: user.name,
+      email: newValue
+    })
+
+    // Verify if it was successfull
+    if ([200, 201].includes(accountResponse.status)) {
+      setName(newValue)
+
+      // Mutate session user
+      const updatedUser = {
+        ...user,
+        email: newValue,
+        isEmailconfirmed: accountResponse.data.isEmailconfirmed
+      }
+      mutateUser(updatedUser)
+
+      // Notify user about name update
+      toast({
+        title: 'Sucesso!',
+        description: `O E-mail referente a sua conta foi alterado! Lembre-se de confirmá lo em sequência.`,
+        status: 'success',
+        duration: 3000,
+        isClosable: true
+      })
+
+    } else {
+      setUserEmail(user?.email || '')
+      if ([400].includes(accountResponse.status)) {
+        toast({
+          title: 'E-mail em uso!',
+          description: 'O E-mail inserido já está em uso por outra conta cadastrada no app!',     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
+
+  const onRespondInvite = async(id: string, response: string) => {
+    // Respond invite request
+    const inviteResponse = await mutateInvite({
+      id: id,
+      user_response: response
+    })
+
+    // Verify if it was successfull
+    if ([200, 201].includes(inviteResponse.status)) {
+
+      // Notify user about name update
+      toast({
+        title: 'Sucesso!',
+        description: `Você ${response === 'denied'? 'negou' : 'aceitou'} o convite para banda.`,
+        status: 'success',
+        duration: 3000,
+        isClosable: true
+      })
+
+      // Refresh invite list
+      refetchInvites()
+
+    } else {
+      if ([400].includes(inviteResponse.status)) {
+        toast({
+          title: 'Resposta inválida!',
+          description: 'Envie uma respostá válida para api ao responder o convite!',     
+          status: 'info',
+          duration: 3000,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
   }
 
   // View JSX
@@ -84,16 +269,33 @@ const ProfileView: FC = () => {
               size="xl"
               mb="3"
             />
+            {/* Name editable */}
             <Editable
               textAlign='center'
               value={name}
               fontSize='2xl'
               isPreviewFocusable={false}
+              submitOnBlur={false}
               onSubmit={onNameSubmit}
               onCancel={(oldValue: string) => setName(oldValue)}
               onChange={(value: string) => setName(value)}
+              isDisabled={accountLoading}
             >
-              <EditablePreview />
+              <Input as={EditableInput} />
+              <EditableControls />
+            </Editable>
+            {/* E-mail editable */}
+            <Editable
+              textAlign='center'
+              value={userEmail}
+              fontSize='lg'
+              isPreviewFocusable={false}
+              submitOnBlur={false}
+              onSubmit={onEmailSubmit}
+              onCancel={(oldValue: string) => setUserEmail(oldValue)}
+              onChange={(value: string) => setUserEmail(value)}
+              isDisabled={accountLoading}
+            >
               <Input as={EditableInput} />
               <EditableControls />
             </Editable>
@@ -172,7 +374,8 @@ const ProfileView: FC = () => {
                     <InviteItem
                       key={i}
                       invite={invite}
-                      onResponse={(resp: string) => console.log(`Invite id: ${invite.id} - ${resp}`)}
+                      onResponse={(resp: string) => onRespondInvite(invite.id, resp)}
+                      isLoading={accountLoading || inviteLoading || invitesLoading}
                     />
                   ))}
                 </Grid>
