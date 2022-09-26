@@ -1,12 +1,10 @@
 // Dependencies
 import { FC } from 'react'
 import { useRouter } from 'next/router'
-import { useQuery } from '@tanstack/react-query'
-import { requestClient } from 'infra/services/http'
 
 // Components
 import { ArrowBackIcon } from '@chakra-ui/icons'
-import { Notifications, UserMenu, ThemeSwitch } from 'presentation/ui/components'
+import { UserMenu, ThemeSwitch } from 'presentation/ui/components'
 import {
   Container,
   Divider,
@@ -27,14 +25,6 @@ export const TopBar: FC<{
 }) => {
   // Hooks
   const router = useRouter()
-
-  // HTTP Requests
-  const {
-    data: pendingInvites
-  } = useQuery(
-    ['invites'], 
-    () => requestClient('/api/bands/invites', 'get')
-  )
 
   // JSX
   return (
@@ -81,7 +71,6 @@ export const TopBar: FC<{
           }
         </Flex>
         <HStack spacing="2">
-          <Notifications invites={pendingInvites?.data || []}/>
           <ThemeSwitch />
           <UserMenu />
         </HStack>

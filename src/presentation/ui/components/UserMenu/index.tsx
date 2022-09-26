@@ -6,7 +6,7 @@ import { requestClient } from 'infra/services/http'
 
 // Components
 import { FaDoorOpen, FaUser, FaUsers, FaCompactDisc } from 'react-icons/fa'
-import { Icon, HamburgerIcon } from '@chakra-ui/icons'
+import { Icon, SettingsIcon } from '@chakra-ui/icons'
 import {
   Divider,
   IconButton,
@@ -28,7 +28,7 @@ export const UserMenu: FC = () => {
       <MenuButton
         as={IconButton}
         aria-label='Options'
-        icon={<HamburgerIcon />}
+        icon={<SettingsIcon />}
         variant='ghost'
       />
       <MenuList>
