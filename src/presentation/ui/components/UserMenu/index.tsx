@@ -32,13 +32,16 @@ export const UserMenu: FC = () => {
         variant='ghost'
       />
       <MenuList>
-        <MenuItem icon={<Icon as={FaUser} />}>
-          Minha Conta
-        </MenuItem>
-        <MenuItem icon={<Icon as={FaUsers} />}>
+        <MenuItem
+          icon={<Icon as={FaUsers} />}
+          onClick={() => router.push('/bands')}
+        >
           Minhas Bandas
         </MenuItem>
-        <MenuItem icon={<Icon as={FaCompactDisc} />}>
+        <MenuItem 
+          icon={<Icon as={FaCompactDisc} />}
+          onClick={() => router.push('/songs')}
+        >
           Músicas Públicas
         </MenuItem>
         <Divider orientation="horizontal" />
