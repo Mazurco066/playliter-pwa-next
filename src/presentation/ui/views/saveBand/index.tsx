@@ -134,7 +134,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <FileUpload />
           <FormControl
-            isDisabled={isLoading || bandLoading}
+            isDisabled={isLoading || (id != '' && bandLoading)}
             isRequired
             mb="5"
           >
@@ -145,7 +145,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
                 children={<Icon as={FaSignature} />}
               />
               <Input
-                disabled={isLoading || bandLoading}
+                disabled={isLoading || (id != '' && bandLoading)}
                 type="text"
                 placeholder="Nome da banda"
                 minLength={2}
@@ -159,7 +159,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
             )}
           </FormControl>
           <FormControl
-            isDisabled={isLoading || bandLoading}
+            isDisabled={isLoading || (id != '' && bandLoading)}
             isRequired
             mb="5"
           >
@@ -170,7 +170,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
                 children={<Icon as={FaFileSignature} />}
               />
               <Textarea
-                disabled={isLoading || bandLoading}
+                disabled={isLoading || (id != '' && bandLoading)}
                 placeholder="Descrição da banda"
                 pl="10"
                 minLength={2}
@@ -184,7 +184,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
             )}
           </FormControl>
           <Button
-            disabled={isLoading || bandLoading}
+            disabled={isLoading || (id != '' && bandLoading)}
             variant="fade"
             type="submit"
             width="full"
