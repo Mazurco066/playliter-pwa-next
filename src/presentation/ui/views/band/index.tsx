@@ -3,8 +3,13 @@ import { FC, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
+import { useUser } from 'infra/services/session'
+
+// Types
+import type { AccountType } from 'domain/models'
 
 // Layout and Components
+import { MemberItem } from './elements'
 import { Icon, DeleteIcon, EditIcon, SettingsIcon } from '@chakra-ui/icons'
 import { FaUserPlus, FaUsers } from 'react-icons/fa'
 import {
@@ -19,11 +24,6 @@ import {
   MenuItem,
   MenuList,
   Skeleton,
-  Tab,
-  TabPanels,
-  Tabs,
-  TabList,
-  TabPanel,
   Text,
   useColorModeValue,
   useToast,
@@ -44,18 +44,19 @@ const BandView: FC<{ id: string }> = ({ id }) => {
   // Hooks
   const router = useRouter()
   const toast = useToast()
+  const { user } = useUser()
 
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
-  const colorTab = useColorModeValue('gray.900', 'gray.100')
 
   // Requests
   const {
     data: band,
     isLoading: bandLoading
   } = useQuery(
-    ['band'],
-    () => requestClient(`/api/bands/get?id=${id}`, 'get')
+    ['get-band'],
+    () => requestClient(`/api/bands/get?id=${id}`, 'get'),
+    { enabled: id !== '' }
   )
 
   // Notify user about error while fetching his banda data
@@ -76,12 +77,25 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     }
   }, [band])
 
+  // Destruct params
+  const { id: userId } = user || {}
+  const {
+    admins = [],
+    members = [],
+    owner = {}
+  } = band ? band.data : {}
+
+  // Compute role
+  const isUserOwner = userId === owner.id
+  const isUserAdmin = admins.find((a: AccountType) => a.id === userId) !== undefined
+
   // View JSX
   return (
     <div>
       <Container>
         { (band && !bandLoading) ? (
           <>
+            {/* Band details */}
             <Box
               bgColor={bgBox}
               borderRadius="lg"
@@ -170,53 +184,74 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                 </Text>
               </Box>
             </Box>
+            {/* Members management */}
+            <Heading
+              as="h3"
+              size="md"
+              textAlign="left"
+              textTransform="uppercase"
+              mb="3"
+            >
+              Membros
+            </Heading>
+            <Box
+              bgGradient="linear(to-b, secondary.600, primary.600)"
+              borderRadius="lg"
+              mb="5"
+              px="3"
+              py="5"
+            >
+              <Flex
+                alignItems="center"
+                justifyContent="flex-start"
+                gap="1rem"
+                overflowY="hidden"
+                overflowX="auto"
+              >
+                {
+                  members.map((acc: AccountType, i: number)=> {
+                    // Compute role
+                    const { id } = acc
+                    const isOwner = id === owner.id
+                    const isAdmin = admins.find((a: AccountType) => a.id === id) !== undefined
+                    const role = isOwner ? 'Fundador' : isAdmin ? 'Admin' : 'Membro'
+
+                    // JSX
+                    return (
+                      <MemberItem
+                        key={i}
+                        account={acc}
+                        role={role}
+                        isOwner={isUserOwner}
+                        canManage={isUserAdmin || isUserOwner}
+                        canRemove={isUserOwner}
+                        onRemove={(_id: string) => console.log(`Remove member: ${_id}`)}
+                        onManage={(action: string, _id: string) => console.log(`Action: ${action} - ${_id}`)}
+                        isLoading={false}
+                      />
+                    )
+                  })
+                }
+              </Flex>
+            </Box>
           </>
         ) : (
           <>
             <Skeleton
               height="192px"
               borderRadius="lg"
+              mb="5"
+            />
+            <Skeleton
+              height="64px"
+              borderRadius="lg"
+              mb="5"
             />
           </>
         )}
+        {/* Band tabs */}
         <Box>
-          <Tabs
-            isFitted
-            variant="soft-rounded"
-            
-          >
-            <TabList
-              mb='1em'
-              bgColor={bgBox}
-              borderRadius="full"
-            >
-              {
-                ['Músicas', 'Categorias', 'Apresentações'].map((tab: string, i: number) => (
-                  <Tab
-                    key={i}
-                    color={colorTab}
-                    _selected={{
-                      bgGradient: "linear(to-b, secondary.600, primary.600)",
-                      color: 'gray.100'
-                    }}  
-                  >
-                    {tab}
-                  </Tab>
-                ))
-              }
-            </TabList>
-            <TabPanels>
-              <TabPanel>
-                <p>Músicas</p>
-              </TabPanel>
-              <TabPanel>
-                <p>Categorias</p>
-              </TabPanel>
-              <TabPanel>
-                <p>Apresentações</p>
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
+          
         </Box>
       </Container>
     </div>
