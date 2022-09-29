@@ -122,7 +122,6 @@ const SongsView: FC = () => {
               />
             </InputGroup>
           </FormControl>
-
         </Box>
         {
           (status === 'loading') ? (

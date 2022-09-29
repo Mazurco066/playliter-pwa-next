@@ -1,5 +1,6 @@
 export * from './Account'
 export * from './Band'
+export * from './Category'
 export * from './Invite'
 export * from './Show'
 export * from './Song'

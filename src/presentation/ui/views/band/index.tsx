@@ -6,16 +6,23 @@ import { requestClient } from 'infra/services/http'
 import { useUser } from 'infra/services/session'
 
 // Types
-import type { AccountType } from 'domain/models'
+import type { AccountType, CategoryType, ShowType, SongType } from 'domain/models'
 
 // Layout and Components
-import { MemberItem } from './elements'
 import { ConfirmAction } from 'presentation/ui/components'
 import { Icon, DeleteIcon, EditIcon, SettingsIcon } from '@chakra-ui/icons'
-import { FaUserPlus, FaUsers } from 'react-icons/fa'
+import { FaUserPlus } from 'react-icons/fa'
+import {
+  CategoryItemMinified,
+  BandDrawer,
+  MemberItem,
+  ShowItemMinified,
+  SongItemMinified
+} from './elements'
 import {
   Avatar,
   Box,
+  Button,
   Container,
   Flex,
   Heading,
@@ -25,6 +32,7 @@ import {
   MenuItem,
   MenuList,
   Skeleton,
+  Stack,
   Text,
   useColorModeValue,
   useDisclosure,
@@ -47,11 +55,6 @@ const BandView: FC<{ id: string }> = ({ id }) => {
   const router = useRouter()
   const toast = useToast()
   const { user } = useUser()
-  const {
-    isOpen: isConfirmOpen,
-    onOpen: onConfirmOpen,
-    onClose: onConfirmClose
-  } = useDisclosure()
 
   // Page members action state
   const [ action, setAction ] = useState<{
@@ -62,16 +65,74 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     id: ''
   })
 
+  // Confirm dialog state
+  const {
+    isOpen: isConfirmOpen,
+    onOpen: onConfirmOpen,
+    onClose: onConfirmClose
+  } = useDisclosure()
+
+  // Songs drawer state
+  const {
+    isOpen: isSongsOpen,
+    onOpen: onSongsOpen,
+    onClose: onSongsClose
+  } = useDisclosure()
+
+  // Shows drawer state
+  const {
+    isOpen: isShowsOpen,
+    onOpen: onShowsOpen,
+    onClose: onShowsClose
+  } = useDisclosure()
+
+  // Categories drawer state
+  const {
+    isOpen: isCategoriesOpen,
+    onOpen: onCategoriesOpen,
+    onClose: onCategoriesClose
+  } = useDisclosure()
+
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
 
-  // Requests
+  // Band request
   const {
     data: band,
     isLoading: bandLoading
   } = useQuery(
-    ['get-band'],
+    [`get-band-${id}`],
     () => requestClient(`/api/bands/get?id=${id}`, 'get'),
+    { enabled: id !== '' }
+  )
+
+  // Last 5 shows request
+  const {
+    data: shows,
+    isLoading: showsLoading
+  } = useQuery(
+    [`few-shows-${id}`],
+    () => requestClient(`/api/shows/band?band=${id}&limit=5`, 'get'),
+    { enabled: id !== '' }
+  )
+
+  // Last 15 songs request
+  const {
+    data: songs,
+    isLoading: songsLoading
+  } = useQuery(
+    [`few-songs-${id}`],
+    () => requestClient(`/api/songs/band?band=${id}&limit=15`, 'get'),
+    { enabled: id !== '' }
+  )
+
+  // All categories
+  const {
+    data: categories,
+    isLoading: categoriesLoading
+  } = useQuery(
+    [`few-categories-${id}`],
+    () => requestClient(`/api/bands/categories?band=${id}`, 'get'),
     { enabled: id !== '' }
   )
 
@@ -144,11 +205,6 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                         Convidar
                       </MenuItem>
                       <MenuItem
-                        icon={<Icon as={FaUsers} />}
-                      >
-                        Membros
-                      </MenuItem>
-                      <MenuItem
                         icon={<EditIcon />}
                         onClick={() => router.push(`../bands/save/${band?.data?.id}`)}
                       >
@@ -200,10 +256,252 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                 </Text>
               </Box>
             </Box>
-            {/* Members management */}
+          </>
+        ) : (
+          <>
+            <Skeleton
+              height="192px"
+              borderRadius="lg"
+              mb="5"
+            />
+          </>
+        )}
+        {/** Band shows */}
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          mb="3"
+        >
+          <Heading
+            as="h4"
+            size="sm"
+            textAlign="left"
+            textTransform="uppercase"
+            mb="0"
+          >
+            Apresentações
+          </Heading>
+          <Button
+            variant="fade"
+            size="xs"
+            disabled={showsLoading}
+            onClick={() => onShowsOpen()}
+          >
+            Ver mais
+          </Button>
+        </Flex>
+        {
+          shows?.data && !showsLoading ? (
+            <>
+              {
+                shows.data.length > 0 ? (
+                  <Stack
+                    direction="row"
+                    spacing="3"
+                    maxWidth="full"
+                    overflowX="auto"
+                    mb="5"
+                  >
+                    {shows?.data.map((show: ShowType) => (
+                      <ShowItemMinified
+                        key={show.id}
+                        show={show}
+                        onClick={() => console.log(`Show id: ${show.id}`)}
+                      /> 
+                    ))}
+                  </Stack>
+                ) : (
+                  <Text mb="5">
+                    Não há apresentações registradas nessa banda!
+                  </Text>
+                )
+              }
+            </>
+          ) : (
+            <Stack
+              direction="row"
+              spacing="3"
+              maxWidth="full"
+              overflowX="auto"
+              mb="5"
+            >
+              <Skeleton
+                width="162px"
+                height="192px"
+                borderRadius="lg"
+              />
+            </Stack>
+          )
+        }
+        <BandDrawer
+          onClose={onShowsClose}
+          onOpen={onShowsOpen}
+          isOpen={isShowsOpen}
+          title="Apresentações da banda"
+        >
+          <p>Shows</p>
+        </BandDrawer>
+        {/** Band songs */}
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          mb="3"
+        >
+          <Heading
+            as="h4"
+            size="sm"
+            textAlign="left"
+            textTransform="uppercase"
+            mb="0"
+          >
+            Músicas
+          </Heading>
+          <Button
+            variant="fade"
+            size="xs"
+            disabled={songsLoading}
+            onClick={() => onSongsOpen()}
+          >
+            Ver mais
+          </Button>
+        </Flex>
+        {
+          songs?.data && !songsLoading ? (
+            <>
+              {
+                songs.data.data?.length > 0 ? (
+                  <Stack
+                    direction="row"
+                    spacing="3"
+                    maxWidth="full"
+                    overflowX="auto"
+                    mb="5"
+                  >
+                    {songs.data.data.map((song: SongType) => (
+                      <SongItemMinified
+                        key={song.id}
+                        song={song}
+                        onClick={() => console.log(`Song id: ${song.id}`)}
+                      /> 
+                    ))}
+                  </Stack>
+                ) : (
+                  <Text mb="5">
+                    Não há músicas registradas nessa banda!
+                  </Text>
+                )
+              }
+            </>
+          ) : (
+            <Stack
+              direction="row"
+              spacing="3"
+              maxWidth="full"
+              overflowX="auto"
+              mb="5"
+            >
+              <Skeleton
+                width="162px"
+                height="192px"
+                borderRadius="lg"
+              />
+            </Stack>
+          )
+        }
+        <BandDrawer
+          onClose={onSongsClose}
+          onOpen={onSongsOpen}
+          isOpen={isSongsOpen}
+          title="Repertório da banda"
+        >
+          <p>Songs</p>
+        </BandDrawer>
+        {/** Band categories */}
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          mb="3"
+        >
+          <Heading
+            as="h4"
+            size="sm"
+            textAlign="left"
+            textTransform="uppercase"
+            mb="0"
+          >
+            Categorias
+          </Heading>
+          <Button
+            variant="fade"
+            size="xs"
+            disabled={categoriesLoading}
+            onClick={() => onCategoriesOpen()}
+          >
+            Gerenciar
+          </Button>
+        </Flex>
+        {
+          categories?.data && !categoriesLoading ? (
+            <>
+              {
+                categories.data.length > 0 ? (
+                  <Stack
+                    direction="row"
+                    spacing="3"
+                    maxWidth="full"
+                    overflowX="auto"
+                    mb="5"
+                  >
+                    {categories.data.map((category: CategoryType) => (
+                      <CategoryItemMinified
+                        key={category.id}
+                        category={category}
+                        onClick={(_id: string) => console.log(`Category id: ${_id}`)}
+                      /> 
+                    ))}
+                  </Stack>
+                ) : (
+                  <Text mb="5">
+                    Não há categorias registradas nessa banda!
+                  </Text>
+                )
+              }
+            </>
+          ) : (
+            <Stack
+              direction="row"
+              spacing="3"
+              maxWidth="full"
+              overflowX="auto"
+              mb="5"
+            >
+              <Skeleton
+                width="64px"
+                height="64px"
+                borderRadius="lg"
+              />
+              <Skeleton
+                width="64px"
+                height="64px"
+                borderRadius="lg"
+              />
+            </Stack>
+          )
+        }
+        <BandDrawer
+          onClose={onCategoriesClose}
+          onOpen={onCategoriesOpen}
+          isOpen={isCategoriesOpen}
+          title="Categorias da banda"
+        >
+          <p>Categories</p>
+        </BandDrawer>
+        {/* Members management */}
+        { (band && !bandLoading) ? (
+          <>
             <Heading
-              as="h3"
-              size="md"
+              as="h4"
+              size="sm"
               textAlign="left"
               textTransform="uppercase"
               mb="3"
@@ -212,6 +510,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
             </Heading>
             <Box
               bgGradient="linear(to-b, secondary.600, primary.600)"
+              //bgColor={bgBox}
               borderRadius="lg"
               mb="5"
               px="3"
@@ -259,11 +558,6 @@ const BandView: FC<{ id: string }> = ({ id }) => {
           </>
         ) : (
           <>
-            <Skeleton
-              height="192px"
-              borderRadius="lg"
-              mb="5"
-            />
             <Skeleton
               height="64px"
               borderRadius="lg"

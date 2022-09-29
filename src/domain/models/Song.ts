@@ -1,5 +1,3 @@
-import { BandType } from 'domain/models'
-
 export type SongType = {
   id: string,
   createdAt: string,
