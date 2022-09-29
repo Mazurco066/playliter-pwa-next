@@ -30,7 +30,7 @@ export const MemberItem: FC<{
   canManage?: boolean,
   isOwner?: boolean,
   isLoading?: boolean,
-  onManage?: (action: string, id: string) => void,
+  onManage?: (action: 'promote' | 'demote', id: string) => void,
   onRemove?: (id: string) => void
 }> = ({
   account,

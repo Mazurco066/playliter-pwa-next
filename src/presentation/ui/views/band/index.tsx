@@ -1,5 +1,5 @@
 // Dependencies
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
@@ -10,6 +10,7 @@ import type { AccountType } from 'domain/models'
 
 // Layout and Components
 import { MemberItem } from './elements'
+import { ConfirmAction } from 'presentation/ui/components'
 import { Icon, DeleteIcon, EditIcon, SettingsIcon } from '@chakra-ui/icons'
 import { FaUserPlus, FaUsers } from 'react-icons/fa'
 import {
@@ -26,6 +27,7 @@ import {
   Skeleton,
   Text,
   useColorModeValue,
+  useDisclosure,
   useToast,
   UseToastOptions
 } from '@chakra-ui/react'
@@ -45,6 +47,20 @@ const BandView: FC<{ id: string }> = ({ id }) => {
   const router = useRouter()
   const toast = useToast()
   const { user } = useUser()
+  const {
+    isOpen: isConfirmOpen,
+    onOpen: onConfirmOpen,
+    onClose: onConfirmClose
+  } = useDisclosure()
+
+  // Page members action state
+  const [ action, setAction ] = useState<{
+    type: 'promote' | 'demote' | 'remove',
+    id: string
+  }>({
+    type: 'remove',
+    id: ''
+  })
 
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
@@ -225,8 +241,14 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                         isOwner={isUserOwner}
                         canManage={isUserAdmin || isUserOwner}
                         canRemove={isUserOwner}
-                        onRemove={(_id: string) => console.log(`Remove member: ${_id}`)}
-                        onManage={(action: string, _id: string) => console.log(`Action: ${action} - ${_id}`)}
+                        onRemove={(_id: string) => {
+                          setAction({ type: 'remove', id: _id })
+                          onConfirmOpen()
+                        }}
+                        onManage={(action: 'promote' | 'demote', _id: string) => {
+                          setAction({ type: action, id: _id })
+                          onConfirmOpen()
+                        }}
                         isLoading={false}
                       />
                     )
@@ -249,11 +271,16 @@ const BandView: FC<{ id: string }> = ({ id }) => {
             />
           </>
         )}
-        {/* Band tabs */}
-        <Box>
-          
-        </Box>
       </Container>
+      {/* Confirm action component */}
+      <ConfirmAction
+        onClose={onConfirmClose}
+        onOpen={onConfirmOpen}
+        isOpen={isConfirmOpen}
+        onConfirm={() => {
+          console.log('confirmed action here', action)
+        }}
+      />
     </div>
   )
 }
