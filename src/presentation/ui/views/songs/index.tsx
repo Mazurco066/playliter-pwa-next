@@ -79,7 +79,6 @@ const SongsView: FC = () => {
           >
             Músicas Públicas
           </Heading>
-
           <FormControl mb="5" isDisabled={(status === 'loading' || isFetchingNextPage)}>
             <FormLabel fontWeight="normal">
               Pequisar músicas
@@ -179,7 +178,11 @@ const SongsView: FC = () => {
               px="3"
               py="5"
             >
-              <Text textAlign="center" fontSize="lg">
+              <Text
+                textAlign="center"
+                fontSize="md"
+                fontWeight="bold"
+              >
                 Carregando mais músicas...
               </Text>
             </Box>

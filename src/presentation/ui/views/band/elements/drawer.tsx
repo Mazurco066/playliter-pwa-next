@@ -30,10 +30,11 @@ export const BandDrawer: FC<{
       placement="bottom"
       onClose={onClose}
       isOpen={isOpen}
+      size="full"
     >
       <DrawerOverlay />
       <DrawerContent
-        maxH="90%"
+        //maxH="90%"
         bgGradient="linear(to-b, secondary.600, primary.600)"
         color="gray.100"
       >

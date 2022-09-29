@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 import Router from 'next/router'
 import useSWR from 'swr'
-import { User } from 'domain/types'
 import { AxiosResponse } from 'axios'
+
+import type { User } from 'domain/types'
+
 
 export default function useUser({
   redirectTo = '',

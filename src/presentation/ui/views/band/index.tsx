@@ -13,11 +13,14 @@ import { ConfirmAction } from 'presentation/ui/components'
 import { Icon, DeleteIcon, EditIcon, SettingsIcon } from '@chakra-ui/icons'
 import { FaUserPlus } from 'react-icons/fa'
 import {
+  CategoriesComponent,
   CategoryItemMinified,
   BandDrawer,
   MemberItem,
   ShowItemMinified,
-  SongItemMinified
+  ShowsComponent,
+  SongItemMinified,
+  SongsComponent
 } from './elements'
 import {
   Avatar,
@@ -58,7 +61,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
 
   // Page members action state
   const [ action, setAction ] = useState<{
-    type: 'promote' | 'demote' | 'remove',
+    type: 'promote' | 'demote' | 'remove' | 'delete',
     id: string
   }>({
     type: 'remove',
@@ -210,11 +213,19 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                       >
                         Editar
                       </MenuItem>
-                      <MenuItem
-                        icon={<DeleteIcon />}
-                      >
-                        Remover
-                      </MenuItem>
+                      {
+                        isUserOwner && (
+                          <MenuItem
+                            icon={<DeleteIcon />}
+                            onClick={() => {
+                              setAction({ type: 'delete', id: band?.data?.id })
+                              onConfirmOpen()
+                            }}
+                          >
+                            Remover Banda
+                          </MenuItem>
+                        )
+                      }
                     </MenuList>
                   </Menu>
                 </Flex>
@@ -339,7 +350,9 @@ const BandView: FC<{ id: string }> = ({ id }) => {
           isOpen={isShowsOpen}
           title="Apresentações da banda"
         >
-          <p>Shows</p>
+          {
+            isShowsOpen && <ShowsComponent />
+          }
         </BandDrawer>
         {/** Band songs */}
         <Flex
@@ -414,7 +427,9 @@ const BandView: FC<{ id: string }> = ({ id }) => {
           isOpen={isSongsOpen}
           title="Repertório da banda"
         >
-          <p>Songs</p>
+          {
+            isSongsOpen && <SongsComponent bandId={band?.data?.id} />
+          }
         </BandDrawer>
         {/** Band categories */}
         <Flex
@@ -494,7 +509,9 @@ const BandView: FC<{ id: string }> = ({ id }) => {
           isOpen={isCategoriesOpen}
           title="Categorias da banda"
         >
-          <p>Categories</p>
+          {
+            isCategoriesOpen && <CategoriesComponent />
+          }
         </BandDrawer>
         {/* Members management */}
         { (band && !bandLoading) ? (
@@ -509,8 +526,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
               Membros
             </Heading>
             <Box
-              bgGradient="linear(to-b, secondary.600, primary.600)"
-              //bgColor={bgBox}
+              //bgGradient="linear(to-b, secondary.600, primary.600)"
+              bgColor={bgBox}
               borderRadius="lg"
               mb="5"
               px="3"
