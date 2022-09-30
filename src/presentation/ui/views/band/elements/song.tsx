@@ -22,11 +22,8 @@ export const SongItem:FC<{
   song,
   onClick = () => {}
 }) => {
-  // Color Hooks
-  const bgBox = useColorModeValue('gray.50', 'gray.800')
-
    // Destruct song data
-   const { id, title, writter } = song
+   const { id, title, writter, category: { title: categoryTitle } } = song
 
   // JSX
   return (
@@ -38,6 +35,7 @@ export const SongItem:FC<{
       transition="all 0.3s"
       width="full"
       p="3"
+      position="relative"
       onClick={() => onClick(id)}
       _hover={{
         opacity: "0.8"
@@ -63,7 +61,19 @@ export const SongItem:FC<{
           >
             {title}
           </Text>
-          <Text>{writter}</Text>
+          <Text>
+            {writter}
+          </Text>
+          <Badge
+            position='absolute'
+            bottom="-2"
+            right="2.5"
+            bgColor="primary.200"
+            color="primary.700"
+            borderRadius="sm"
+          >
+            {categoryTitle}
+          </Badge>
         </Box>
       </Flex>
     </Box>

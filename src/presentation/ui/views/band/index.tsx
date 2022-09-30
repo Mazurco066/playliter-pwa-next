@@ -351,7 +351,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
           title="Apresentações da banda"
         >
           {
-            isShowsOpen && <ShowsComponent />
+            isShowsOpen && <ShowsComponent bandId={band?.data?.id} />
           }
         </BandDrawer>
         {/** Band songs */}

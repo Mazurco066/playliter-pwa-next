@@ -8,7 +8,7 @@ import { requestClient } from 'infra/services/http'
 import type { SongType } from 'domain/models'
 
 // Components
-import { SearchIcon } from '@chakra-ui/icons'
+import { AddIcon, SearchIcon } from '@chakra-ui/icons'
 import { SongItem } from './song'
 import {
   Box,
@@ -20,7 +20,6 @@ import {
   InputRightAddon,
   Skeleton,
   Text,
-  useColorModeValue,
   VStack
 } from '@chakra-ui/react'
 
@@ -33,11 +32,6 @@ export const SongsComponent: FC<{ bandId: string }> = ({ bandId }) => {
   const { ref, inView } = useInView()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
   const [ hasSearched, setSearchedState ] = useState<boolean>(false)
-
-  // Color hooks
-  const bgSearch = useColorModeValue('primary.500', 'primary.200')
-  const colorSearch = useColorModeValue('gray.100', 'gray.900')
-  const hoverSearch = useColorModeValue('primary.600', 'primary.300')
 
   // Infinite scroll request
   const {
@@ -70,9 +64,7 @@ export const SongsComponent: FC<{ bandId: string }> = ({ bandId }) => {
     <>
       <Box mb="5" pt="3">
         <FormControl mb="5" isDisabled={(status === 'loading' || isFetchingNextPage)}>
-          <InputGroup
-            borderColor="blackAlpha.500"
-          >
+          <InputGroup borderColor="primary.600">
             <InputLeftElement
               pointerEvents="none"
               children={<SearchIcon />}
@@ -102,10 +94,10 @@ export const SongsComponent: FC<{ bandId: string }> = ({ bandId }) => {
               cursor="pointer"
               children="Buscar"
               fontWeight="medium"
-              bgColor={bgSearch}
-              color={colorSearch}
+              bgColor="primary.500"
+              color="gray.100"
               _hover={{
-                bgColor: hoverSearch
+                bgColor: "primary.600"
               }}
               onClick={(status === 'loading' || isFetchingNextPage)
                 ? () => {}
@@ -120,9 +112,13 @@ export const SongsComponent: FC<{ bandId: string }> = ({ bandId }) => {
         <Button
           w="full"
           onClick={() => console.log('[new] song')}
-          colorScheme="primary"
+          bgColor="primary.500"
+          color="gray.100"
+          _hover={{
+            bgColor: 'primary.600'
+          }}
         >
-          Nova Música
+          <AddIcon mr="2" /> Nova Música
         </Button>
       </Box>
       <Box>
