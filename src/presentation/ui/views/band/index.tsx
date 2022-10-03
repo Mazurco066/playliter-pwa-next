@@ -14,6 +14,7 @@ import { Icon, DeleteIcon, EditIcon, SettingsIcon } from '@chakra-ui/icons'
 import { FaUserPlus } from 'react-icons/fa'
 import {
   CategoriesComponent,
+  CategoryForm,
   CategoryItemMinified,
   BandDrawer,
   MemberItem,
@@ -68,6 +69,9 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     id: ''
   })
 
+  // Category form state
+  const [ currentCategory, setCurrentCategory ] = useState<CategoryType | null>(null)
+
   // Confirm dialog state
   const {
     isOpen: isConfirmOpen,
@@ -94,6 +98,13 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     isOpen: isCategoriesOpen,
     onOpen: onCategoriesOpen,
     onClose: onCategoriesClose
+  } = useDisclosure()
+
+  // Category form modal state
+  const {
+    isOpen: isCategoryFormOpen,
+    onOpen: onCategoryFormOpen,
+    onClose: onCategoryFormClose
   } = useDisclosure()
 
   // Color Hooks
@@ -134,7 +145,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     data: categories,
     isLoading: categoriesLoading
   } = useQuery(
-    [`few-categories-${id}`],
+    [`band-categories-${id}`],
     () => requestClient(`/api/bands/categories?band=${id}`, 'get'),
     { enabled: id !== '' }
   )
@@ -168,6 +179,12 @@ const BandView: FC<{ id: string }> = ({ id }) => {
   // Compute role
   const isUserOwner = userId === owner.id
   const isUserAdmin = admins.find((a: AccountType) => a.id === userId) !== undefined
+
+  // Actions
+  const onCategoryClick = (_category: CategoryType) => {
+    setCurrentCategory(_category)
+    onCategoryFormOpen()
+  }
 
   // View JSX
   return (
@@ -471,7 +488,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                       <CategoryItemMinified
                         key={category.id}
                         category={category}
-                        onClick={(_id: string) => console.log(`Category id: ${_id}`)}
+                        onClick={onCategoryClick}
                       /> 
                     ))}
                   </Stack>
@@ -510,7 +527,14 @@ const BandView: FC<{ id: string }> = ({ id }) => {
           title="Categorias da banda"
         >
           {
-            isCategoriesOpen && <CategoriesComponent />
+            isCategoriesOpen && <CategoriesComponent
+              bandId={band?.data?.id}
+              onCategoryClick={onCategoryClick}
+              onNewCategoryClick={() => {
+                setCurrentCategory(null)
+                onCategoryFormOpen()
+              }}
+            />
           }
         </BandDrawer>
         {/* Members management */}
@@ -591,6 +615,13 @@ const BandView: FC<{ id: string }> = ({ id }) => {
         onConfirm={() => {
           console.log('confirmed action here', action)
         }}
+      />
+      {/* Category save form */}
+      <CategoryForm
+        isOpen={isCategoryFormOpen}
+        onOpen={onCategoryFormOpen}
+        onClose={onCategoryFormClose}
+        category={currentCategory}
       />
     </div>
   )

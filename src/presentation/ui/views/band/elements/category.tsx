@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { truncateSrt } from 'presentation/utils'
 
 // Types
 import type { CategoryType } from 'domain/models'
@@ -7,15 +8,72 @@ import type { CategoryType } from 'domain/models'
 // Components
 import {
   Box,
+  Flex,
   Image,
   Text,
   useColorModeValue
 } from '@chakra-ui/react'
 
+// Default component
+export const CategoryItem:FC<{
+  category: CategoryType,
+  onClick?: (category: CategoryType) => void
+}> = ({
+  category,
+  onClick = () => {}
+}) => {
+   // Destruct show data
+   const { title, description } = category
+
+  // JSX
+  return (
+    <Box
+      data-group
+      bgColor="blackAlpha.500"
+      borderRadius="lg"
+      cursor="pointer"
+      transition="all 0.3s"
+      width="full"
+      p="3"
+      position="relative"
+      onClick={() => onClick(category)}
+      _hover={{
+        opacity: "0.8"
+      }}
+    >
+      <Flex
+        alignItems="center"
+      >
+        <Box flex="0 0 auto" mr="4">
+          <Image
+            src="../img/arts/white/swing.svg"
+            alt="img"
+            h="32px"
+            w="32px"
+          />
+        </Box>
+        <Box
+          flexGrow="1"
+        >
+          <Text
+            fontWeight="bold"
+            color="gray.100"
+          >
+            {title}
+          </Text>
+          <Text>
+            {truncateSrt(description, 75)}
+          </Text>
+        </Box>
+      </Flex>
+    </Box>
+  )
+}
+
 // Component
 export const CategoryItemMinified: FC<{
   category: CategoryType,
-  onClick?: (id: string) => void
+  onClick?: (category: CategoryType) => void
 }> = ({
   category,
   onClick = () => {}
@@ -34,7 +92,7 @@ export const CategoryItemMinified: FC<{
       cursor="pointer"
       transition="all 0.3s"
       bg={bgBox}
-      onClick={() => onClick(category.id)}
+      onClick={() => onClick(category)}
       _hover={{
         opacity: "0.8"
       }}
