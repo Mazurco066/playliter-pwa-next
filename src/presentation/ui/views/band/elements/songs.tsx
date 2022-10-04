@@ -20,6 +20,7 @@ import {
   InputRightAddon,
   Skeleton,
   Text,
+  useToast,
   VStack
 } from '@chakra-ui/react'
 
@@ -27,8 +28,15 @@ import {
 const PAGE_SIZE = 30
 
 // Component
-export const SongsComponent: FC<{ bandId: string }> = ({ bandId }) => {
+export const SongsComponent: FC<{
+  bandId: string,
+  canAddSongs: boolean
+}> = ({
+  bandId,
+  canAddSongs
+}) => {
   // Hooks
+  const toast = useToast()
   const { ref, inView } = useInView()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
   const [ hasSearched, setSearchedState ] = useState<boolean>(false)
@@ -111,7 +119,16 @@ export const SongsComponent: FC<{ bandId: string }> = ({ bandId }) => {
         </FormControl>
         <Button
           w="full"
-          onClick={() => console.log('[new] song')}
+          onClick={() => {
+            if (!canAddSongs) return toast({
+              title: 'Ops.. Não há categorias registradas!',
+              description: 'Registre no mínimo uma categoria antes de criar uma música para sua banda!',     
+              status: 'info',
+              duration: 3500,
+              isClosable: true
+            })
+            console.log('[new] song')
+          }}
           bgColor="primary.500"
           color="gray.100"
           _hover={{

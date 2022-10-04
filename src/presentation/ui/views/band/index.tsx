@@ -142,6 +142,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
 
   // All categories
   const {
+    refetch: refetchCategories,
     data: categories,
     isLoading: categoriesLoading
   } = useQuery(
@@ -179,6 +180,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
   // Compute role
   const isUserOwner = userId === owner.id
   const isUserAdmin = admins.find((a: AccountType) => a.id === userId) !== undefined
+  const canAddSongs = categories?.data && !categoriesLoading && categories.data.length > 0
 
   // Actions
   const onCategoryClick = (_category: CategoryType) => {
@@ -445,7 +447,10 @@ const BandView: FC<{ id: string }> = ({ id }) => {
           title="Repertório da banda"
         >
           {
-            isSongsOpen && <SongsComponent bandId={band?.data?.id} />
+            isSongsOpen && <SongsComponent
+              bandId={band?.data?.id}
+              canAddSongs={canAddSongs}
+            />
           }
         </BandDrawer>
         {/** Band categories */}
@@ -622,6 +627,9 @@ const BandView: FC<{ id: string }> = ({ id }) => {
         onOpen={onCategoryFormOpen}
         onClose={onCategoryFormClose}
         category={currentCategory}
+        onSaveSuccess={() => refetchCategories()}
+        onRemoveSuccess={() => refetchCategories()}
+        bandId={band?.data?.id}
       />
     </div>
   )
