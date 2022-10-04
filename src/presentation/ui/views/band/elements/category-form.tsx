@@ -262,6 +262,7 @@ export const CategoryForm: FC<{
                     <>
                       <PopoverTrigger>
                         <Button
+                          disabled={isLoading || isDeleteLoading}
                           width="full"
                           type="button"
                           colorScheme="red"
