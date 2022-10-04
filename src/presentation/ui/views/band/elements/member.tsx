@@ -96,7 +96,7 @@ export const MemberItem: FC<{
                     {role}
                   </Badge>
                   {
-                    (isOwner || canManage) && (
+                    ((isOwner || canManage) && (id !== userId)) && (
                       <>
                         {
                           role === 'Membro' ? (

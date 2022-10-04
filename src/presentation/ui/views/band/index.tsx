@@ -1,7 +1,7 @@
 // Dependencies
 import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
 import { useUser } from 'infra/services/session'
 
@@ -112,6 +112,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
 
   // Band request
   const {
+    refetch: refetchBand,
     data: band,
     isLoading: bandLoading
   } = useQuery(
@@ -151,6 +152,38 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     { enabled: id !== '' }
   )
 
+  // Promote member requet
+  const {
+    isLoading: isPromoteLoading,
+    mutateAsync: promoteRequest
+  } = useMutation((data: any) => {
+    return requestClient('/api/bands/promote_member', 'post', data)
+  })
+
+  // Demote member requet
+  const {
+    isLoading: isDemoteLoading,
+    mutateAsync: demoteRequest
+  } = useMutation((data: any) => {
+    return requestClient('/api/bands/demote_member', 'post', data)
+  })
+
+  // Remove member request
+  const {
+    isLoading: isRemoveLoading,
+    mutateAsync: removeRequest
+  } = useMutation((data: any) => {
+    return requestClient('/api/bands/remove_member', 'post', data)
+  })
+
+  // Delete band request
+  const {
+    isLoading: isDeleteLoading,
+    mutateAsync: deleteBandRequest
+  } = useMutation((data: any) => {
+    return requestClient('/api/bands/delete', 'post', data)
+  })
+
   // Notify user about error while fetching his banda data
   useEffect(() => {
     if (band && band?.status !== 200) {
@@ -186,6 +219,142 @@ const BandView: FC<{ id: string }> = ({ id }) => {
   const onCategoryClick = (_category: CategoryType) => {
     setCurrentCategory(_category)
     onCategoryFormOpen()
+  }
+
+  const onDemoteMember = async (accountId: string, bandId: string) => {
+    // Request api
+    const response = await demoteRequest({ accountId, bandId })
+
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
+      
+      // Notify user about response success
+      toast({
+        title: 'Sucesso!',
+        description: `O membro selecionado foi definido como membro!`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+      // Refetch band
+      refetchBand()
+
+    } else {
+      if ([400, 404].includes(response.status)) {
+        toast({
+          title: 'Ops.. Membro não encontrado!',
+          description: 'O integrante solicitado não foi encontrado na banda!',     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
+
+  const onPromoteMember = async (accountId: string, bandId: string) => {
+    // Request api
+    const response = await promoteRequest({ accountId, bandId })
+
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
+      
+      // Notify user about response success
+      toast({
+        title: 'Sucesso!',
+        description: `O membro selecionado foi definido como admin!`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+      // Refetch band
+      refetchBand()
+
+    } else {
+      if ([400, 404].includes(response.status)) {
+        toast({
+          title: 'Ops.. Membro não encontrado!',
+          description: 'O integrante solicitado não foi encontrado na banda!',     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
+
+  const onRemoveMember = async (accountId: string, bandId: string) => {
+    // Request api
+    const response = await removeRequest({ accountId, bandId })
+
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
+      
+      // Notify user about response success
+      toast({
+        title: 'Sucesso!',
+        description: `O membro selecionado foi removido da banda!`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+      // Refetch band
+      refetchBand()
+
+    } else {
+      if ([400, 404].includes(response.status)) {
+        toast({
+          title: 'Ops.. Membro não encontrado!',
+          description: 'O integrante solicitado não foi encontrado na banda!',     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
+
+  const onDeleteBand = async (bandId: string) => {
+    // Request api
+    const response = await deleteBandRequest({ bandId })
+
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
+      
+      // Notify user about response success
+      toast({
+        title: 'Sucesso!',
+        description: `A banda foi removida com sucesso!`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+      // Refetch band
+      router.push('../bands')
+
+    } else {
+      if ([400, 404].includes(response.status)) {
+        toast({
+          title: 'Ops.. Banda não encontrada!',
+          description: 'A banda solicitada não foi encontrada!',     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
   }
 
   // View JSX
@@ -594,7 +763,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                           setAction({ type: action, id: _id })
                           onConfirmOpen()
                         }}
-                        isLoading={false}
+                        isLoading={isPromoteLoading || isDemoteLoading || isRemoveLoading || bandLoading || isDeleteLoading}
                       />
                     )
                   })
@@ -618,7 +787,24 @@ const BandView: FC<{ id: string }> = ({ id }) => {
         onOpen={onConfirmOpen}
         isOpen={isConfirmOpen}
         onConfirm={() => {
-          console.log('confirmed action here', action)
+          switch (action.type) {
+            // Remove Member
+            case 'remove':
+              onRemoveMember(action.id, band?.data?.id)
+              break
+            // Promote Member
+            case 'promote':
+              onPromoteMember(action.id, band?.data?.id)
+              break
+            // Demote Member
+            case 'demote':
+              onDemoteMember(action.id, band?.data?.id)
+              break
+            // Delete band
+            case 'delete':
+              onDeleteBand(action.id)
+              break
+          }
         }}
       />
       {/* Category save form */}

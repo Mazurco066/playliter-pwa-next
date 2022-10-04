@@ -99,7 +99,6 @@ export const CategoryForm: FC<{
     return requestClient('/api/bands/delete_category', 'post', data)
   })
 
-
   // Actions
   const onSubmit = async (data: any) => {
     // Destruct data
