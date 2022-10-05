@@ -17,6 +17,7 @@ import {
   CategoryForm,
   CategoryItemMinified,
   BandDrawer,
+  InviteMember,
   MemberItem,
   ShowItemMinified,
   ShowsComponent,
@@ -105,6 +106,13 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     isOpen: isCategoryFormOpen,
     onOpen: onCategoryFormOpen,
     onClose: onCategoryFormClose
+  } = useDisclosure()
+
+  // Invite member modal state
+  const {
+    isOpen: isInviteMemberOpen,
+    onOpen: onInviteMemberOpen,
+    onClose: onInviteMemberClose
   } = useDisclosure()
 
   // Color Hooks
@@ -392,6 +400,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                     <MenuList>
                       <MenuItem
                         icon={<Icon as={FaUserPlus} />}
+                        onClick={() => onInviteMemberOpen()}
                       >
                         Convidar
                       </MenuItem>
@@ -815,6 +824,13 @@ const BandView: FC<{ id: string }> = ({ id }) => {
         category={currentCategory}
         onSaveSuccess={() => refetchCategories()}
         onRemoveSuccess={() => refetchCategories()}
+        bandId={band?.data?.id}
+      />
+      {/* Member add modal */}
+      <InviteMember 
+        isOpen={isInviteMemberOpen}
+        onOpen={onInviteMemberOpen}
+        onClose={onInviteMemberClose}
         bandId={band?.data?.id}
       />
     </div>
