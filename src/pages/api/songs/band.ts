@@ -18,7 +18,7 @@ async function listBandSongsRoute(req: NextApiRequest, res: NextApiResponse) {
     const filter = req.query?.filter?.toString() || ''
 
     // Request login endpoint
-    const response = await requestApi(`/songs/get/${band}?limit=${limit}&offset=${offset}&filter=${filter}`, 'get', undefined, {
+    const response = await requestApi(`/songs/list/${band}?limit=${limit}&offset=${offset}&filter=${filter}`, 'get', undefined, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${req.session.user?.token}`

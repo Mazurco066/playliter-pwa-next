@@ -11,7 +11,7 @@ import type { ShowType } from 'domain/models'
 async function pendingShowsRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Request pending invites endpoint
-    const response = await requestApi(`/shows/pending_shows`, 'get', undefined, {
+    const response = await requestApi(`/shows/get/pending_shows`, 'get', undefined, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${req.session.user?.token}`

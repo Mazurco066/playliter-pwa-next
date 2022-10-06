@@ -17,7 +17,7 @@ async function bandShowsRoute(req: NextApiRequest, res: NextApiResponse) {
     const offset = parseInt(req.query?.offset?.toString() || '0')
 
     // Request pending invites endpoint
-    const response = await requestApi(`/shows/get/${band}?limit=${limit}&offset=${offset}`, 'get', undefined, {
+    const response = await requestApi(`/shows/list/${band}?limit=${limit}&offset=${offset}`, 'get', undefined, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${req.session.user?.token}`

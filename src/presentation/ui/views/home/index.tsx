@@ -81,7 +81,7 @@ const HomeView: FC = () => {
                   title={show.title}
                   band={show.band.title}
                   date={show.date}
-                  onClick={() => console.log(`Show id: ${show.id}`)}
+                  onClick={() => router.push(`/shows/${show.id}`)}
                 /> 
               ))}
             </Stack>

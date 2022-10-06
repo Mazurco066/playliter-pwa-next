@@ -1,5 +1,6 @@
 // Dependencies
 import { FC, useState } from 'react'
+import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
 
@@ -24,6 +25,7 @@ import {
 // Component
 export const ShowsComponent: FC<{ bandId: string }> = ({ bandId }) => {
   // Hooks
+  const router = useRouter()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
 
    // Shows request
@@ -97,7 +99,7 @@ export const ShowsComponent: FC<{ bandId: string }> = ({ bandId }) => {
                           <ShowItem
                             key={show.id}
                             show={show}
-                            onClick={(_id: string) => console.log(`Show id ${_id}`)}
+                            onClick={(_id: string) => router.push(`../shows/${_id}`)}
                           />
                         ))
                       }

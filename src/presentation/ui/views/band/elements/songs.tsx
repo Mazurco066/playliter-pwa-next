@@ -1,5 +1,6 @@
 // Dependencies
 import { FC, useEffect, useState, Fragment } from 'react'
+import { useRouter } from 'next/router'
 import { useInView } from 'react-intersection-observer'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
@@ -36,6 +37,7 @@ export const SongsComponent: FC<{
   canAddSongs
 }) => {
   // Hooks
+  const router = useRouter()
   const toast = useToast()
   const { ref, inView } = useInView()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
@@ -174,7 +176,7 @@ export const SongsComponent: FC<{
                         <SongItem 
                           key={song.id}
                           song={song}
-                          onClick={(_id: string) => console.log(`Song: ${_id}`)}
+                          onClick={(_id: string) => router.push(`../songs/${_id}`)}
                         />
                       ))
                     }

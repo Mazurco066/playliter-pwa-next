@@ -17,7 +17,7 @@ async function listPublicSongsRoute(req: NextApiRequest, res: NextApiResponse) {
     const filter = req.query?.filter?.toString() || ''
 
     // Request login endpoint
-    const response = await requestApi(`/songs/public_songs?limit=${limit}&offset=${offset}&filter=${filter}`, 'get', undefined, {
+    const response = await requestApi(`/songs/get/public_songs?limit=${limit}&offset=${offset}&filter=${filter}`, 'get', undefined, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${req.session.user?.token}`

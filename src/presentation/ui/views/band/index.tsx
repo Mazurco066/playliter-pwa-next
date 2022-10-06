@@ -514,7 +514,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                       <ShowItemMinified
                         key={show.id}
                         show={show}
-                        onClick={() => console.log(`Show id: ${show.id}`)}
+                        onClick={() => router.push(`../shows/${show.id}`)}
                       /> 
                     ))}
                   </Stack>
@@ -591,7 +591,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                       <SongItemMinified
                         key={song.id}
                         song={song}
-                        onClick={() => console.log(`Song id: ${song.id}`)}
+                        onClick={() => router.push(`../songs/${song.id}`)}
                       /> 
                     ))}
                   </Stack>

@@ -1,5 +1,6 @@
 // Dependencies
 import { FC, Fragment, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import { useInView } from 'react-intersection-observer'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
@@ -25,6 +26,7 @@ import {
   Text,
   useColorModeValue
 } from '@chakra-ui/react'
+import { Router } from 'next/router'
 
 // Paging default values
 const PAGE_SIZE = 30
@@ -32,6 +34,7 @@ const PAGE_SIZE = 30
 // Public Songs component
 const SongsView: FC = () => {
   // Hooks
+  const router = useRouter()
   const { ref, inView } = useInView()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
   const [ hasSearched, setSearchedState ] = useState<boolean>(false)
@@ -159,7 +162,7 @@ const SongsView: FC = () => {
                       <SongItem 
                         key={song.id}
                         song={song}
-                        onClick={() => console.log(`Song: ${song.id}`)}
+                        onClick={() => router.push(`../songs/${song.id}`)}
                       />
                     ))
                   }
