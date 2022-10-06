@@ -1,6 +1,6 @@
 // Dependencies
 import { FC, useState, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -46,18 +46,22 @@ export const InviteMember: FC<{
   bandId: string,
   isOpen: boolean,
   onOpen: () => void,
-  onClose: () => void
+  onClose: () => void,
+  members: string[]
 }> = ({
+  bandId,
   isOpen,
-  onClose
+  onClose,
+  members
 }) => {
   // Hooks
-  const token = useToast()
+  const toast = useToast()
   const [ search, setSearch ] = useState<string>('')
   const [ checkedAccounts, setCheckedAccounts ] = useState<string[]>([])
 
   // Accounts request
   const {
+    refetch,
     data: accounts,
     isLoading: isAccountsLoading
   } = useQuery(
@@ -65,15 +69,58 @@ export const InviteMember: FC<{
     () => requestClient('/api/accounts/list', 'get')
   )
 
+  // Add member category
+  const { isLoading, mutateAsync } = useMutation((data: any) => {
+    return requestClient('/api/bands/invite_member', 'post', data)
+  })
+
   // Effects
   useEffect(() => {
-    if (isOpen) setCheckedAccounts([])
+    if (isOpen) {
+      refetch()
+      setCheckedAccounts([])
+    } 
   }, [isOpen])
 
   // Computed data
   const filteredAccounts = (accounts && accounts.data) 
-    ? accounts.data.filter(({ name }: AccountType) => name.toLowerCase().includes(search.toLowerCase()))
+    ? accounts.data.filter(({ id, name }: AccountType) =>
+      name.toLowerCase().includes(search.toLowerCase()) && 
+      !members.includes(id)
+    )
     : []
+
+  // Actions
+  const addMember = async (bandId: string, members: string[]) => {
+    // Send invites to selected accounts
+    const responses = await Promise.all(
+      members.map(async (id: string) => mutateAsync({ accountId: id, bandId }))
+    )
+
+    // Verify if any invite failed to send
+    const hasErrors = responses.filter(r => r.status > 400).length !== 0
+    if (hasErrors) {
+      // Notify users about error
+      toast({
+        title: 'Ops!',
+        description: `Ocorreu um erro e um ou mais contas selecionadas podem não ter recebido o convite! Tente novamente mais tarde.`,
+        status: 'warning',
+        duration: 2000,
+        isClosable: true
+      })
+      onClose()
+    } else {
+      // Notify user about invites sent
+      toast({
+        title: 'Novos integrantes convidados!',
+        description: `As contas selecionadas foram convidadas a se juntar a banda!`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+      onClose()
+    }
+  }
 
   //JSX
   return (
@@ -161,11 +208,10 @@ export const InviteMember: FC<{
                   ) }
                 </VStack>
                 <Button
+                  disabled={isLoading || isAccountsLoading}
                   variant="fade"
                   width="full"
-                  onClick={() => {
-                    console.log(checkedAccounts)
-                  }}
+                  onClick={(isLoading || isAccountsLoading) ? () => {} : () => addMember(bandId, checkedAccounts)}
                 >
                   Convidar Selecionados
                 </Button>

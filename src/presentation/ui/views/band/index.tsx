@@ -832,6 +832,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
         onOpen={onInviteMemberOpen}
         onClose={onInviteMemberClose}
         bandId={band?.data?.id}
+        members={band?.data?.members.map((m: any) => m.id) || []}
       />
     </div>
   )
