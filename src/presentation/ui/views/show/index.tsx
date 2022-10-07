@@ -1,12 +1,19 @@
 // Dependencies
 import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
 import { formatDate } from 'presentation/utils'
 
+// Types
+type ConfirmShowAction = {
+  type: 'remove' | 'delete',
+  id: string
+}
+
 // Components
-import { OrderedSong, ShowDrawer } from './elements'
+import { ConfirmAction } from 'presentation/ui/components'
+import { Notes, OrderedSong, ReorderSongs, ShowDrawer } from './elements'
 import { FaBook, FaHandPointer } from 'react-icons/fa'
 import { DeleteIcon, EditIcon, Icon, SettingsIcon } from '@chakra-ui/icons'
 import {
@@ -45,7 +52,14 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
   // Hooks
   const toast = useToast()
   const router = useRouter()
-  const [ reordermode, setReorderMode ] = useState<boolean>(false)
+  const [ action, setAction ] = useState<ConfirmShowAction>({ type: 'remove', id: '' })
+
+  // Confirm dialog state
+  const {
+    isOpen: isConfirmOpen,
+    onOpen: onConfirmOpen,
+    onClose: onConfirmClose
+  } = useDisclosure()
 
   // Notes drawer state
   const {
@@ -54,13 +68,21 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     onClose: onNotesClose
   } = useDisclosure()
 
+  // Reorder drawer state
+  const {
+    isOpen: isReorderOpen,
+    onOpen: onReorderOpen,
+    onClose: onReorderClose
+  } = useDisclosure()
+
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
 
   // Show request
   const {
     data: show,
-    isLoading: showLoading
+    isLoading: showLoading,
+    refetch
   } = useQuery(
     [`get-show-${id}`],
     () => requestClient(`/api/shows/get?id=${id}`, 'get'),
@@ -84,6 +106,101 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
       router.push('../bands')
     }
   }, [show])
+
+  // Remove song mutation
+  const {
+    isLoading: removeSongLoading,
+    mutateAsync: removeSongMutation
+  } = useMutation((data: any) => {
+    return requestClient('/api/songs/remove_from_show', 'post', { ...data })
+  })
+
+  // Remove show mutation
+  const {
+    isLoading: removeShowLoading,
+    mutateAsync: removeShowMutation
+  } = useMutation((data: any) => {
+    return requestClient('/api/shows/delete', 'post', { ...data })
+  })
+
+  // Actions
+  const handleConfirmShowAction = () => {
+    switch (action.type) {
+      case 'remove':
+        onRemoveSong(action.id, show?.data.id)
+        break
+      case 'delete':
+        onRemoveShow(action.id)
+        break
+    }
+  }
+
+  const onRemoveSong = async (id: string, showId: string) => {
+    const response = await removeSongMutation({ id, showId })
+
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
+      
+      // Notify user about response success
+      toast({
+        title: 'Sucesso!',
+        description: `A música selecionada foi removida dessa apresentação!`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+      // Refetch show
+      refetch()
+
+    } else {
+      if ([400, 404].includes(response.status)) {
+        toast({
+          title: 'Ops.. Música não encontrada!',
+          description: 'A música solicitada não se encontra nessa apresentação!',     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
+
+  const onRemoveShow = async (id: string) => {
+    const response = await removeShowMutation({ id })
+
+     // Verify if request was successfull
+     if ([200, 201].includes(response.status)) {
+      
+      // Notify user about response success
+      toast({
+        title: 'Sucesso!',
+        description: `A apresentação selecionada foi removida!`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+      // Return to band page
+      router.push(`../bands/${show?.data.band.id}`)
+
+    } else {
+      if ([400, 404].includes(response.status)) {
+        toast({
+          title: 'Ops.. Apresentação não encontrada!',
+          description: 'A apresentação solicitada não foi encontrada!',     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+        router.push(`../bands/${show?.data.band.id}`)
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
 
   // Destruct show data
   const { date, description, songs, title } = show?.data || {}
@@ -141,20 +258,26 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                     />
                     <MenuList>
                       <MenuItem
+                        disabled={removeSongLoading || showLoading || removeShowLoading}
                         icon={<EditIcon />}
                         onClick={() => {}}
                       >
                         Editar
                       </MenuItem>
                       <MenuItem
+                        disabled={removeSongLoading || showLoading || removeShowLoading}
                         icon={<Icon as={FaHandPointer} />}
-                        onClick={() => {}}
+                        onClick={() => onReorderOpen()}
                       >
                         Reordenar Músicas
                       </MenuItem>    
                       <MenuItem
+                        disabled={removeSongLoading || showLoading || removeShowLoading}
                         icon={<DeleteIcon />}
-                        onClick={() => {}}
+                        onClick={() => {
+                          setAction({ type: 'delete', id: show.data.id })
+                          onConfirmOpen()
+                        }}
                       >
                         Remover Apresentação
                       </MenuItem>
@@ -168,12 +291,14 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                 </Text>
                 <Flex gap="1rem" alignItems="center">
                   <IconButton
+                    disabled={removeSongLoading || showLoading || removeShowLoading}
                     aria-label='Anotações'
                     icon={<Icon as={FaBook} />}
                     flex="0 0 auto"
                     onClick={() => onNotesOpen()}
                   />
                   <Button
+                    disabled={removeSongLoading || showLoading || removeShowLoading}
                     variant="fade"
                     width="full"
                     flexGrow="1"
@@ -194,28 +319,24 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
               Músicas Adicionadas
             </Heading>
             {
-              songs.length > 0 ? (
-                <>
+              songs.length > 0 ? (          
+                <VStack gap="0.5rem" mb="5">
                   {
-                    reordermode ? (
-                      <>
-                      </>
-                    ) : (
-                      <VStack gap="0.5rem" mb="5">
-                        {
-                          songs.map((_song: SongType, i: number) => (
-                            <OrderedSong 
-                              key={_song.id}
-                              song={_song}
-                              order={i+1}
-                              onClick={() => router.push(`../songs/${_song.id}`)}
-                            />
-                          ))
-                        }
-                      </VStack>
-                    )
+                    songs.map((_song: SongType, i: number) => (
+                      <OrderedSong 
+                        key={_song.id}
+                        song={_song}
+                        order={i+1}
+                        onClick={() => router.push(`../songs/${_song.id}`)}
+                        onRemove={() => {
+                          setAction({ type: 'remove', id: _song.id })
+                          onConfirmOpen()
+                        }}
+                        isLoading={removeSongLoading || removeShowLoading}
+                      />
+                    ))
                   }
-                </>
+                </VStack>    
               ) : (
                 <Text>
                   Não há músicas adicionadas a essa apresentação!
@@ -259,11 +380,32 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
         title="Anotações da apresentação"
       >
         { (show && !showLoading) && (
-          <>
-            <p>Conteúdo aqui</p>
-          </>
+          <Notes show={show.data} />
         )}
       </ShowDrawer>
+      <ShowDrawer
+        onClose={onReorderClose}
+        onOpen={onReorderOpen}
+        isOpen={isReorderOpen}
+        title="Reordenar músicas"
+      >
+        { (show && !showLoading && isReorderOpen) && (
+          <ReorderSongs
+            show={show.data}
+            onCancel={onReorderClose}
+            onSuccess={() => {
+              onReorderClose()
+              refetch()
+            }}
+          />
+        )}
+      </ShowDrawer>
+      <ConfirmAction
+        onClose={onConfirmClose}
+        onOpen={onConfirmOpen}
+        isOpen={isConfirmOpen}
+        onConfirm={handleConfirmShowAction}
+      />
     </div>
   )
 }

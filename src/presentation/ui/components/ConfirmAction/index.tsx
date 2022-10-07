@@ -37,7 +37,7 @@ export const ConfirmAction: FC<{
       closeOnOverlayClick={false}
       isOpen={isOpen}
       onClose={onClose}
-      size="sm"
+      size="xs"
       isCentered
     >
       <ModalOverlay />

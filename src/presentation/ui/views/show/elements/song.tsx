@@ -1,12 +1,13 @@
 // Dependencies
 import { FC } from 'react'
 
-// Types
+// Types and interfaces
 import type { SongType } from 'domain/models'
 
 // Components
-import { FaEllipsisV } from 'react-icons/fa'
+import { FaEllipsisV, FaHandRock } from 'react-icons/fa'
 import { DeleteIcon, Icon, ViewIcon } from '@chakra-ui/icons'
+import { Draggable, DraggableProvided } from 'react-beautiful-dnd'
 import {
   Box,
   Flex,
@@ -20,7 +21,74 @@ import {
   useColorModeValue
 } from '@chakra-ui/react'
 
-// Component
+// Drag Component
+export const DraggableSongItem: FC<{ item: SongType, index: number }> = ({ item, index }) => {
+  
+  // Color Hooks
+  const bgBox = useColorModeValue('blackAlpha.500', 'blackAlpha.500')
+
+  // Destruct song data
+  const { id, title, writter } = item
+
+  // JSX
+  return (
+    <Draggable draggableId={id} index={index}>
+      {
+        (provided: DraggableProvided) => (
+          <Box
+            data-group
+            ref={provided.innerRef}
+            bgColor={bgBox}
+            width="full"
+            borderRadius="lg"
+            overflow="hidden"
+            transition="all 0.3s"
+            { ...provided.draggableProps }
+          >
+            <Flex
+              alignItems="center"
+              justifyContent="flex-start"
+              height="full"
+            >
+              <Box
+                width="48px"
+                height="64px"
+                flex="0 0 auto"
+                { ...provided.dragHandleProps }
+              >
+                <Flex
+                  justifyContent="center"
+                  alignItems="center"
+                  height="full"
+                >
+                  <Icon as={FaHandRock} />
+                </Flex>
+              </Box>
+              <Box
+                flexGrow="1"
+                pr="2"
+                py="3"
+                pl="1"
+              >
+                <Heading
+                  as="h5"
+                  size="sm"
+                >
+                  {title}
+                </Heading>
+                <Text>
+                  {writter}
+                </Text>
+              </Box>
+            </Flex>
+          </Box>
+        )
+      }
+    </Draggable>
+  )
+}
+
+// Ordered Component
 export const OrderedSong: FC<{
   onClick?: () => void,
   onRemove?: () => void,

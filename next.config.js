@@ -11,7 +11,7 @@ const withPWA = require('next-pwa')({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withPWA({
-  reactStrictMode: true,
+  reactStrictMode: false, // Disabled because 'react-beautiful-dnd' doesn't work while enabled
   swcMinify: true,
   // Disable eslint during builds
   eslint: {
