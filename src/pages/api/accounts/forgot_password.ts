@@ -7,7 +7,7 @@ import { requestApi } from 'infra/services/http'
 // Forgot password endpoint
 async function forgotPasswordRoute(req: NextApiRequest, res: NextApiResponse) {
   // Retrieve login parameters
-  const { email } = await req.body
+  const { email } = req.body
 
   // Request login endpoint
   const response = await requestApi('/auth/forgot_password', 'post', { email }, {

@@ -28,3 +28,9 @@ export type ShowType = {
     data: string
   }[]
 }
+
+export type ObservationType = {
+  id: string,
+  title: string,
+  data: string
+}

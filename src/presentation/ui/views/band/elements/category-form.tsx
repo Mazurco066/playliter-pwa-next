@@ -214,7 +214,7 @@ export const CategoryForm: FC<{
                   {...register('title', { required: true })}
                 />
               </InputGroup>
-              {errors.name ? (
+              {errors.title ? (
                 <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
               ) : (
                 <FormHelperText>Insira um nome para a categoria.</FormHelperText>
@@ -239,7 +239,7 @@ export const CategoryForm: FC<{
                   {...register('description', { required: true })}
                 />
               </InputGroup>
-              {errors.name ? (
+              {errors.description ? (
                 <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
               ) : (
                 <FormHelperText>Insira uma breve descrição para a categoria.</FormHelperText>

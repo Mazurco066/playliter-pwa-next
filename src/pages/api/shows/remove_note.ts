@@ -5,16 +5,16 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { requestApi } from 'infra/services/http'
 
 // Types
-import type { BandType } from 'domain/models'
+import type { ShowType } from 'domain/models'
 
-// Delete band endpoint
-async function deleteBandRoute(req: NextApiRequest, res: NextApiResponse) {
+// Remove show note endpoint
+async function removeNoteRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
-    // Retrieve member parameters
-    const { bandId } = req.body
+    // Retrieve parameters
+    const { id, noteId } = req.body
 
     // Request delete band endpoint
-    const response = await requestApi(`/bands/${bandId}`, 'delete', undefined, {
+    const response = await requestApi(`/shows/${id}/${noteId}/remove_observation`, 'post', undefined, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${req.session.user?.token}`
@@ -25,7 +25,7 @@ async function deleteBandRoute(req: NextApiRequest, res: NextApiResponse) {
     if (response.status < 400) {
       // Returns updated band
       const { data } = response.data
-      res.status(200).json(data as BandType)
+      res.status(200).json(data as ShowType)
 
     } else {
       return res.status(response.status).json(response.data)
@@ -38,6 +38,6 @@ async function deleteBandRoute(req: NextApiRequest, res: NextApiResponse) {
 
 // Exporting service
 export default withIronSessionApiRoute(
-  deleteBandRoute,
+  removeNoteRoute,
   sessionOptions
 )

@@ -11,7 +11,7 @@ import type { ShowType } from 'domain/models'
 async function reorderShowRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Retrieve parameters
-    const { id, songs } = await req.body
+    const { id, songs } = req.body
 
     // Request delete band endpoint
     const response = await requestApi(`/shows/${id}/reorder`, 'put', { songs }, {

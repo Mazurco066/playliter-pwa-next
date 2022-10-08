@@ -11,7 +11,7 @@ import type { BandType } from 'domain/models'
 async function removeMemberRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Retrieve member parameters
-    const { accountId, bandId } = await req.body
+    const { accountId, bandId } = req.body
 
     // Request remove member endpoint
     const response = await requestApi(`/bands/remove_member/${bandId}`, 'post', { accountId }, {

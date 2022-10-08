@@ -6,14 +6,15 @@ import { requestClient } from 'infra/services/http'
 import { formatDate } from 'presentation/utils'
 
 // Types
+import type { ObservationType, SongType } from 'domain/models'
 type ConfirmShowAction = {
-  type: 'remove' | 'delete',
+  type: 'remove' | 'delete' | 'remove_note',
   id: string
 }
 
 // Components
 import { ConfirmAction } from 'presentation/ui/components'
-import { Notes, OrderedSong, ReorderSongs, ShowDrawer } from './elements'
+import { NoteForm, Notes, OrderedSong, ReorderSongs, ShowDrawer } from './elements'
 import { FaBook, FaHandPointer } from 'react-icons/fa'
 import { DeleteIcon, EditIcon, Icon, SettingsIcon } from '@chakra-ui/icons'
 import {
@@ -36,7 +37,6 @@ import {
   UseToastOptions,
   VStack
 } from '@chakra-ui/react'
-import { SongType } from 'domain/models'
 
 // Generic msg
 const genericMsg: UseToastOptions = {
@@ -53,6 +53,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
   const toast = useToast()
   const router = useRouter()
   const [ action, setAction ] = useState<ConfirmShowAction>({ type: 'remove', id: '' })
+  const [ currentNote, setCurrentNote ] = useState<ObservationType | null>(null)
 
   // Confirm dialog state
   const {
@@ -73,6 +74,13 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     isOpen: isReorderOpen,
     onOpen: onReorderOpen,
     onClose: onReorderClose
+  } = useDisclosure()
+
+  // Note form modal state
+  const {
+    isOpen: isNoteFormOpen,
+    onOpen: onNoteFormOpen,
+    onClose: onNoteFormClose
   } = useDisclosure()
 
   // Color Hooks
@@ -115,6 +123,14 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     return requestClient('/api/songs/remove_from_show', 'post', { ...data })
   })
 
+  // Remove note mutation
+  const {
+    isLoading: removeNoteLoading,
+    mutateAsync: removeNoteMutation
+  } = useMutation((data: any) => {
+    return requestClient('/api/shows/remove_note', 'post', { ...data })
+  })
+
   // Remove show mutation
   const {
     isLoading: removeShowLoading,
@@ -131,6 +147,9 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
         break
       case 'delete':
         onRemoveShow(action.id)
+        break
+      case 'remove_note':
+        onRemoveNote(show?.data.id, action.id)
         break
     }
   }
@@ -158,6 +177,39 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
         toast({
           title: 'Ops.. Música não encontrada!',
           description: 'A música solicitada não se encontra nessa apresentação!',     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
+
+  const onRemoveNote = async (id: string, noteId: string) => {
+    const response = await removeNoteMutation({ id, noteId })
+
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
+      
+      // Notify user about response success
+      toast({
+        title: 'Sucesso!',
+        description: 'Anotação removida com sucesso!',
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+      // Refetch show
+      refetch()
+
+    } else {
+      if ([400, 404].includes(response.status)) {
+        toast({
+          title: 'Ops.. Anotação não encontrada!',
+          description: 'A anotação solicitada não se encontra nessa apresentação!',     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -202,8 +254,16 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     }
   }
 
+  const onNoteEdit = (_note: ObservationType) => {
+    setCurrentNote(_note)
+    onNoteFormOpen()
+  }
+
   // Destruct show data
   const { date, description, songs, title } = show?.data || {}
+
+  // Unify loading flag
+  const loadingStatus = removeSongLoading || showLoading || removeShowLoading || removeNoteLoading
 
   // JSX
   return (
@@ -291,14 +351,14 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                 </Text>
                 <Flex gap="1rem" alignItems="center">
                   <IconButton
-                    disabled={removeSongLoading || showLoading || removeShowLoading}
+                    disabled={loadingStatus}
                     aria-label='Anotações'
                     icon={<Icon as={FaBook} />}
                     flex="0 0 auto"
                     onClick={() => onNotesOpen()}
                   />
                   <Button
-                    disabled={removeSongLoading || showLoading || removeShowLoading}
+                    disabled={loadingStatus}
                     variant="fade"
                     width="full"
                     flexGrow="1"
@@ -332,7 +392,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                           setAction({ type: 'remove', id: _song.id })
                           onConfirmOpen()
                         }}
-                        isLoading={removeSongLoading || removeShowLoading}
+                        isLoading={loadingStatus}
                       />
                     ))
                   }
@@ -380,7 +440,19 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
         title="Anotações da apresentação"
       >
         { (show && !showLoading) && (
-          <Notes show={show.data} />
+          <Notes
+            show={show.data}
+            isLoading={loadingStatus}
+            onEditNote={onNoteEdit}
+            onAddNote={() => {
+              setCurrentNote(null)
+              onNoteFormOpen()
+            }}
+            onDeleteNote={(note: ObservationType) => {
+              setAction({ type: 'remove_note', id: note.id })
+              onConfirmOpen()
+            }}
+          />
         )}
       </ShowDrawer>
       <ShowDrawer
@@ -400,6 +472,14 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
           />
         )}
       </ShowDrawer>
+      <NoteForm
+        isOpen={isNoteFormOpen}
+        onOpen={onNoteFormOpen}
+        onClose={onNoteFormClose}
+        note={currentNote}
+        onSaveSuccess={() => refetch()}
+        showId={show?.data?.id}
+      />
       <ConfirmAction
         onClose={onConfirmClose}
         onOpen={onConfirmOpen}

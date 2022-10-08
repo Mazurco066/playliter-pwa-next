@@ -11,7 +11,7 @@ import type { ShowType } from 'domain/models'
 async function removeFromShowRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Retrieve parameters
-    const { id, showId } = await req.body
+    const { id, showId } = req.body
 
     // Request delete band endpoint
     const response = await requestApi(`/shows/${showId}/unlink_song`, 'patch', { songId: id }, {

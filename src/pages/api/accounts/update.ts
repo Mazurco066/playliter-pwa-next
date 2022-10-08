@@ -10,7 +10,7 @@ import type { AccountType } from 'domain/models'
 // Update account endpoint
 async function updateAccountRoute(req: NextApiRequest, res: NextApiResponse) {
   // Retrieve login parameters
-  const { id, avatar, name, email, password } = await req.body
+  const { id, avatar, name, email, password } = req.body
 
   /*
     All fields

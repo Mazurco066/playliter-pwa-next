@@ -11,7 +11,7 @@ import type { BandType } from 'domain/models'
 async function respondInviteRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Retrieve login parameters
-    const { id, user_response } = await req.body
+    const { id, user_response } = req.body
 
     // Request login endpoint
     const response = await requestApi(`/invitations/respond`, 'post', {

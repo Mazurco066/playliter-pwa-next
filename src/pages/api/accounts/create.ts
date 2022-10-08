@@ -10,7 +10,7 @@ import type { AccountType } from 'domain/models'
 // Create account endpoint
 async function createAccountRoute(req: NextApiRequest, res: NextApiResponse) {
   // Retrieve login parameters
-  const { name, email, username, password } = await req.body
+  const { name, email, username, password } = req.body
 
   // Request login endpoint
   const response = await requestApi(`/accounts`, 'post', {

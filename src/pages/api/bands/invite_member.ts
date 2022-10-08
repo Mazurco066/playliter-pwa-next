@@ -11,7 +11,7 @@ import type { BandType } from 'domain/models'
 async function inviteMemberRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Retrieve member parameters
-    const { accountId, bandId } = await req.body
+    const { accountId, bandId } = req.body
 
     // Request promote member endpoint
     const response = await requestApi(`/bands/add_member/${bandId}`, 'post', { accountId }, {
