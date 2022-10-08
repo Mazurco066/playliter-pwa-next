@@ -75,7 +75,7 @@ export const NoteForm: FC<{
     }
   }, [note])
 
-  // Save category
+  // Save note
   const { isLoading, mutateAsync } = useMutation((data: any) => {
     return requestClient('/api/shows/save_note', 'post', data)
   })

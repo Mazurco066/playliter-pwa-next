@@ -116,7 +116,6 @@ export const OrderedSong: FC<{
       bgColor={bgBox}
       width="full"
       borderRadius="lg"
-      overflow="hidden"
       transition="all 0.3s"
       _hover={{
         cursor: 'pointer'

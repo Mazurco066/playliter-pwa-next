@@ -443,6 +443,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
           <Notes
             show={show.data}
             isLoading={loadingStatus}
+            onImportSuccess={() => refetch()}
             onEditNote={onNoteEdit}
             onAddNote={() => {
               setCurrentNote(null)
