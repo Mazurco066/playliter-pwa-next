@@ -50,7 +50,7 @@ const HomeView: FC = () => {
   // View JSX
   return (
     <div>
-      <Container>
+      <Container maxWidth="6xl">
         <Heading
           as="h3"
           size="lg"

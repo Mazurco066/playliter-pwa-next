@@ -268,7 +268,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
   // JSX
   return (
     <div>
-      <Container>
+      <Container maxWidth="6xl">
         { (show && !showLoading) ? (
           <>
             <Box

@@ -40,6 +40,7 @@ export const BottomNavigation: FC<{
       height="full"
       bg={bgNavigation}
       borderTopRadius="2xl"
+      maxWidth="6xl"
     >
       <Flex
         height="full"

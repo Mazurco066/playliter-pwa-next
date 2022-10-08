@@ -368,7 +368,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
   // View JSX
   return (
     <div>
-      <Container>
+      <Container maxWidth="6xl">
         { (band && !bandLoading) ? (
           <>
             {/* Band details */}

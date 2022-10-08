@@ -28,7 +28,7 @@ export const TopBar: FC<{
 
   // JSX
   return (
-    <Container height="full">
+    <Container height="full" maxWidth="6xl">
       <Flex
         justify="space-between"
         align="center"

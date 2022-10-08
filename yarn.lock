@@ -2097,11 +2097,6 @@
     magic-string "^0.25.0"
     string.prototype.matchall "^4.0.6"
 
-"@svgdotjs/svg.js@^3.0.12":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@svgdotjs/svg.js/-/svg.js-3.1.2.tgz#acd62ebc5a6ef5b3a70e4a3912ce643a150c56e7"
-  integrity sha512-0ZCWTiuRjCXT2SUoVDiu+8DLuRQlkxZbO680Y2QkV7jNsULzJajrx6A3MxA/IBQg6UGV5csgPZ8w7U57hZSK+A==
-
 "@swc/helpers@0.4.11":
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/@swc/helpers/-/helpers-0.4.11.tgz#db23a376761b3d31c26502122f349a21b592c8de"
@@ -5306,13 +5301,6 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
-
-vexchords@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/vexchords/-/vexchords-1.2.0.tgz#844041935cc90d7ed3e90e8a91ad9c4bd62b5e5a"
-  integrity sha512-ObhyFjGiN4pj+oFBGmCa9/geY6H6xqbEipTp1k8de7UXjvv30CriHjD8FR3Lf3jo1vSVUCePSJd7024qmJyNlA==
-  dependencies:
-    "@svgdotjs/svg.js" "^3.0.12"
 
 webcrypto-core@^1.7.4:
   version "1.7.5"

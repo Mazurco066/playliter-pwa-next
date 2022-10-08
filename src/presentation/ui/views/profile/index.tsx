@@ -250,7 +250,7 @@ const ProfileView: FC = () => {
   // View JSX
   return (
     <div>
-      <Container>
+      <Container maxWidth="6xl">
         <Box
           bgColor={bgBox}
           borderRadius="lg"

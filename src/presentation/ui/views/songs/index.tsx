@@ -71,7 +71,7 @@ const SongsView: FC = () => {
   // View JSX
   return (
     <div>
-      <Container>
+      <Container  maxWidth="6xl">
         <Box mb="5">
           <Heading
             as="h4"

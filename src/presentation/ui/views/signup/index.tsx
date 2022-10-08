@@ -111,7 +111,7 @@ const SignUpView: FC = () => {
   // View JSX
   return (
     <div>
-      <Container>
+      <Container maxWidth="6xl">
         <Flex justifyContent="center" mb="3">
           <Image
             maxWidth="164px"

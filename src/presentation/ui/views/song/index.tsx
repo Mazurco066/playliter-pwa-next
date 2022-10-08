@@ -4,8 +4,13 @@ import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
 
+// Types
+import type { SongType } from 'domain/models'
+
 // Components
+import { Songsheet } from 'presentation/ui/components'
 import {
+  Container,
   useToast,
   UseToastOptions
 } from '@chakra-ui/react'
@@ -56,7 +61,16 @@ const SongView: FC<{ id: string }> = ({ id }) => {
   // JSX
   return (
     <div>
-      Song - {id}
+      <Container maxWidth="6xl">
+        {
+          song && !songLoading && (
+            <Songsheet 
+              displayToneControl
+              song={song.data as SongType}
+            />
+          )
+        }
+      </Container>
     </div>
   )
 }

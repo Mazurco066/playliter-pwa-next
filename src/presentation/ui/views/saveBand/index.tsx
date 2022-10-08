@@ -130,7 +130,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
   // View JSX
   return (
     <div>
-      <Container>
+      <Container maxWidth="6xl">
         <form onSubmit={handleSubmit(onSubmit)}>
           <FileUpload />
           <FormControl

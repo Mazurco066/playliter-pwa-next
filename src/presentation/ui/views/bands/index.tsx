@@ -39,7 +39,7 @@ const BandsView: FC = () => {
   // View JSX
   return (
     <div>
-      <Container>
+      <Container maxWidth="6xl">
         <Heading
           as="h4"
           size="md"

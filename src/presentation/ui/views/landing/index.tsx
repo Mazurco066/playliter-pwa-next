@@ -12,7 +12,7 @@ const LandingView: FC = () => {
   // View JSX
   return (
     <div>
-      <Container>
+      <Container maxWidth="6xl">
         <Heading as="h2" size="xl" mb="5">
           Landing
         </Heading>
