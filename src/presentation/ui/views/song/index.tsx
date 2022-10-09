@@ -5,14 +5,14 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
 
 // Types
-import type { SongType, ShowType } from 'domain/models'
+import type { SongType, ShowType, BandType } from 'domain/models'
 type ConfirmShowAction = {
-  type: 'add' | 'delete'
+  type: 'add' | 'delete' | 'clone'
   id: string
 }
 
 // Components
-import { SongDrawer, ShowItem } from './elements'
+import { BandItem, SongDrawer, ShowItem } from './elements'
 import { ConfirmAction, Songsheet } from 'presentation/ui/components'
 import {
   AddIcon,
@@ -73,6 +73,13 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     onClose: onAddingClose
   } = useDisclosure()
 
+  // Clone song drawer state
+  const {
+    isOpen: isCloningOpen,
+    onOpen: onCloningOpen,
+    onClose: onCloningClose
+  } = useDisclosure()
+
   // Song request
   const {
     data: song,
@@ -91,6 +98,14 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     [`get-account-shows`],
     () => requestClient(`/api/shows/account`, 'get'),
     { enabled: id !== '' }
+  )
+
+  const {
+    data: bands,
+    isLoading: bandsLoading
+  } = useQuery(
+    ['bands'],
+    () => requestClient('/api/bands/list', 'get')
   )
 
   // Add to show mutation
@@ -132,6 +147,9 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     switch (action.type) {
       case 'add':
         onAddSongToList(song?.data.id, action.id)
+        break
+      case 'clone':
+        onCloneSong(song?.data.id, action.id)
         break
       case 'delete':
         onRemoveSong(action.id)
@@ -178,6 +196,10 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     }
   }
 
+  const onCloneSong = async (songId: string, bandId: string) => {
+    console.log('[clone]', songId, bandId)
+  }
+
   const onRemoveSong = async (id: string) => {
     const response = await removeSongMutation({ songId: id })
 
@@ -206,6 +228,14 @@ const SongView: FC<{ id: string }> = ({ id }) => {
           isClosable: true
         })
         router.push(`../bands/${song?.data.band.id}`)
+      } else if ([401, 403].includes(response.status)) {
+        toast({
+          title: 'Remoção negada!',
+          description: 'Você precisa ter permissões de Admin na banda que publicou a música para conseguir removê-la!',     
+          status: 'info',
+          duration: 3500,
+          isClosable: true
+        })
       } else {
         toast(genericMsg)
       }
@@ -269,7 +299,8 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                     </MenuItem>
                     <MenuItem
                       icon={<CopyIcon />}
-                      disabled={loadingStatus}
+                      disabled={bandsLoading || songLoading}
+                      onClick={(bandsLoading || songLoading) ? () => {} : () => onCloningOpen()}
                     >
                       Clonar Música
                     </MenuItem>  
@@ -382,12 +413,62 @@ const SongView: FC<{ id: string }> = ({ id }) => {
           }
         </Box>
       </SongDrawer>
+      <SongDrawer
+        onClose={onCloningClose}
+        onOpen={onCloningOpen}
+        isOpen={isCloningOpen}
+        title="Clonar música"
+      >
+        <Box py="3">
+          {
+            bands && !bandsLoading && (
+              <>
+                {
+                  bands.data.length > 0 ? (
+                    <>
+                      <Text mb="5">
+                        Selecione a banda na qual você deseja clonar a música:
+                      </Text>
+                      <VStack gap="0.25rem">
+                        {
+                          bands.data.map((band: BandType) => (
+                            <BandItem
+                              key={band.id}
+                              item={band}
+                              onClick={(_id: string) => {
+                                if (!bandsLoading) {
+                                  setAction({ type: 'clone', id: _id })
+                                  onConfirmOpen()
+                                }
+                              }}
+                            />
+                          ))
+                        }
+                      </VStack>
+                    </>
+                  ) : (
+                    <Text textAlign="justify">
+                      Você não participa de nenhuma banda! Crie uma ou entre em uma existente para 
+                      conseguir clonar uma música.
+                    </Text>
+                  )
+                }
+              </>
+            )
+          }
+        </Box>
+      </SongDrawer>
       <ConfirmAction
         onClose={onConfirmClose}
         onOpen={onConfirmOpen}
         isOpen={isConfirmOpen}
         onConfirm={handleConfirmShowAction}
-        message={action.type === 'add' ? 'Deseja adicionar essa música na apresentação selecionada?' : 'Essa ação é permanente!'}
+        message={action.type === 'add'
+          ? 'Deseja adicionar essa música na apresentação selecionada?'
+          : action.type === 'clone'
+            ? 'Deseja clonar a música para a banda selecionada?'
+            : 'Deseja remover essa música? Primeiramente verifique se ela não está sendo usada em apresentações!'
+        }
       />
     </div>
   )

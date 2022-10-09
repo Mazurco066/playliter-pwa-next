@@ -1,29 +1,27 @@
 // Dependencies
 import { FC } from 'react'
-import { formatDate } from 'presentation/utils'
 
 // Types
-import type { ShowType } from 'domain/models'
+import type { BandType } from 'domain/models'
 
 // Components
 import {
-  Badge,
   Box,
   Flex,
   Image,
   Text
 } from '@chakra-ui/react'
 
-// Default Component
-export const ShowItem:FC<{
-  show: ShowType,
+// Components
+export const BandItem: FC<{
+  item: BandType,
   onClick?: (id: string) => void
 }> = ({
-  show,
+  item,
   onClick = () => {}
 }) => {
-   // Destruct show data
-   const { id, title, date } = show
+  // Destruct band data
+  const { id, title, logo } = item
 
   // JSX
   return (
@@ -46,23 +44,16 @@ export const ShowItem:FC<{
       >
         <Box flex="0 0 auto" mr="4">
           <Image
-            src="../img/arts/white/concert.svg"
+            src={logo}
             alt="img"
             h="32px"
             w="32px"
+            borderRadius="full"
           />
         </Box>
         <Box
           flexGrow="1"
         >
-          <Badge
-            bgColor="primary.200"
-            color="primary.700"
-            borderRadius="sm"
-            mb="1"
-          >
-            {formatDate(date)}
-          </Badge>
           <Text
             fontWeight="bold"
             color="gray.100"

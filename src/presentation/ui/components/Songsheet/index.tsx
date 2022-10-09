@@ -1,5 +1,6 @@
 // Dependencies
 import { FC, useEffect, useState } from 'react'
+import { Chord } from 'chordsheetjs'
 import { getTransposedSong } from 'presentation/utils'
 
 // Types
@@ -7,10 +8,13 @@ import type { SongType } from 'domain/models'
 
 // Components
 import { ChordLyricsPair } from 'presentation/ui/components'
+import { MdArrowDropDown } from 'react-icons/md'
 import {
   Box,
+  Button,
   Flex,
   Heading,
+  Select,
   Text,
   useColorModeValue
 } from '@chakra-ui/react'
@@ -20,10 +24,12 @@ export const Songsheet: FC<{
   displayToneControl?: boolean,
   song: SongType
 }> = ({
+  displayToneControl = false,
   song
 }) => {
   // Hooks
   const [ transpose, setTranspose ] = useState<number>(0)
+  const [ transpositions, setTranspositions ] = useState<Array<any>>([])
   const [ chordsheet, setChordsheet ] = useState<any | null>(null)
 
   // Color Hooks
@@ -31,8 +37,21 @@ export const Songsheet: FC<{
 
   // Effects
   useEffect(() => {
+    // Parse chordpro string to Chordsheetjs Object
     const cs = getTransposedSong(song.body || '', transpose)
     setChordsheet(cs)
+
+    // Calc transposition keys
+    const baseTone = song.tone
+    const key = Chord.parse(baseTone)
+    const steps = []
+    for (let i = -11; i <= 11; i++) {
+      steps.push({
+        step: i,
+        name: key.transpose(i)
+      })
+    }
+    setTranspositions(steps)
   }, [song, transpose])
 
   // JSX
@@ -59,21 +78,58 @@ export const Songsheet: FC<{
               <Text>
                 {chordsheet.artist}
               </Text>
-              <Text
-                mt="1"
-                fontSize="sm"
-              >
-                Tom: <Text
-                  as="strong"
-                  fontWeight="medium"
-                  color="secondary.500"
-                >{song.tone}</Text>
-              </Text>
+              {
+                !displayToneControl && (
+                  <Text
+                    mt="1"
+                    fontSize="sm"
+                  >
+                    Tom: <Text
+                      as="strong"
+                      fontWeight="medium"
+                      color="secondary.500"
+                    >{song.tone}</Text>
+                  </Text>
+                )
+              }
               {
                 chordsheet.capo && (
                   <Text mt="1" fontSize="sm">
                     Capo: {chordsheet.capo}
                   </Text>
+                )
+              }
+              {
+                displayToneControl && (
+                  <Flex mt="2" gap="0.5rem" alignItems="center">
+                    <Select
+                      icon={<MdArrowDropDown />}
+                      variant="filled"
+                      width="fit-content"
+                      size="sm"
+                      mb="0"
+                      value={transpose}
+                      onChange={(evt) => setTranspose(parseInt(evt.target.value))}
+                    >
+                      {
+                        transpositions.map((t: any, i: number) => (
+                          <option key={i} value={t.step}>
+                            { `${t.name.root.note.note}${t.name.root.modifier ? t.name.root.modifier : ''}` }
+                          </option>
+                        ))
+                      }
+                    </Select>
+                    {
+                      transpose !== 0 && (
+                        <Button 
+                          size="sm"
+                          variant="fade"
+                        >
+                          Atualizar tom base
+                        </Button>
+                      )
+                    }
+                  </Flex>
                 )
               }
             </Box>
