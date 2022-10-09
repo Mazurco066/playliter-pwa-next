@@ -1,7 +1,10 @@
 // Dependencies
 import { FC, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import { Chord } from 'chordsheetjs'
-import { getTransposedSong } from 'presentation/utils'
+import { useMutation } from '@tanstack/react-query'
+import { getTransposedSong, overwriteBaseTone } from 'presentation/utils'
+import { requestClient } from 'infra/services/http'
 
 // Types
 import type { SongType } from 'domain/models'
@@ -16,18 +19,33 @@ import {
   Heading,
   Select,
   Text,
-  useColorModeValue
+  useColorModeValue,
+  useToast,
+  UseToastOptions
 } from '@chakra-ui/react'
+
+// Generic msg
+const genericMsg: UseToastOptions = {
+  title: 'Erro interno.',
+  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
+  status: 'error',
+  duration: 5000,
+  isClosable: true
+}
 
 // Component
 export const Songsheet: FC<{
   displayToneControl?: boolean,
-  song: SongType
+  onToneUpdateSuccess?: () => void,
+  song: SongType,
 }> = ({
   displayToneControl = false,
+  onToneUpdateSuccess = () => {},
   song
 }) => {
   // Hooks
+  const toast = useToast()
+  const router = useRouter()
   const [ transpose, setTranspose ] = useState<number>(0)
   const [ transpositions, setTranspositions ] = useState<Array<any>>([])
   const [ chordsheet, setChordsheet ] = useState<any | null>(null)
@@ -53,6 +71,85 @@ export const Songsheet: FC<{
     }
     setTranspositions(steps)
   }, [song, transpose])
+
+  // Update song tone request
+  const {
+    isLoading,
+    mutateAsync
+  } = useMutation((data: any) => {
+    return requestClient('/api/songs/save', 'post', { ...data })
+  })
+
+  // Actions
+  const onUpdateTone = async () => {
+    // Compute song key and transposed body
+    const t = transpositions.find(t => t.step === transpose)
+    const newTone = `${t.name.root.note.note}${t.name.root.modifier ? t.name.root.modifier : ''}`
+    const updatedSongBody = overwriteBaseTone(chordsheet)
+
+    // Define requets payload
+    const payload = {
+      id: song.id,
+      title: song.title,
+      writter: song.writter,
+      tone: newTone,
+      body: updatedSongBody,
+      category: song.category.id,
+      isPublic: song.isPublic
+    }
+
+    // Request api
+    const response = await mutateAsync(payload)
+
+     // Verify if request was successfull
+     if ([200, 201].includes(response.status)) {
+      
+      // Notify user about response success
+      toast({
+        title: 'Sucesso!',
+        description: `O tom base da música foi alterado!`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+      onToneUpdateSuccess()
+
+      // Update transpositions
+      const baseTone = newTone
+      const key = Chord.parse(baseTone)
+      const steps = []
+      for (let i = -11; i <= 11; i++) {
+        steps.push({
+          step: i,
+          name: key.transpose(i)
+        })
+      }
+      setTranspositions(steps)
+      setTranspose(0)
+
+    } else {
+      if ([400, 404].includes(response.status)) {
+        toast({
+          title: 'Ops.. Música não encontrada!',
+          description: 'A música solicitada não foi encontrada!',     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+        router.push(`../bands/${song?.band.id}`)
+      } else if ([401, 403].includes(response.status)) {
+        toast({
+          title: 'Atualização de tom base negada!',
+          description: 'Você precisa ter um integrante da banda para atualizar o tom base da mesma! Clone essa música para uma banda que você participa para modificá-la.',     
+          status: 'info',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
 
   // JSX
   return (
@@ -124,6 +221,8 @@ export const Songsheet: FC<{
                         <Button 
                           size="sm"
                           variant="fade"
+                          disabled={isLoading}
+                          onClick={isLoading ? () => {} : () => onUpdateTone()}
                         >
                           Atualizar tom base
                         </Button>

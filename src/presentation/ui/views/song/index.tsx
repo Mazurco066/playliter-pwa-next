@@ -82,6 +82,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
 
   // Song request
   const {
+    refetch,
     data: song,
     isLoading: songLoading
   } = useQuery(
@@ -266,6 +267,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
               <Songsheet 
                 displayToneControl
                 song={song.data as SongType}
+                onToneUpdateSuccess={() => refetch()}
               />
               <Box
                 position="fixed"
