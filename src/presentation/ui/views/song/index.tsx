@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
 
 // Types
-import type { SongType, ShowType, BandType } from 'domain/models'
+import type { CategoryType, SongType, ShowType, BandType } from 'domain/models'
 type ConfirmShowAction = {
   type: 'add' | 'delete' | 'clone'
   id: string
@@ -117,6 +117,22 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     return requestClient('/api/songs/add_to_show', 'post', { ...data })
   })
 
+  // Clone song request
+  const {
+    isLoading: isCloneLoading,
+    mutateAsync: cloneRequest
+  } = useMutation((data: any) => {
+    return requestClient('/api/songs/save', 'post', { ...data })
+  })
+
+  // Band categories mutation
+  const {
+    isLoading: categoriesLoading,
+    mutateAsync: bandCategoriesRequest
+  } = useMutation((bandId: string) => {
+    return requestClient(`/api/bands/categories?band=${bandId}`, 'get')
+  })
+
   // Remove song mutation
   const {
     isLoading: removeSongLoading,
@@ -198,7 +214,59 @@ const SongView: FC<{ id: string }> = ({ id }) => {
   }
 
   const onCloneSong = async (songId: string, bandId: string) => {
-    console.log('[clone]', songId, bandId)
+    
+    // Retrieve selected band categories
+    const bandCategories = await bandCategoriesRequest(bandId)
+    if (![200, 201].includes(bandCategories.status)) {
+      toast(genericMsg)
+    }
+
+    // Validate if selected band has categories
+    const categoriesList: CategoryType[] = bandCategories.data
+    if (categoriesList.length <= 0) {
+      return toast({
+        title: 'Não há categorias!',
+        description: 'Não há categorias registradas na banda selecionada para clonar a música! Primeiramente crie uma categoria e após isso tente clonar a música novamente.',     
+        status: 'info',
+        duration: 3500,
+        isClosable: true
+      })
+    }
+    const firstCategoryId = categoriesList[0].id
+
+    // Clone song payload
+    const payload = {
+      title: `${song?.data.title} - Copy`,
+      writter: song?.data.writter,
+      category: firstCategoryId,
+      isPublic: false,
+      tone: song?.data.tone,
+      body: song?.data.body,
+      bandId
+    }
+
+    // Request api
+    const response = await cloneRequest(payload)
+
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
+      
+      // Notify user about response success
+      toast({
+        title: 'Sucesso!',
+        description: `A música selecionada foi clonada com sucesso para banda informada! Você foi redirecionado para a página da música clonada.`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+      // Redirect to cloned song page
+      onCloningClose()
+      router.push(`../songs/${response.data.id}`)
+
+    } else {
+      toast(genericMsg)
+    }
   }
 
   const onRemoveSong = async (id: string) => {
@@ -244,7 +312,14 @@ const SongView: FC<{ id: string }> = ({ id }) => {
   }
 
   // Unify loading status
-  const loadingStatus = songLoading || accountShowsLoading || removeSongLoading || addToShowLoading
+  const loadingStatus = (
+    songLoading ||
+    accountShowsLoading ||
+    removeSongLoading ||
+    addToShowLoading ||
+    isCloneLoading ||
+    categoriesLoading
+  )
 
   // Computed props
   const filteredShows = (accountShows && accountShows.data)
@@ -301,8 +376,8 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                     </MenuItem>
                     <MenuItem
                       icon={<CopyIcon />}
-                      disabled={bandsLoading || songLoading}
-                      onClick={(bandsLoading || songLoading) ? () => {} : () => onCloningOpen()}
+                      disabled={bandsLoading || songLoading || isCloneLoading}
+                      onClick={(bandsLoading || songLoading || isCloneLoading) ? () => {} : () => onCloningOpen()}
                     >
                       Clonar Música
                     </MenuItem>  
@@ -438,7 +513,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                               key={band.id}
                               item={band}
                               onClick={(_id: string) => {
-                                if (!bandsLoading) {
+                                if (!bandsLoading && !isCloneLoading && !categoriesLoading) {
                                   setAction({ type: 'clone', id: _id })
                                   onConfirmOpen()
                                 }
