@@ -8,8 +8,8 @@ import { NextPageWithLayout } from '../../_app'
 import { SecureLayout } from 'presentation/ui/_layouts'
 import { SaveBandView } from 'presentation/ui/views'
 
-// Songs component
-const Songs: NextPageWithLayout = () => {
+// SaveBand component
+const SaveBand: NextPageWithLayout = () => {
   // Check if user authorization is expired
   useUser({ redirectTo: '/login' })
 
@@ -17,8 +17,8 @@ const Songs: NextPageWithLayout = () => {
   return (
     <main>
       <Head>
-        <title>Playliter - Save Band</title>
-        <meta name="description" content="Save Band" />
+        <title>Playliter - Salvar Banda</title>
+        <meta name="description" content="Savar Banda" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SaveBandView />
@@ -27,7 +27,7 @@ const Songs: NextPageWithLayout = () => {
 }
 
 // Applying layout
-Songs.getLayout = function getLayout(page: ReactElement) {
+SaveBand.getLayout = function getLayout(page: ReactElement) {
   return (
     <SecureLayout
       pageTitle="Salvar banda"
@@ -39,4 +39,4 @@ Songs.getLayout = function getLayout(page: ReactElement) {
 }
 
 // Exporting component
-export default Songs
+export default SaveBand

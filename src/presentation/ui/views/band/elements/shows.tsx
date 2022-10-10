@@ -73,7 +73,7 @@ export const ShowsComponent: FC<{ bandId: string }> = ({ bandId }) => {
         </FormControl>
         <Button
           w="full"
-          onClick={() => console.log('[new] show')}
+          onClick={() => router.push(`../shows/save?band=${bandId}`)}
           bgColor="primary.500"
           color="gray.100"
           _hover={{

@@ -5,12 +5,12 @@ import { ReactElement } from 'react'
 import { useUser } from 'infra/services/session'
 
 // Layout and Components
-import { NextPageWithLayout } from '../_app'
+import { NextPageWithLayout } from '../../_app'
 import { SecureLayout } from 'presentation/ui/_layouts'
-import { BandView } from 'presentation/ui/views'
+import { SaveShowView } from 'presentation/ui/views'
 
-// Songs component
-const Band: NextPageWithLayout = () => {
+// SaveShow component
+const SaveShow: NextPageWithLayout = () => {
   // Check if user authorization is expired
   useUser({ redirectTo: '/login' })
 
@@ -18,26 +18,27 @@ const Band: NextPageWithLayout = () => {
   const router = useRouter()
   
   // Retrieve page slug
-  const slug: string = (router.query.slug as string) || ''
+  const id: string = (router.query.id as string) || ''
+  const band: string = (router.query.band as string) || ''
 
   // Page JSX
   return (
     <main>
       <Head>
-        <title>Playliter - Banda</title>
-        <meta name="description" content="Banda" />
+        <title>Playliter - Salvar Apresentação</title>
+        <meta name="description" content="Salvar Apresentação" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <BandView id={slug} />
+      <SaveShowView id={id} bandId={band} />
     </main>
   )
 }
 
 // Applying layout
-Band.getLayout = function getLayout(page: ReactElement) {
+SaveShow.getLayout = function getLayout(page: ReactElement) {
   return (
     <SecureLayout
-      pageTitle="Detalhes da Banda"
+      pageTitle="Salvar Apresentação"
       pageSubtitle=""
     >
       {page}
@@ -46,4 +47,4 @@ Band.getLayout = function getLayout(page: ReactElement) {
 }
 
 // Exporting component
-export default Band
+export default SaveShow

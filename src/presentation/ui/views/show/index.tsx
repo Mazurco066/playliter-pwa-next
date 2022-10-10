@@ -297,7 +297,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                   left="2"
                   top="2"
                 >
-                  { formatDate(date) }
+                  { date ? formatDate(date) : '' }
                 </Badge>
                 <Flex
                   justifyContent="flex-end"
@@ -320,7 +320,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                       <MenuItem
                         disabled={removeSongLoading || showLoading || removeShowLoading}
                         icon={<EditIcon />}
-                        onClick={() => {}}
+                        onClick={() => router.push(`../shows/save/${show?.data.id}`)}
                       >
                         Editar
                       </MenuItem>

@@ -9,7 +9,7 @@ import { NextPageWithLayout } from '../../_app'
 import { SecureLayout } from 'presentation/ui/_layouts'
 import { SaveBandView } from 'presentation/ui/views'
 
-// Songs component
+// SaveBand component
 const SaveBand: NextPageWithLayout = () => {
   // Check if user authorization is expired
   useUser({ redirectTo: '/login' })
@@ -24,8 +24,8 @@ const SaveBand: NextPageWithLayout = () => {
   return (
     <main>
       <Head>
-        <title>Playliter - Save Band</title>
-        <meta name="description" content="Save Band" />
+        <title>Playliter - Salvar Banda</title>
+        <meta name="description" content="Salvar Banda" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SaveBandView id={slug} />

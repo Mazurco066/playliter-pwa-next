@@ -7,8 +7,7 @@ import { requestClient } from 'infra/services/http'
 
 // Layout and Components
 import { Icon } from '@chakra-ui/icons'
-import { FaFileSignature, FaSignature } from 'react-icons/fa'
-import { FileUpload } from 'presentation/ui/components'
+import { FaCalendar, FaFileSignature, FaSignature } from 'react-icons/fa'
 import {
   Button,
   Container,
@@ -32,8 +31,14 @@ const genericMsg: UseToastOptions = {
   isClosable: true
 }
 
-// Save band component
-const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
+// Save show component
+const SaveShowView: FC<{
+  id?: string,
+  bandId?: string
+}> = ({
+  id = '',
+  bandId = ''
+}) => {
   // Hooks
   const router = useRouter()
   const toast = useToast()
@@ -46,37 +51,53 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
 
   // Requests
   const {
-    data: band,
-    isLoading: bandLoading
+    data: show,
+    isLoading: showLoading
   } = useQuery(
-    ['saveBand'],
-    () => requestClient(`/api/bands/get?id=${id}`, 'get'),
+    ['save-show'],
+    () => requestClient(`/api/shows/get?id=${id}`, 'get'),
     { enabled: id !== '' }
   )
   
   // Set form values if an id was received
   useEffect(() => {
-    if (band && band.data) {
+    if (show && show.data) {
       const options = { shouldValidate: true, shouldDirty: true }
-      setValue('title', band.data?.title, options)
-      setValue('description', band.data?.description, options)
+      setValue('title', show.data?.title, options)
+      setValue('description', show.data?.description, options)
+      setValue('date', show.data?.date.split('T')[0], options)
     }
-  }, [band])
+  }, [show])
+
+  // Validate path params
+  useEffect(() => {
+    if (!id && !bandId) {
+      toast({
+        title: 'Parâmetros inválidos.',
+          description: 'Para acessar a página de salvar show por favor utilize uma URL valida!',
+          status: 'info',
+          duration: 3500,
+          isClosable: true
+      })
+      router.push('../../bands')
+    }
+  }, [id, bandId])
 
   // Clear form on startup
   useEffect(() => {
     const options = { shouldValidate: false, shouldDirty: true }
     setValue('title', '', options)
     setValue('description', '', options)
+    setValue('date', '', options)
   }, [])
 
-  // Notify user about error while fetching his banda data
+  // Notify user about error while fetching his show data
   useEffect(() => {
-    if (band && band?.status !== 200) {
-      if ([404].includes(band.status)) {
+    if (show && show?.status !== 200) {
+      if ([404].includes(show.status)) {
         toast({
-          title: 'Banda não encontrada.',
-          description: 'A banda informada não foi encontrada em sua conta!',
+          title: 'Apresentação não encontrada.',
+          description: 'A apresentação informada não foi encontrada!',
           status: 'info',
           duration: 5000,
           isClosable: true
@@ -84,33 +105,33 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
       } else {
         toast(genericMsg)
       }
-      router.push('../bands')
+      router.push('../../bands')
     }
-  }, [band])
+  }, [show])
 
   // Save band
   const { isLoading, mutateAsync } = useMutation((data: any) => {
-    return requestClient('/api/bands/save', 'post', data)
+    return requestClient('/api/shows/save', 'post', data)
   })
 
   // Actions
   const onSubmit = async (data: any) => {
     // Request api via server side
-    const response = await mutateAsync(id ? { id, ...data } : { ...data })
+    const response = await mutateAsync(id ? { id, ...data } : { bandId: bandId, ...data })
 
     // Verify if request was successfull
     if ([200, 201].includes(response.status)) {
-      // Notify user about created band
+      // Notify user about created show
       toast({
         title: 'Sucesso!',
-        description: `Sua banda de nome ${response?.data?.title} foi salva com sucesso!`,
+        description: `Sua apresentação com título de ${response?.data?.title} foi salva com sucesso!`,
         status: 'success',
         duration: 2000,
         isClosable: true
       })
 
-      // Redirect to band page
-      router.push(id ? '../../bands' : '../bands')
+      // Redirect to show page
+      router.push(id  ? `../../shows/${id}` : `../shows/${response.data.id}`)
 
     } else {
       if ([400].includes(response.status)) {
@@ -118,6 +139,14 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
           title: 'Ops.. Há campos inválidos!',
           description: 'Por favor revise o preenchimento de seu formulário!',     
           status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+      } else if ([401, 403].includes(response.status)) {
+        toast({
+          title: 'Permissão insuficiente!',
+          description: 'Você não tem permissão para criar/salvar apresentações desta banda!',     
+          status: 'info',
           duration: 3500,
           isClosable: true
         })
@@ -132,22 +161,22 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
     <div>
       <Container maxWidth="6xl">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FileUpload />
           <FormControl
-            isDisabled={isLoading || (id != '' && bandLoading)}
+            isDisabled={isLoading || (id != '' && showLoading)}
             isRequired
             mb="5"
           >
-            <FormLabel>Nome da banda</FormLabel>
+            <FormLabel>Título da apresentação</FormLabel>
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
                 children={<Icon as={FaSignature} />}
               />
               <Input
-                disabled={isLoading || (id != '' && bandLoading)}
+                disabled={isLoading || (id != '' && showLoading)}
+                variant="filled"
                 type="text"
-                placeholder="Nome da banda"
+                placeholder="Título da apresentação"
                 minLength={2}
                 {...register('title', { required: true })}
               />
@@ -155,11 +184,35 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
             {errors.title ? (
               <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
             ) : (
-              <FormHelperText>Insira um nome para identificar sua banda.</FormHelperText>
+              <FormHelperText>Insira um nome para identificar essa apresentação.</FormHelperText>
             )}
           </FormControl>
           <FormControl
-            isDisabled={isLoading || (id != '' && bandLoading)}
+            isDisabled={isLoading || (id != '' && showLoading)}
+            isRequired
+            mb="5"
+          >
+            <FormLabel>Data da apresentação</FormLabel>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                children={<Icon as={FaCalendar} />}
+              />
+              <Input
+                disabled={isLoading || (id != '' && showLoading)}
+                variant="filled"
+                type="date"
+                {...register('date', { required: true })}
+              />
+            </InputGroup>
+            {errors.date ? (
+              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+            ) : (
+              <FormHelperText>Insira uma data para apresentação.</FormHelperText>
+            )}
+          </FormControl>
+          <FormControl
+            isDisabled={isLoading || (id != '' && showLoading)}
             isRequired
             mb="5"
           >
@@ -170,8 +223,9 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
                 children={<Icon as={FaFileSignature} />}
               />
               <Textarea
-                disabled={isLoading || (id != '' && bandLoading)}
-                placeholder="Descrição da banda"
+                disabled={isLoading || (id != '' && showLoading)}
+                variant="filled"
+                placeholder="Descrição da apresentação"
                 pl="10"
                 minLength={2}
                 {...register('description', { required: true })}
@@ -180,11 +234,11 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
             {errors.description ? (
               <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
             ) : (
-              <FormHelperText>Insira uma breve descrição para a banda.</FormHelperText>
+              <FormHelperText>Insira uma breve descrição para a apresentação.</FormHelperText>
             )}
           </FormControl>
           <Button
-            disabled={isLoading || (id != '' && bandLoading)}
+            disabled={isLoading || (id != '' && showLoading)}
             variant="fade"
             type="submit"
             width="full"
@@ -199,4 +253,4 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
 }
 
 // Exporting component
-export default SaveBandView
+export default SaveShowView

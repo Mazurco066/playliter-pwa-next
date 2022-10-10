@@ -18,7 +18,7 @@ const Bands: NextPageWithLayout = () => {
     <main>
       <Head>
         <title>Playliter - Bandas</title>
-        <meta name="description" content="Band manager app" />
+        <meta name="description" content="Bandas" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <BandsView />

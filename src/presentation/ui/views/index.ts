@@ -6,6 +6,7 @@ import LandingView from './landing'
 import LoginInView from './login'
 import ProfileView from './profile'
 import SaveBandView from './saveBand'
+import SaveShowView from './saveShow'
 import ShowView from './show'
 import SignUpView from './signup'
 import SongView from './song'
@@ -20,6 +21,7 @@ export {
   LoginInView,
   ProfileView,
   SaveBandView,
+  SaveShowView,
   ShowView,
   SignUpView,
   SongView,
