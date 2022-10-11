@@ -371,6 +371,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                     <MenuItem
                       icon={<EditIcon />}
                       disabled={songLoading || removeSongLoading}
+                      onClick={() => router.push(`../songs/save/${song.data.id}`)}
                     >
                       Editar
                     </MenuItem>

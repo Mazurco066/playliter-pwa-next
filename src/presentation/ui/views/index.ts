@@ -7,6 +7,7 @@ import LoginInView from './login'
 import ProfileView from './profile'
 import SaveBandView from './saveBand'
 import SaveShowView from './saveShow'
+import SaveSongView from './saveSong'
 import ShowView from './show'
 import SignUpView from './signup'
 import SongView from './song'
@@ -22,6 +23,7 @@ export {
   ProfileView,
   SaveBandView,
   SaveShowView,
+  SaveSongView,
   ShowView,
   SignUpView,
   SongView,

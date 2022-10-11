@@ -51,7 +51,10 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
   } = useQuery(
     ['saveBand'],
     () => requestClient(`/api/bands/get?id=${id}`, 'get'),
-    { enabled: id !== '' }
+    {
+      enabled: id !== '',
+      refetchOnWindowFocus: false
+    }
   )
   
   // Set form values if an id was received

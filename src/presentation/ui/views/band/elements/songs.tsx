@@ -129,7 +129,7 @@ export const SongsComponent: FC<{
               duration: 3500,
               isClosable: true
             })
-            console.log('[new] song')
+            router.push(`../songs/save?band=${bandId}`)
           }}
           bgColor="primary.500"
           color="gray.100"

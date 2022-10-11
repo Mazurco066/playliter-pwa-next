@@ -56,7 +56,10 @@ const SaveShowView: FC<{
   } = useQuery(
     ['save-show'],
     () => requestClient(`/api/shows/get?id=${id}`, 'get'),
-    { enabled: id !== '' }
+    {
+      enabled: id !== '',
+      refetchOnWindowFocus: false
+    }
   )
   
   // Set form values if an id was received
@@ -109,7 +112,7 @@ const SaveShowView: FC<{
     }
   }, [show])
 
-  // Save band
+  // Save show
   const { isLoading, mutateAsync } = useMutation((data: any) => {
     return requestClient('/api/shows/save', 'post', data)
   })
