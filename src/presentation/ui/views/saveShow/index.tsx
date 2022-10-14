@@ -9,6 +9,7 @@ import { requestClient } from 'infra/services/http'
 import { Icon } from '@chakra-ui/icons'
 import { FaCalendar, FaFileSignature, FaSignature } from 'react-icons/fa'
 import {
+  Box,
   Button,
   Container,
   FormControl,
@@ -18,6 +19,7 @@ import {
   InputGroup,
   InputLeftElement,
   Textarea,
+  useColorModeValue,
   useToast,
   UseToastOptions
 } from '@chakra-ui/react'
@@ -48,6 +50,9 @@ const SaveShowView: FC<{
     setValue,
     formState: { errors },
   } = useForm()
+
+  // Color hooks
+  const bgBox = useColorModeValue('gray.50', 'gray.800')
 
   // Requests
   const {
@@ -163,93 +168,100 @@ const SaveShowView: FC<{
   return (
     <div>
       <Container maxWidth="6xl">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl
-            isDisabled={isLoading || (id != '' && showLoading)}
-            isRequired
-            mb="5"
-          >
-            <FormLabel>Título da apresentação</FormLabel>
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                children={<Icon as={FaSignature} />}
-              />
-              <Input
-                disabled={isLoading || (id != '' && showLoading)}
-                variant="filled"
-                type="text"
-                placeholder="Título da apresentação"
-                minLength={2}
-                {...register('title', { required: true })}
-              />
-            </InputGroup>
-            {errors.title ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
-            ) : (
-              <FormHelperText>Insira um nome para identificar essa apresentação.</FormHelperText>
-            )}
-          </FormControl>
-          <FormControl
-            isDisabled={isLoading || (id != '' && showLoading)}
-            isRequired
-            mb="5"
-          >
-            <FormLabel>Data da apresentação</FormLabel>
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                children={<Icon as={FaCalendar} />}
-              />
-              <Input
-                disabled={isLoading || (id != '' && showLoading)}
-                variant="filled"
-                type="date"
-                {...register('date', { required: true })}
-              />
-            </InputGroup>
-            {errors.date ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
-            ) : (
-              <FormHelperText>Insira uma data para apresentação.</FormHelperText>
-            )}
-          </FormControl>
-          <FormControl
-            isDisabled={isLoading || (id != '' && showLoading)}
-            isRequired
-            mb="5"
-          >
-            <FormLabel>Descrição</FormLabel>
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                children={<Icon as={FaFileSignature} />}
-              />
-              <Textarea
-                disabled={isLoading || (id != '' && showLoading)}
-                variant="filled"
-                placeholder="Descrição da apresentação"
-                pl="10"
-                minLength={2}
-                {...register('description', { required: true })}
-              />
-            </InputGroup>
-            {errors.description ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
-            ) : (
-              <FormHelperText>Insira uma breve descrição para a apresentação.</FormHelperText>
-            )}
-          </FormControl>
-          <Button
-            disabled={isLoading || (id != '' && showLoading)}
-            variant="fade"
-            type="submit"
-            width="full"
-            mb="5"
-          >
-            Salvar
-          </Button>
-        </form>
+        <Box
+          px="3"
+          py="5"
+          borderRadius="lg"
+          bgColor={bgBox}
+          mb="5"
+        >
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl
+              isDisabled={isLoading || (id != '' && showLoading)}
+              isRequired
+              mb="5"
+            >
+              <FormLabel>Título da apresentação</FormLabel>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<Icon as={FaSignature} />}
+                />
+                <Input
+                  disabled={isLoading || (id != '' && showLoading)}
+                  variant="filled"
+                  type="text"
+                  placeholder="Título da apresentação"
+                  minLength={2}
+                  {...register('title', { required: true })}
+                />
+              </InputGroup>
+              {errors.title ? (
+                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              ) : (
+                <FormHelperText>Insira um nome para identificar essa apresentação.</FormHelperText>
+              )}
+            </FormControl>
+            <FormControl
+              isDisabled={isLoading || (id != '' && showLoading)}
+              isRequired
+              mb="5"
+            >
+              <FormLabel>Data da apresentação</FormLabel>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<Icon as={FaCalendar} />}
+                />
+                <Input
+                  disabled={isLoading || (id != '' && showLoading)}
+                  variant="filled"
+                  type="date"
+                  {...register('date', { required: true })}
+                />
+              </InputGroup>
+              {errors.date ? (
+                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              ) : (
+                <FormHelperText>Insira uma data para apresentação.</FormHelperText>
+              )}
+            </FormControl>
+            <FormControl
+              isDisabled={isLoading || (id != '' && showLoading)}
+              isRequired
+              mb="5"
+            >
+              <FormLabel>Descrição</FormLabel>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<Icon as={FaFileSignature} />}
+                />
+                <Textarea
+                  disabled={isLoading || (id != '' && showLoading)}
+                  variant="filled"
+                  placeholder="Descrição da apresentação"
+                  pl="10"
+                  minLength={2}
+                  {...register('description', { required: true })}
+                />
+              </InputGroup>
+              {errors.description ? (
+                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              ) : (
+                <FormHelperText>Insira uma breve descrição para a apresentação.</FormHelperText>
+              )}
+            </FormControl>
+            <Button
+              disabled={isLoading || (id != '' && showLoading)}
+              variant="fade"
+              type="submit"
+              width="full"
+            >
+              Salvar
+            </Button>
+          </form>
+        </Box>
       </Container>
     </div>
   )

@@ -388,6 +388,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                         song={_song}
                         order={i+1}
                         onClick={() => router.push(`../songs/${_song.id}`)}
+                        onEdit={() => router.push(`../songs/save/${_song.id}`)}
                         onRemove={() => {
                           setAction({ type: 'remove', id: _song.id })
                           onConfirmOpen()

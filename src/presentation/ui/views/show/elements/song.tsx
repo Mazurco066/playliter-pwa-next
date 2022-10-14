@@ -6,7 +6,7 @@ import type { SongType } from 'domain/models'
 
 // Components
 import { FaEllipsisV, FaHandRock } from 'react-icons/fa'
-import { DeleteIcon, Icon, ViewIcon } from '@chakra-ui/icons'
+import { DeleteIcon, EditIcon, Icon, ViewIcon } from '@chakra-ui/icons'
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd'
 import {
   Box,
@@ -91,12 +91,14 @@ export const DraggableSongItem: FC<{ item: SongType, index: number }> = ({ item,
 // Ordered Component
 export const OrderedSong: FC<{
   onClick?: () => void,
+  onEdit?: () => void,
   onRemove?: () => void,
   isLoading?: boolean,
   order?: number,
   song: SongType
 }> = ({
   onClick = () => {},
+  onEdit = () => {},
   onRemove = () => {},
   isLoading = false,
   order = 0,
@@ -182,6 +184,13 @@ export const OrderedSong: FC<{
                   onClick={onClick}
                 >
                   Ver música
+                </MenuItem>
+                <MenuItem
+                  disabled={isLoading}
+                  icon={<EditIcon />}
+                  onClick={onEdit}
+                >
+                  Editar música
                 </MenuItem>
                 <MenuItem
                   disabled={isLoading}

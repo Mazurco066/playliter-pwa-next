@@ -12,9 +12,11 @@ import { detecteSongFormat, plaintextToChordProFormat } from 'presentation/utils
 import type { CategoryType } from 'domain/models'
 
 // Layout and Components
+import { LoadingAlert } from 'presentation/ui/components'
 import { Icon } from '@chakra-ui/icons'
 import { FaMicrophone, FaMusic } from 'react-icons/fa'
 import {
+  Box,
   Button,
   Container,
   FormControl,
@@ -25,6 +27,9 @@ import {
   InputLeftElement,
   Select,
   Switch,
+  Text,
+  useColorModeValue,
+  useDisclosure,
   useToast,
   UseToastOptions
 } from '@chakra-ui/react'
@@ -55,6 +60,8 @@ const SaveSongView: FC<{
   const [ transpositions, setTranspositions ] = useState<Array<any>>([])
   const [ categories, setCategories ] = useState<CategoryType[]>([])
   const [ isPublic, setPublicState ] = useState<boolean>(true)
+  const [ importUrl, setImportUrl ] = useState<string>('')
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const {
     control,
     register,
@@ -62,6 +69,10 @@ const SaveSongView: FC<{
     setValue,
     formState: { errors },
   } = useForm()
+
+  // Color hooks
+  const bgBox = useColorModeValue('gray.50', 'gray.800')
+  const colorBtn = useColorModeValue('gray.900', 'gray.100')
 
   // Requests
   const {
@@ -165,6 +176,14 @@ const SaveSongView: FC<{
     return requestClient(`/api/bands/categories?band=${bandId}`, 'get')
   })
 
+  // Song scrapper request
+  const {
+    mutateAsync: scrapAsync,
+    isLoading: isScrapLoading 
+  } = useMutation((url: string) => {
+    return requestClient(`/api/songs/scrap_song`, 'post', { url })
+  })
+
   // Update form category data according to song
   useEffect(() => {
     if (categories.length) {
@@ -196,6 +215,59 @@ const SaveSongView: FC<{
       router.push('../../bands')
     } else {
       setCategories(response.data)
+    }
+  }
+
+  // Import song text from cifra club
+  const scrapSong = async (url: string) => {
+    if (!url) return toast({
+      title: 'URL inválida!',
+      description: `Por favor insira a url da música para realizar a importação.`,
+      status: 'warning',
+      duration: 2000,
+      isClosable: true
+    })
+    if (!url.includes('https://')) return toast({
+      title: 'URL inválida!',
+      description: `Por favor insira uma URL válida.`,
+      status: 'warning',
+      duration: 2000,
+      isClosable: true
+    })
+
+    // Toggle screen loader
+    onOpen()
+
+    // Request scrapping endpoint
+    const response = await scrapAsync(url)
+    onClose()
+    
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
+      
+      // Retrieve song data
+      const { loot, title, tone, writter } = response.data
+
+      // Format raw data
+      const obtainedBody = plaintextToChordProFormat(loot)
+      const obtainedTone = transpositions.find(t => t.value === tone) ? tone : tone.substring(0, 1)
+
+      // Update form values
+      const options = { shouldValidate: true, shouldDirty: true }
+      setValue('title', title, options)
+      setValue('writter', writter, options)
+      setValue('body', obtainedBody, options)
+      setValue('tone', obtainedTone, options)
+
+
+    } else {
+      toast({
+        title: 'Ops...!',
+        description: `Ocorreu um erro durante a importação. Verifique se a URL informada corresponde a música.`,
+        status: 'warning',
+        duration: 2000,
+        isClosable: true
+      })
     }
   }
 
@@ -270,164 +342,233 @@ const SaveSongView: FC<{
   return (
     <div>
       <Container maxWidth="6xl">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl
-            isDisabled={isLoading || (id != '' && songLoading)}
-            mb="5"
+        <Box
+          mb="5"
+          bgGradient="linear(to-b, secondary.600, primary.600)"
+          borderRadius="lg"
+          px="3"
+          py="3"
+        >
+          <Text
+            color="gray.100"
+            fontWeight="bold"
+            fontSize="sm"
           >
-            <FormLabel htmlFor='isPublic' mb='0'>
-              A música é pública?
-            </FormLabel>
-            <Switch
-              id='isPublic'
-              size="md"
-              isChecked={isPublic}
-              onChange={(e) => setPublicState(e.target.checked === true)}
-            />
-          </FormControl>
-          <FormControl
-            isDisabled={isLoading || (id != '' && songLoading)}
-            isRequired
-            mb="5"
+            Música está em site de terceiros?
+          </Text>
+          <Text
+            color="gray.100"
+            mb="3"
+            fontSize="sm"
           >
-            <FormLabel>Título da música</FormLabel>
-            <InputGroup>
+            Sem problemas? Cole a URL da música no campo abaixo e a importaremos para o app.
+          </Text>
+          <FormControl isDisabled={isLoading || (id != '' && songLoading)} mb="3">
+            <InputGroup
+              bgColor="gray.100"
+              borderRadius="lg"
+              color="gray.800"
+              size="sm"
+            >
               <InputLeftElement
                 pointerEvents="none"
                 children={<Icon as={FaMusic} />}
               />
               <Input
                 disabled={isLoading || (id != '' && songLoading)}
-                variant="filled"
                 type="text"
-                placeholder="Título..."
+                placeholder="URL da música..."
+                value={importUrl}
+                onChange={e => setImportUrl(e.target.value)}
                 minLength={2}
-                {...register('title', { required: true })}
+                _placeholder={{
+                  color: 'gray.500'
+                }}
               />
             </InputGroup>
-            {errors.title ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
-            ) : (
-              <FormHelperText>Insira um título para a música.</FormHelperText>
-            )}
-          </FormControl>
-          <FormControl
-            isDisabled={isLoading || (id != '' && songLoading)}
-            isRequired
-            mb="5"
-          >
-            <FormLabel>Autor da música</FormLabel>
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                children={<Icon as={FaMicrophone} />}
-              />
-              <Input
-                disabled={isLoading || (id != '' && songLoading)}
-                variant="filled"
-                type="text"
-                placeholder="Autor..."
-                minLength={2}
-                {...register('writter', { required: true })}
-              />
-            </InputGroup>
-            {errors.writter ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
-            ) : (
-              <FormHelperText>Insira o autor da música.</FormHelperText>
-            )}
-          </FormControl>
-          <FormControl
-            isDisabled={isLoading || (id != '' && songLoading)}
-            isRequired
-            mb="5"
-          >
-            <FormLabel>Tom Base</FormLabel>
-            <InputGroup>
-              <Select
-                disabled={isLoading || (id != '' && songLoading)}
-                variant="filled"
-                placeholder="Tom Base"
-                {...register('tone', { required: true })}
-              >
-                {
-                  transpositions.map((t: any, i: number) => (
-                    <option key={i} value={t.step}>
-                      { `${t.name.root.note.note}${t.name.root.modifier ? t.name.root.modifier : ''}` }
-                    </option>
-                  ))
-                }
-              </Select>
-            </InputGroup>
-            {errors.tone ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
-            ) : (
-              <FormHelperText>Selecione o tom base da música.</FormHelperText>
-            )}
-          </FormControl>
-          <FormControl
-            isDisabled={isLoading || (id != '' && songLoading)}
-            isRequired
-            mb="5"
-          >
-            <FormLabel>Categoria</FormLabel>
-            <InputGroup>
-              <Select
-                disabled={isLoading || (id != '' && songLoading)}
-                variant="filled"
-                placeholder="Selecionar Categoria..."
-                {...register('category', { required: true })}
-              >
-                {
-                  categories.map((_category: CategoryType, i : number) => (
-                    <option key={i} value={_category.id}>
-                      {_category.title}
-                    </option>
-                  ))
-                }
-              </Select>
-            </InputGroup>
-            {errors.category ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
-            ) : (
-              <FormHelperText>Selecione uma categoria música.</FormHelperText>
-            )}
-          </FormControl>
-          <FormControl
-            isDisabled={isLoading || (id != '' && songLoading)}
-            isRequired
-            mb="5"
-          >
-            <FormLabel>Corpo da música</FormLabel>
-            <Controller
-              control={control}
-              name="body"
-              rules={{ required: true }}
-              render={({ field: { onChange, value, ref } }) => (
-                <CustomAceEditor
-                  ref={ref}
-                  onChange={onChange}
-                  value={value}
-                />
-              )}
-            />
-            {errors.body ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
-            ) : (
-              <FormHelperText>Insira um corpo para a música.</FormHelperText>
-            )}
           </FormControl>
           <Button
-            disabled={isLoading || (id != '' && songLoading)}
-            variant="fade"
-            type="submit"
             width="full"
-            mb="5"
+            colorScheme="whiteAlpha"
+            size="sm"
+            color={colorBtn}
+            onClick={isScrapLoading ? () => {} : () => scrapSong(importUrl)}
           >
-            Salvar
+            Importar música
           </Button>
-        </form>
+        </Box>
+        <Box
+          px="3"
+          py="5"
+          borderRadius="lg"
+          bgColor={bgBox}
+          mb="5"
+        >
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl
+              isDisabled={isLoading || (id != '' && songLoading)}
+              mb="5"
+            >
+              <FormLabel htmlFor='isPublic' mb='0'>
+                A música é pública?
+              </FormLabel>
+              <Switch
+                id='isPublic'
+                size="md"
+                isChecked={isPublic}
+                onChange={(e) => setPublicState(e.target.checked === true)}
+              />
+            </FormControl>
+            <FormControl
+              isDisabled={isLoading || (id != '' && songLoading)}
+              isRequired
+              mb="5"
+            >
+              <FormLabel>Título da música</FormLabel>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<Icon as={FaMusic} />}
+                />
+                <Input
+                  disabled={isLoading || (id != '' && songLoading)}
+                  variant="filled"
+                  type="text"
+                  placeholder="Título..."
+                  minLength={2}
+                  {...register('title', { required: true })}
+                />
+              </InputGroup>
+              {errors.title ? (
+                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              ) : (
+                <FormHelperText>Insira um título para a música.</FormHelperText>
+              )}
+            </FormControl>
+            <FormControl
+              isDisabled={isLoading || (id != '' && songLoading)}
+              isRequired
+              mb="5"
+            >
+              <FormLabel>Autor da música</FormLabel>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<Icon as={FaMicrophone} />}
+                />
+                <Input
+                  disabled={isLoading || (id != '' && songLoading)}
+                  variant="filled"
+                  type="text"
+                  placeholder="Autor..."
+                  minLength={2}
+                  {...register('writter', { required: true })}
+                />
+              </InputGroup>
+              {errors.writter ? (
+                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              ) : (
+                <FormHelperText>Insira o autor da música.</FormHelperText>
+              )}
+            </FormControl>
+            <FormControl
+              isDisabled={isLoading || (id != '' && songLoading)}
+              isRequired
+              mb="5"
+            >
+              <FormLabel>Tom Base</FormLabel>
+              <InputGroup>
+                <Select
+                  disabled={isLoading || (id != '' && songLoading)}
+                  variant="filled"
+                  placeholder="Tom Base"
+                  {...register('tone', { required: true })}
+                >
+                  {
+                    transpositions.map((t: any, i: number) => (
+                      <option key={i} value={t.step}>
+                        { `${t.name.root.note.note}${t.name.root.modifier ? t.name.root.modifier : ''}` }
+                      </option>
+                    ))
+                  }
+                </Select>
+              </InputGroup>
+              {errors.tone ? (
+                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              ) : (
+                <FormHelperText>Selecione o tom base da música.</FormHelperText>
+              )}
+            </FormControl>
+            <FormControl
+              isDisabled={isLoading || (id != '' && songLoading)}
+              isRequired
+              mb="5"
+            >
+              <FormLabel>Categoria</FormLabel>
+              <InputGroup>
+                <Select
+                  disabled={isLoading || (id != '' && songLoading)}
+                  variant="filled"
+                  placeholder="Selecionar Categoria..."
+                  {...register('category', { required: true })}
+                >
+                  {
+                    categories.map((_category: CategoryType, i : number) => (
+                      <option key={i} value={_category.id}>
+                        {_category.title}
+                      </option>
+                    ))
+                  }
+                </Select>
+              </InputGroup>
+              {errors.category ? (
+                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              ) : (
+                <FormHelperText>Selecione uma categoria música.</FormHelperText>
+              )}
+            </FormControl>
+            <FormControl
+              isDisabled={isLoading || (id != '' && songLoading)}
+              isRequired
+              mb="5"
+            >
+              <FormLabel>Corpo da música</FormLabel>
+              <Controller
+                control={control}
+                name="body"
+                rules={{ required: true }}
+                render={({ field: { onChange, value, ref } }) => (
+                  <CustomAceEditor
+                    ref={ref}
+                    onChange={onChange}
+                    value={value}
+                  />
+                )}
+              />
+              {errors.body ? (
+                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              ) : (
+                <FormHelperText>Insira um corpo para a música.</FormHelperText>
+              )}
+            </FormControl>
+            <Button
+              disabled={isLoading || (id != '' && songLoading)}
+              variant="fade"
+              type="submit"
+              width="full"
+            >
+              Salvar
+            </Button>
+          </form>
+        </Box>
       </Container>
+      <LoadingAlert 
+        isOpen={isOpen}
+        onClose={onClose}
+        onOpen={onOpen}
+        title="Importando música"
+        message="Estamos importando a música indicada! Esse processo poderá demorar alguns segundos, por favor aguarde."
+      />
     </div>
   )
 }
