@@ -16,7 +16,7 @@ import {
 export const Footer: FC = () => {
   // JSX
   return (
-    <Container height="full">
+    <Container height="full" maxW="6xl">
       <Divider orientation="horizontal" />
       <Flex
         height="full"

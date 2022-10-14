@@ -259,6 +259,8 @@ const SaveSongView: FC<{
       setValue('body', obtainedBody, options)
       setValue('tone', obtainedTone, options)
 
+      // Clear url
+      setImportUrl('')
 
     } else {
       toast({

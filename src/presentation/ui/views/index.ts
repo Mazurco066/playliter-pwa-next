@@ -11,6 +11,7 @@ import SaveSongView from './saveSong'
 import ShowView from './show'
 import SignUpView from './signup'
 import SongView from './song'
+import SonglistView from './songlist'
 import SongsView from './songs'
 
 export {
@@ -27,5 +28,6 @@ export {
   ShowView,
   SignUpView,
   SongView,
+  SonglistView,
   SongsView
 }

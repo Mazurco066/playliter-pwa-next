@@ -362,7 +362,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                     variant="fade"
                     width="full"
                     flexGrow="1"
-                    onClick={() => console.log('view pdf')}
+                    onClick={() => router.push(`../../songlist/${show.data.id}`)}
                   >
                     Visualização sequencial
                   </Button>

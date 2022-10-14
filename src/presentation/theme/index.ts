@@ -47,6 +47,20 @@ const styles: Styles = {
     '#__next': {
       height: '100%',
       overflowX: 'hidden'
+    },
+    // Media print styles for songlist export
+    '@media print': {
+      html: {
+        height: 'initial'
+      },
+      body: {
+        bg: mode('white', 'white')(props),
+        color: mode('gray.900', 'gray.900')(props),
+        height: 'initial'
+      },
+      '#__next': {
+        height: 'initial'
+      }
     }
   })
 }

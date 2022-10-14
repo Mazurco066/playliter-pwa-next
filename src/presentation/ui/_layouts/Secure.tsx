@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import type { BottomNav } from 'domain/types'
 
 // Components
-import { Grid, GridItem } from '@chakra-ui/react'
+import { Grid, GridItem, useMediaQuery } from '@chakra-ui/react'
 import { TopBar, TopNavigation, BottomNavigation } from 'presentation/ui/components'
 import { FaCompactDisc, FaHome, FaUsers } from 'react-icons/fa'
 
@@ -52,7 +52,19 @@ export const SecureLayout: FC<{
   // Hooks
   const router = useRouter()
 
-  // JSX
+  // Display hooks
+  const [ isPrinting ] = useMediaQuery(['print'])
+
+  // JSX if is printing songs
+  if (isPrinting) {
+    return (
+      <>
+        {children}
+      </>
+    )
+  }
+  
+  // JSX for PWA
   return (
     <Grid
       templateRows="80px 1fr 80px"
@@ -88,5 +100,5 @@ export const SecureLayout: FC<{
         />
       </GridItem>
     </Grid>
-  )
+  )  
 }

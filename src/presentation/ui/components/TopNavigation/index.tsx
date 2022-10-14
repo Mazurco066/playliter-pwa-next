@@ -17,7 +17,8 @@ import {
   Heading,
   IconButton,
   Link,
-  Text
+  Text,
+  useMediaQuery
 } from '@chakra-ui/react'
 
 // TopNavigation component
@@ -32,6 +33,9 @@ export const TopNavigation: FC<{
   const router = useRouter()
   const { user } = useUser()
 
+  // Display hooks
+  const [ isPrinting ] = useMediaQuery(['print'])
+
   // HTTP Requests
   const {
     data: pendingInvites
@@ -45,7 +49,11 @@ export const TopNavigation: FC<{
 
   // JSX
   return (
-    <Container height="full" maxWidth="6xl">
+    <Container
+      height="full"
+      maxWidth="6xl"
+      display={isPrinting ? 'none' : 'block' }
+    >
       <Flex
         justify="space-between"
         align="center"

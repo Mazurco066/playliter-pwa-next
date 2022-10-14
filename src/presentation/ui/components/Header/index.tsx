@@ -9,7 +9,7 @@ import { Container, Flex } from '@chakra-ui/react'
 export const Header: FC = () => {
   // JSX
   return (
-    <Container height="full">
+    <Container height="full" maxW="6xl">
       <Flex
         justify="flex-end"
         align="center"

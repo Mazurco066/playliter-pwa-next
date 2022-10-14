@@ -14,7 +14,8 @@ import {
   Divider,
   Link,
   Text,
-  useColorModeValue
+  useColorModeValue,
+  useMediaQuery
 } from '@chakra-ui/react'
 
 // BottomNavigation component
@@ -31,6 +32,9 @@ export const BottomNavigation: FC<{
   const colorNormal = useColorModeValue('gray.900', 'gray.100')
   const bgNavigation = useColorModeValue('gray.50', 'gray.800')
 
+  // Display hooks
+  const [ isPrinting ] = useMediaQuery(['print'])
+
   // Utils
   const currentRoute = router.route
 
@@ -41,6 +45,7 @@ export const BottomNavigation: FC<{
       bg={bgNavigation}
       borderTopRadius="2xl"
       maxWidth="6xl"
+      display={isPrinting ? 'none' : 'block'}
     >
       <Flex
         height="full"
