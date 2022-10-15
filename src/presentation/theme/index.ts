@@ -36,17 +36,23 @@ const styles: Styles = {
   global: (props: any) => ({
     html: {
       height: '100%',
-      overflowX: 'hidden'
+      overflowX: 'hidden',
+      printColorAdjust: 'exact',
+      WebkitPrintColorAdjust: 'exact'
     },
     body: {
       bg: mode('gray.100', 'gray.900')(props),
       color: mode('gray.900', 'gray.100')(props),
       height: '100%',
-      overflowX: 'hidden'
+      overflowX: 'hidden',
+      printColorAdjust: 'exact',
+      WebkitPrintColorAdjust: 'exact'
     },
     '#__next': {
       height: '100%',
-      overflowX: 'hidden'
+      overflowX: 'hidden',
+      printColorAdjust: 'exact',
+      WebkitPrintColorAdjust: 'exact'
     },
     // Media print styles for songlist export
     '@media print': {

@@ -9,20 +9,21 @@ import { formatDate } from 'presentation/utils'
 import type { SongType } from 'domain/models'
 
 // Components
-import { FaBook, FaHandPointer } from 'react-icons/fa'
-import { DeleteIcon, EditIcon, Icon, SettingsIcon } from '@chakra-ui/icons'
+import { Songsheet } from 'presentation/ui/components'
+import { FaArrowRight, FaArrowLeft, FaPrint } from 'react-icons/fa'
 import {
-  Badge,
   Box,
+  ButtonGroup,
   Container,
+  Flex,
   Heading,
+  IconButton,
+  Image,
   Skeleton,
   Text,
   useColorModeValue,
-  useMediaQuery,
   useToast,
-  UseToastOptions,
-  VStack
+  UseToastOptions
 } from '@chakra-ui/react'
 
 // Generic msg
@@ -39,18 +40,15 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
   // Hooks
   const toast = useToast()
   const router = useRouter()
-
+  const [ songIndex, setSongIndex ] = useState<number>(0)
+  
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
-
-  // Display hooks
-  const [ isPrinting ] = useMediaQuery(['print'])
 
   // Show request
   const {
     data: show,
-    isLoading: showLoading,
-    refetch
+    isLoading: showLoading
   } = useQuery(
     [`get-show-${id}`],
     () => requestClient(`/api/shows/get?id=${id}`, 'get'),
@@ -76,12 +74,7 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
   }, [show])
 
   // Destruct show data
-  const { date, description, songs, title } = show?.data || {}
-
-  // *Printable examples
-  // <Text>Testando</Text>
-  // <Box style={{ pageBreakAfter: 'always' }} />
-  // <Text>Testando</Text>
+  const { songs, title, description, date } = show?.data || {}
 
   // JSX
   return (
@@ -89,12 +82,79 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
       <Container maxWidth="6xl">
         { (show && !showLoading) ? (
           <>
-            
             {
               songs.length > 0 ? (          
-                <VStack gap="0.5rem" mb="5">
-            
-                </VStack>    
+                <>
+                  <Box
+                    sx={{ '@media print': { display: 'none' } }}
+                  >
+                    <Box
+                      px="3"
+                      py="5"
+                      borderRadius="lg"
+                      bgColor={bgBox}
+                      mb="3"
+                    >
+                      <Flex
+                        gap="1rem"
+                        alignItems="center"
+                        justifyContent="space-between"
+                      >
+                        <Heading
+                          as="h3"
+                          size="sm"
+                          textAlign="left"
+                          textTransform="uppercase"
+                        >
+                          <Text fontSize="xl" as="strong" color="secondary.500">{songIndex + 1}°</Text> Música
+                        </Heading>
+                        <ButtonGroup>
+                          <IconButton
+                            aria-label="print-songlist"
+                            icon={<FaArrowLeft />}
+                            onClick={() => {
+                              const prevIndex: number = songIndex - 1
+                              setSongIndex((prevIndex < 0) ? (songs.length - 1) : prevIndex)
+                            }}
+                          />
+                          <IconButton
+                            aria-label="print-songlist"
+                            variant="fade"
+                            icon={<FaPrint />}
+                            onClick={() => window.print()}
+                          />
+                          <IconButton
+                            aria-label="print-songlist"
+                            icon={<FaArrowRight />}
+                            onClick={() => {
+                              const nextIndex: number = songIndex + 1
+                              setSongIndex((nextIndex > (songs.length - 1)) ? 0 : nextIndex)
+                            }}
+                          />
+                        </ButtonGroup>
+                      </Flex>
+                    </Box>
+                    <Songsheet
+                      song={songs[songIndex]}
+                      displayPdfHeaders
+                    />
+                  </Box>
+                  <Box
+                    display="none"
+                    sx={{ '@media print': { display: 'block' } }}
+                  >
+                    { // List of songs
+                      songs.map((_song: SongType, i: number) => (
+                        <Box key={i} style={{ pageBreakAfter: 'always' }}>
+                          <Songsheet
+                            song={_song}
+                            displayPdfHeaders
+                          />
+                        </Box>
+                      ))
+                    }
+                  </Box>
+                </> 
               ) : (
                 <Text>
                   Não há músicas adicionadas a essa apresentação!
@@ -104,30 +164,12 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
           </>
         ) : (
           <>
-            <Skeleton
-              height="192px"
-              borderRadius="lg"
-              mb="5"
-            />
-            <Skeleton
-              height="20px"
-              borderRadius="lg"
-              mb="3"
-            />
-            <Skeleton
-              height="64px"
-              borderRadius="lg"
-              mb="3"
-            />
-            <Skeleton
-              height="64px"
-              borderRadius="lg"
-              mb="3"
-            />
-            <Skeleton
-              height="64px"
-              borderRadius="lg"
-            />
+            <Skeleton height="80px" borderRadius="lg" mb="5" />
+            <Skeleton height="27px" mb="1" />
+            <Skeleton height="27px" mb="1" />
+            <Skeleton height="27px" mb="1" />
+            <Skeleton height="27px" mb="1" />
+            <Skeleton height="27px" mb="5" />
           </>
         ) }
       </Container>

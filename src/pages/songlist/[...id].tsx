@@ -24,8 +24,8 @@ const Songlist: NextPageWithLayout = () => {
   return (
     <main>
       <Head>
-        <title>Playliter - Apresentação</title>
-        <meta name="description" content="Apresentação" />
+        <title>Playliter - Visualização Sequencial</title>
+        <meta name="description" content="Visualização Sequencial" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SonglistView id={id} />
@@ -37,7 +37,7 @@ const Songlist: NextPageWithLayout = () => {
 Songlist.getLayout = function getLayout(page: ReactElement) {
   return (
     <SecureLayout
-      pageTitle="Detalhes da Apresentação"
+      pageTitle="Visualização Sequencial"
       pageSubtitle=""
     >
       {page}

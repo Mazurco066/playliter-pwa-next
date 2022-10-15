@@ -35,10 +35,12 @@ const genericMsg: UseToastOptions = {
 
 // Component
 export const Songsheet: FC<{
+  displayPdfHeaders?: boolean,
   displayToneControl?: boolean,
   onToneUpdateSuccess?: () => void,
   song: SongType,
 }> = ({
+  displayPdfHeaders = false,
   displayToneControl = false,
   onToneUpdateSuccess = () => {},
   song
@@ -153,85 +155,110 @@ export const Songsheet: FC<{
 
   // JSX
   return (
-    <Box>
+    <Box style={{ printColorAdjust: 'exact' }}>
       {
         chordsheet && (
           <>
-            <Box
-              bgColor={bgBox}
-              borderRadius="lg"
-              px="3"
-              py="5"
-              mb="3"
-            >
-              <Heading
-                as="h3"
-                size="md"
-                mb="2"
-                color="secondary.500"
-              >
-                {chordsheet.title}
-              </Heading>
-              <Text>
-                {chordsheet.artist}
-              </Text>
-              {
-                !displayToneControl && (
-                  <Text
-                    mt="1"
-                    fontSize="sm"
+            {
+              displayPdfHeaders ? (
+                <Box>
+                  <Heading
+                    as="h3"
+                    size="md"
+                    mb="1"
+                    color="primary.500"
                   >
+                    {chordsheet.title}
+                  </Heading>
+                  <Text>
+                    Por {chordsheet.artist}
+                  </Text>
+                  <Text mt="1" fontSize="sm">
                     Tom: <Text
                       as="strong"
                       fontWeight="medium"
                       color="secondary.500"
                     >{song.tone}</Text>
                   </Text>
-                )
-              }
-              {
-                chordsheet.capo && (
-                  <Text mt="1" fontSize="sm">
-                    Capo: {chordsheet.capo}
+                </Box>
+              ) : (
+                <Box
+                  bgColor={bgBox}
+                  borderRadius="lg"
+                  px="3"
+                  py="5"
+                  mb="3"
+                >
+                  <Heading
+                    as="h3"
+                    size="md"
+                    mb="2"
+                    color="secondary.500"
+                  >
+                    {chordsheet.title}
+                  </Heading>
+                  <Text>
+                    {chordsheet.artist}
                   </Text>
-                )
-              }
-              {
-                displayToneControl && (
-                  <Flex mt="2" gap="0.5rem" alignItems="center">
-                    <Select
-                      icon={<MdArrowDropDown />}
-                      variant="filled"
-                      width="fit-content"
-                      size="sm"
-                      mb="0"
-                      value={transpose}
-                      onChange={(evt) => setTranspose(parseInt(evt.target.value))}
-                    >
-                      {
-                        transpositions.map((t: any, i: number) => (
-                          <option key={i} value={t.step}>
-                            { `${t.name.root.note.note}${t.name.root.modifier ? t.name.root.modifier : ''}` }
-                          </option>
-                        ))
-                      }
-                    </Select>
-                    {
-                      transpose !== 0 && (
-                        <Button 
+                  {
+                    !displayToneControl && (
+                      <Text
+                        mt="1"
+                        fontSize="sm"
+                      >
+                        Tom: <Text
+                          as="strong"
+                          fontWeight="medium"
+                          color="secondary.500"
+                        >{song.tone}</Text>
+                      </Text>
+                    )
+                  }
+                  {
+                    chordsheet.capo && (
+                      <Text mt="1" fontSize="sm">
+                        Capo: {chordsheet.capo}
+                      </Text>
+                    )
+                  }
+                  {
+                    displayToneControl && (
+                      <Flex mt="2" gap="0.5rem" alignItems="center">
+                        <Select
+                          icon={<MdArrowDropDown />}
+                          variant="filled"
+                          width="fit-content"
                           size="sm"
-                          variant="fade"
-                          disabled={isLoading}
-                          onClick={isLoading ? () => {} : () => onUpdateTone()}
+                          mb="0"
+                          value={transpose}
+                          onChange={(evt) => setTranspose(parseInt(evt.target.value))}
                         >
-                          Atualizar tom base
-                        </Button>
-                      )
-                    }
-                  </Flex>
-                )
-              }
-            </Box>
+                          {
+                            transpositions.map((t: any, i: number) => (
+                              <option key={i} value={t.step}>
+                                { `${t.name.root.note.note}${t.name.root.modifier ? t.name.root.modifier : ''}` }
+                              </option>
+                            ))
+                          }
+                        </Select>
+                        {
+                          transpose !== 0 && (
+                            <Button 
+                              size="sm"
+                              variant="fade"
+                              disabled={isLoading}
+                              onClick={isLoading ? () => {} : () => onUpdateTone()}
+                            >
+                              Atualizar tom base
+                            </Button>
+                          )
+                        }
+                      </Flex>
+                    )
+                  }
+                </Box>
+              )
+            }
             <Box
               overflow="hidden"
               maxWidth="100%"

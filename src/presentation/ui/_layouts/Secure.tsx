@@ -69,7 +69,8 @@ export const SecureLayout: FC<{
     <Grid
       templateRows="80px 1fr 80px"
       templateColumns="100%"
-      height="full"      
+      height="full"
+      sx={{ '@media print': { display: 'block' } }}    
     >
       <GridItem>
         {
@@ -91,6 +92,7 @@ export const SecureLayout: FC<{
         maxHeight="100%"
         overflowY="auto"
         position="relative"
+        sx={{ '@media print': { padding: 0 } }}
       >
         {children}
       </GridItem>
