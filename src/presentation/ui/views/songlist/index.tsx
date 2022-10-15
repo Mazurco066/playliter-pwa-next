@@ -3,13 +3,13 @@ import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
-import { formatDate } from 'presentation/utils'
+// import { formatDate } from 'presentation/utils'
 
 // Types
 import type { SongType } from 'domain/models'
 
 // Components
-import { Songsheet } from 'presentation/ui/components'
+import { Songsheet, PrintableSong } from 'presentation/ui/components'
 import { FaArrowRight, FaArrowLeft, FaPrint } from 'react-icons/fa'
 import {
   Box,
@@ -18,7 +18,6 @@ import {
   Flex,
   Heading,
   IconButton,
-  Image,
   Skeleton,
   Text,
   useColorModeValue,
@@ -34,6 +33,9 @@ const genericMsg: UseToastOptions = {
   duration: 5000,
   isClosable: true
 }
+
+// PDF styles
+const pdfPrintStyles = `.column,.row{display:flex!important}.printable-songsheet{page-break-after:always;-webkit-print-color-adjust:exact;-moz-print-color-adjust:exact;-ms-print-color-adjust:exact;print-color-adjust:exact}.song-title{font-size:30px!important;color:#8257e5}.song-artist,.song-tone{margin-bottom:1rem}.song-tone strong{color:#4963f7}.song-section{overflow:hidden;max-width:100%;overflow-x:auto}.chord,.lyrics{max-height:28px;min-height:28px;font-size:22px;white-space:pre}.chord{margin-right:4px}.paragraph+.paragraph{margin-top:1rem}.row{flex-direction:row;position:relative;break-inside:avoid;page-break-inside:avoid}.column{flex-direction:column}.comment{color:#ccc;font-size:16px!important}.chorus:before,.comment,.verse::before{font-weight:700;font-style:italic;break-after:avoid;page-break-inside:avoid}.chord-sheet :not(.tab) .chord{color:#4963f7;font-weight:700}.chorus{border-left:4px solid #8257e5;padding-left:1.5em}.chorus::before{content:"Refrão:"}.verse::before{counter-increment:verse;content:"Verso " counter(verse) ":"}.chord:after,.lyrics:after{content:'\\200b'}`
 
 // Component
 const SonglistView: FC<{ id: string }> = ({ id }) => {
@@ -75,6 +77,18 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
 
   // Destruct show data
   const { songs, title, description, date } = show?.data || {}
+
+  // Actions
+  const printPdf = async () => {
+    // Here i'm doing a Dynamic import, because the print component uses the Window functions
+    // which must be loaded at runtime, learn more about it here https://nextjs.org/docs/advanced-features/dynamic-import
+    const printPdf = (await import('print-js')).default
+    printPdf({
+      printable: 'printable-songs',
+      type: 'html',
+      style: pdfPrintStyles
+    })
+  }
 
   // JSX
   return (
@@ -121,7 +135,7 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
                             aria-label="print-songlist"
                             variant="fade"
                             icon={<FaPrint />}
-                            onClick={() => window.print()}
+                            onClick={() => printPdf()}
                           />
                           <IconButton
                             aria-label="print-songlist"
@@ -139,20 +153,20 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
                       displayPdfHeaders
                     />
                   </Box>
-                  <Box
-                    display="none"
-                    sx={{ '@media print': { display: 'block' } }}
-                  >
-                    { // List of songs
-                      songs.map((_song: SongType, i: number) => (
-                        <Box key={i} style={{ pageBreakAfter: 'always' }}>
-                          <Songsheet
-                            song={_song}
-                            displayPdfHeaders
-                          />
-                        </Box>
-                      ))
-                    }
+                  {/* TODO: Finish print styles */}
+                  <Box display="none">
+                    <Box
+                      id="printable-songs"
+                      sx={{ '@media print': { display: 'block' } }}
+                    >
+                      { // List of songs
+                        songs.map((_song: SongType, i: number) => (
+                          <Box key={i} style={{ pageBreakAfter: 'always' }}>
+                            <PrintableSong song={_song} />
+                          </Box>
+                        ))
+                      }
+                    </Box>
                   </Box>
                 </> 
               ) : (

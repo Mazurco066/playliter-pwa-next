@@ -23,7 +23,7 @@ export const ChordLyricsPair: FC<{
         whiteSpace="pre"
         mr="1"
       >
-        {item.transposed}
+        {item.transposed ? item.transposed.replace(/\s/g, '') : ''}
       </Text>
       <Text
         minHeight="26px"
