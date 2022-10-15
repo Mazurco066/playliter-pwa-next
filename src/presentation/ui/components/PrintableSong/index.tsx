@@ -22,16 +22,16 @@ export const PrintableSong: FC<{ song: SongType  }> = ({ song }) => {
       {
         chordsheet && (
           <>
-            <div>
-              <h3 className="song-title">
+            <div className="song-info" style={{ marginBottom: '1rem' }}>
+              <h1 className="song-title">
                 {chordsheet.title}
-              </h3>
-              <p className="song-artist">
+              </h1>
+              <span className="song-artist">
                 Por {chordsheet.artist}
-              </p>
-              <p className="song-tone">
-                Tom: <strong>{song.tone}</strong> 
-              </p>
+              </span>
+              <span className="song-tone" style={{ fontSize: '14px!important' }}>
+                <small>Tom: <strong>{song.tone}</strong></small>
+              </span>
             </div>
             <div className="song-section">
               <div className="chord-sheet">
