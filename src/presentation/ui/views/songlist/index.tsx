@@ -8,7 +8,7 @@ import { requestClient } from 'infra/services/http'
 import type { SongType } from 'domain/models'
 
 // Components
-import { pdfPrintStyles } from './styles'
+import { PDFPrintPreview } from './elements'
 import { Songsheet, PrintableSong } from 'presentation/ui/components'
 import { FaArrowRight, FaArrowLeft, FaPrint } from 'react-icons/fa'
 import {
@@ -24,6 +24,9 @@ import {
   useToast,
   UseToastOptions
 } from '@chakra-ui/react'
+
+// Custom component styles
+import { pdfPreviewStyles, pdfPrintStyles } from './styles'
 
 // Generic msg
 const genericMsg: UseToastOptions = {
@@ -83,8 +86,8 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
     printPdf({
       printable: 'printable-songs',
       type: 'html',
-      style: pdfPrintStyles,
-      font_size: '19px'
+      style: pdfPreviewStyles + pdfPrintStyles,
+      font_size: '18px'
     })
   }
 
@@ -158,6 +161,9 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
                       position="relative"
                       sx={{ '@media print': { display: 'block' } }}
                     >
+                      <PDFPrintPreview 
+                        show={show.data}
+                      />
                       { // List of songs
                         songs.map((_song: SongType, i: number) => (
                           <Box key={i} style={{ pageBreakAfter: 'always' }}>

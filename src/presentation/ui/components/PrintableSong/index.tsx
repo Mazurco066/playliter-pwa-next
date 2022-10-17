@@ -53,9 +53,13 @@ export const PrintableSong: FC<{ song: SongType  }> = ({ song }) => {
                                         </div>
                                       ) : (
                                         <div key={'inner-' + idx2} className="column">
-                                          <div className="chord">
-                                            {item.transposed}
-                                          </div>
+                                          {
+                                            item.transposed && (
+                                              <div className="chord">
+                                                {item.transposed.replace(/\s/g, '')}
+                                              </div>
+                                            )
+                                          }
                                           <div className="lyrics">
                                             {item.lyrics}
                                           </div>

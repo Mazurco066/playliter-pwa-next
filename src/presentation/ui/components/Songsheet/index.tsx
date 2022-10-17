@@ -285,6 +285,7 @@ export const Songsheet: FC<{
                               paragraph.lines.map((line: any, idx: number) => (
                                 <Flex
                                   key={idx}
+                                  alignItems="flex-end"
                                   position="relative"
                                   maxWidth="full"
                                   wrap="wrap"
@@ -329,6 +330,7 @@ export const Songsheet: FC<{
                               paragraph.lines.map((line: any, idx: number) => (
                                 <Flex
                                   key={idx}
+                                  alignItems="flex-end"
                                   position="relative"
                                   maxWidth="full"
                                   wrap="wrap"
