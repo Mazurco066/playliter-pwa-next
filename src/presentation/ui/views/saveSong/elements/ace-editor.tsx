@@ -59,12 +59,6 @@ const CustomAceEditor: FC<{
     window.editor = editor
   }
 
-  // Editor behavior actions
-  const handlePaste = (pastedText: string) => {
-    const formattedText = plaintextToChordProFormat(pastedText)
-    console.log(formattedText)
-  }
-
   // JSX
   return (
     <AceEditor
@@ -73,14 +67,12 @@ const CustomAceEditor: FC<{
       theme="dracula"
       name="song-body"
       value={value}
-      onChange={onChange}
       onLoad={setupEditor}
-      
-      onPaste={handlePaste}
       editorProps={{ $blockScrolling: true }}
-      style={{
-        width: '100%',
-        borderRadius: '8px'
+      style={{ width: '100%', borderRadius: '8px' }}
+      onChange={(_value: string) => {
+        const formatedValue = plaintextToChordProFormat(_value)
+        onChange(formatedValue)
       }}
     />
   )

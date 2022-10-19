@@ -3,24 +3,39 @@ import ChordSheetJS, { ChordProFormatter, Song, Line } from 'chordsheetjs'
 import { Chord } from 'chordsheetjs'
 import { getUniquesTyped } from './getUniques'
 
-// Parser format for multi parser
-const songParsers = [{
+// Ultimate guitar parser ex: Song verse or chorus
+const ultimateGuitarParser = {
   name: 'ultimateguitar',
   pattern: /\[(Verse.*|Chorus)\]/i,
   parser: new ChordSheetJS.UltimateGuitarParser({ preserveWhitespace: false })
-}, {
+}
+
+// Chordpro parser ex: [A]My song[E] goes like [G]this
+const chordProParser = {
   name: 'chordpro',
   pattern: /{\w+:.*|\[[A-G].*\]/i,
   parser: new ChordSheetJS.ChordProParser()
-}, {
+}
+
+// Chordsheet parser ex: Common lyrics like Cifra Club
+const chordsheetParser = {
   name: 'chordsheet',
   pattern: /.*/,
   parser: new ChordSheetJS.ChordSheetParser({ preserveWhitespace: false })
-}]
+}
+
+// Parser format for multi parser
+const songParsers = [ ultimateGuitarParser, chordProParser, chordsheetParser ]
+const plainTextSongParsers = [ ultimateGuitarParser, chordsheetParser, chordProParser ]
 
 function detectFormat (source: string) {
   if (!source) return
   return songParsers.find(({ pattern }) => source.match(pattern))?.parser
+}
+
+function detectPlainTextFormat (source: string) {
+  if (!source) return
+  return plainTextSongParsers.find(({ pattern }) => source.match(pattern))?.parser
 }
 
 export const detecteSongFormat = (lyrics: string = '') => {
@@ -38,7 +53,7 @@ export const detecteSongFormat = (lyrics: string = '') => {
     const formatter = new ChordProFormatter()
     
     // Format song into html format
-    const song: Song | undefined = detectFormat(normalizedSong)?.parse(normalizedSong)
+    const song: Song | undefined = detectPlainTextFormat(normalizedSong)?.parse(normalizedSong)
     if (!song) return
 
     // Return formatted song
