@@ -13,6 +13,7 @@ import SignUpView from './signup'
 import SongView from './song'
 import SonglistView from './songlist'
 import SongsView from './songs'
+import { VerifyAccountView } from './verify'
 
 export {
   BandView,
@@ -29,5 +30,6 @@ export {
   SignUpView,
   SongView,
   SonglistView,
-  SongsView
+  SongsView,
+  VerifyAccountView
 }

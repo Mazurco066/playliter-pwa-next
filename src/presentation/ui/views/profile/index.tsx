@@ -1,5 +1,6 @@
 // Dependencies
 import { FC, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useUser } from 'infra/services/session'
 import { requestClient } from 'infra/services/http'
@@ -40,6 +41,7 @@ const genericMsg: UseToastOptions = {
 // Bands list component
 const ProfileView: FC = () => {
   // Hooks
+  const router = useRouter()
   const toast = useToast()
   const { user, mutateUser } = useUser()
   const [ name, setName ] = useState<string>('')
@@ -118,10 +120,7 @@ const ProfileView: FC = () => {
       setName(newValue)
 
       // Mutate session user
-      const updatedUser = {
-        ...user,
-        name: newValue
-      }
+      const updatedUser = { ...user, name: newValue }
       mutateUser(updatedUser)
 
       // Notify user about name update
@@ -333,7 +332,7 @@ const ProfileView: FC = () => {
               bgColor={bgBox}
               borderRadius="lg"
               mb="5"
-              onClick={() => console.log('Confirm E-mail')}
+              onClick={() => router.push('../verify')}
             >
               <Flex alignItems="center">
                 <Box
