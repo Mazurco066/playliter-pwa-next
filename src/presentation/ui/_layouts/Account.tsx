@@ -12,7 +12,7 @@ export const AccountLayout: FC<{ children: ReactNode }> = ({ children }) => {
     <Grid
       templateRows="80px 1fr 60px"
       minHeight="100vh"
-      backgroundImage="img/arts/top.svg"
+      backgroundImage="/img/arts/top.svg"
       backgroundRepeat="no-repeat"
       backgroundSize="100%"
     >

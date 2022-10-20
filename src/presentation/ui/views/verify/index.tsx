@@ -31,7 +31,7 @@ const genericMsg: UseToastOptions = {
 }
 
 // Component
-export const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
+const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
   // Hooks
   const router = useRouter()
   const toast = useToast()
@@ -61,7 +61,6 @@ export const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
   } = useMutation((data: any) => {
     return requestClient('/api/accounts/verify_account', 'post', { ...data })
   })
-
 
   // Actions
   const resendVerificationEmail = async () => {
@@ -185,3 +184,6 @@ export const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
     </div>
   )
 }
+
+// Exporting component
+export default VerifyAccountView
