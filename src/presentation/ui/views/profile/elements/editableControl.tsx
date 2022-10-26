@@ -49,8 +49,12 @@ export const EditableControls: FC = () => {
         as={IconButton}
         size='xs'
         icon={<EditIcon />}
-        color="primary.500"
-        {...getEditButtonProps()} 
+        color="gray.100"
+        bgColor="primary.500"
+        {...getEditButtonProps()}
+        _hover={{
+          bgColor: 'primary.600'
+        }}
       />
     </Flex>
   )

@@ -9,10 +9,10 @@ import { requestClient } from 'infra/services/http'
 import type { InviteType } from 'domain/models'
 
 // Layout and Components
+import { AvatarUpload } from 'presentation/ui/components'
 import { EditableControls, InviteItem } from './elements'
 import { EmailIcon } from '@chakra-ui/icons'
 import {
-  Avatar,
   Badge,
   Box,
   Container,
@@ -46,6 +46,8 @@ const ProfileView: FC = () => {
   const { user, mutateUser } = useUser()
   const [ name, setName ] = useState<string>('')
   const [ userEmail, setUserEmail ] = useState<string>('')
+  const [ userAvatar, setUserAvatar ] = useState<string>('')
+  const [ uploadedUrl, setUploadedUrl ] = useState<string>('')
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
@@ -86,11 +88,63 @@ const ProfileView: FC = () => {
   useEffect(() => {
     if (user) {
       setName(user.name)
+      setUserAvatar(user.avatar)
       setUserEmail(user.email)
     }
   }, [user])
 
+  useEffect(() => {
+    if (uploadedUrl && uploadedUrl !== user.avatar) {
+      onAvatarChange(uploadedUrl)
+    }
+  }, [uploadedUrl])
+
   // Actions
+  const onAvatarChange = async (newValue: string) => {
+    // Avatar was not updated
+    if (newValue === user.avatar) return
+
+    // Request account update
+    const accountResponse = await mutateUserAsync({
+      id: id,
+      avatar: newValue,
+      name: user.name,
+      email: email
+    })
+
+    // Verify if it was successfull
+    if ([200, 201].includes(accountResponse.status)) {
+      setUserAvatar(newValue)
+
+      // Mutate session user
+      const updatedUser = { ...user, avatar: newValue }
+      mutateUser(updatedUser)
+
+      // Notify user about avatar update
+      toast({
+        title: 'Sucesso!',
+        description: `O avatar de sua conta foi alterado!`,
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+    } else {
+      setUserAvatar(user?.avatar || '')
+      if ([400].includes(accountResponse.status)) {
+        toast({
+          title: 'Informação!',
+          description: 'Nenhum dado da conta foi atualizado!',     
+          status: 'info',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
+
   const onNameSubmit = async (newValue: string) => {
     // Name was not updated
     if (newValue === user.name) return
@@ -262,11 +316,19 @@ const ProfileView: FC = () => {
             alignItems="center"
             justifyContent="center"
           >
-            <Avatar
-              src={avatar}
+            <AvatarUpload
+              source={userAvatar}
               name={name}
-              size="xl"
-              mb="3"
+              onUploadSuccess={({ url }) => setUploadedUrl(url)}
+              onUploadError={() => {
+                toast({
+                  title: 'Ops...',
+                  description: 'Ocorreu um erro ao realizar o upload de sua imagem. Por favor tente novamente mais tarde.',
+                  status: 'error',
+                  duration: 3500,
+                  isClosable: true
+                })
+              }}
             />
             {/* Name editable */}
             <Editable

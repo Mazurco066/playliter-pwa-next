@@ -6,25 +6,19 @@ import { requestClient } from 'infra/services/http'
 // Components
 import { Icon } from '@chakra-ui/icons'
 import { FaPhotoVideo } from 'react-icons/fa'
-import {
-  Avatar,
-  Box,
-  Flex,
-  FormControl,
-  FormLabel,
-  Spinner,
-  Text
-} from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Box, Spinner } from '@chakra-ui/react'
 
 // Component
 export const AvatarUpload: FC<{
   onUploadError?: () => void,
   onUploadSuccess?: (params : { file: File, url: string }) => void,
-  source: string
+  source: string,
+  name: string
 }> = ({
   onUploadError = () => {},
   onUploadSuccess = () => {},
-  source
+  source,
+  name
 }) => {
   // Hooks
   const [ isLoading, setLoadingState ] = useState<boolean>(false)
@@ -61,66 +55,54 @@ export const AvatarUpload: FC<{
   }, [])
 
   // File input events
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false })
+  const {
+    getRootProps,
+    getInputProps
+  } = useDropzone({
+    onDrop,
+    multiple: false
+  })
 
   // JSX
   return (
-    <FormControl mb="5">
-      <FormLabel>Logotipo da banda</FormLabel>
-      <Box
-        bgGradient="linear(to-b, secondary.500, primary.500)"
-        cursor="pointer"
-        borderRadius="lg"
-        p="2"
-        {...getRootProps()}
+    <Box mb="3" {...getRootProps()}>
+      <Avatar
+        src={source}
+        name={name}
+        size="xl"
+        position="relative"
+        _hover={{
+          cursor: 'pointer'
+        }}
       >
-        <Box
-          border="2px dashed"
-          borderRadius="lg"
-          borderColor="gray.50"
-          p="3"
+        <input {...getInputProps()} />
+        {
+          isLoading && (
+            <Spinner
+            position="absolute"
+            size="lg"
+            color="primary.500"
+          />
+          )
+        }
+        <AvatarBadge
+          borderColor='primary.500'
+          bgColor='primary.500'
+          boxSize='0.85em'
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          _hover={{
+            bgColor: 'primary.600',
+            borderColor: 'primary.600'
+          }}
         >
-          <Flex
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <input {...getInputProps()} />
-            {
-              (source !== '' && !isLoading) && (
-                <Avatar
-                  src={source}
-                  name="Logo da banda"
-                  size="xl"
-                />
-              )
-            }
-            {
-              (isDragActive && !source && !isLoading) && (
-                <>
-                  <Icon as={FaPhotoVideo} mb="2" />
-                  <Text>Solte os arquivos aqui</Text>
-                </> 
-              )
-            }
-            {
-              (!isDragActive && !source && !isLoading) && (
-                <>
-                  <Icon as={FaPhotoVideo} mb="2" />
-                  <Text textAlign="center">
-                    Arraste seus arquivos aqui, ou clique para selecionar os arquivos
-                  </Text>
-                </>
-              )
-            }
-            {
-              isLoading && (
-                <Spinner size="xl" />
-              )
-            }
-          </Flex>
-        </Box>
-      </Box>
-    </FormControl>
+          <Icon as={FaPhotoVideo}
+            fontSize="0.45em"
+            color="gray.100"
+          />
+        </AvatarBadge>
+      </Avatar>
+    </Box>
   )
 }
