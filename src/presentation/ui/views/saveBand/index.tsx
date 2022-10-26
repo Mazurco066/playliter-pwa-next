@@ -141,9 +141,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <FileUpload
             source={logoPreview}
-            onUploadSuccess={({ url }) => {
-              setLogoPreview(url)
-            }}
+            onUploadSuccess={({ url }) => setLogoPreview(url)}
             onUploadError={() => {
               toast({
                 title: 'Ops...',
