@@ -11,15 +11,15 @@ import type { BandType } from 'domain/models'
 async function saveBandRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Retrieve parameters
-    const { id = null, title, description } = req.body
+    const { id = null, title, description, logo } = req.body
 
     // Request login endpoint
     const url = id ? `/bands/${id}` : `/bands`
 
     // Verify if is a save or update request
-    const response = await requestApi(url, id ? 'put' : 'post', {
-      title, description
-    }, {
+    const payload: { [ key: string ]: string } = { title, description }
+    if (logo) payload['logo'] = logo
+    const response = await requestApi(url, id ? 'put' : 'post', payload, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${req.session.user?.token}`

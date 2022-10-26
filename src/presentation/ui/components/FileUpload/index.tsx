@@ -1,43 +1,67 @@
 // Dependencies
-import { FC, useCallback } from 'react'
+import { FC, useCallback, useState} from 'react'
 import { useDropzone } from 'react-dropzone'
-// import { fetchJsonFromOrigin } from 'infra/services/http'
+import { requestClient } from 'infra/services/http'
 
 // Components
 import { Icon } from '@chakra-ui/icons'
 import { FaPhotoVideo } from 'react-icons/fa'
 import {
+  Avatar,
   Box,
   Flex,
   FormControl,
   FormLabel,
+  Spinner,
   Text
 } from '@chakra-ui/react'
 
 // Component
 export const FileUpload: FC<{
   onUploadError?: () => void,
-  onUploadSuccess?: (params : { file: File, url: string }) => void
+  onUploadSuccess?: (params : { file: File, url: string }) => void,
+  source: string
 }> = ({
   onUploadError = () => {},
-  onUploadSuccess = () => {}
+  onUploadSuccess = () => {},
+  source
 }) => {
+  // Hooks
+  const [ isLoading, setLoadingState ] = useState<boolean>(false)
+
   // Events
   const onDrop = useCallback(async (acceptedFiles: any) => {
-    // Do something with the files
-    console.log('[file]', acceptedFiles)
+    if (acceptedFiles.length) {
+      // Retrive file from event
+      const file = acceptedFiles[0]
+
+      // Append file to request data
+      const formData = new FormData()
+      formData.append('file', file)
+
+      // Request upload service
+      setLoadingState(true)
+      const result = await requestClient('/api/upload_image', 'post', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      setLoadingState(false)
+      
+      // Verify upload response
+      if (result.status === 200) {
+        onUploadSuccess({
+          file: file,
+          url: result.data.secure_url
+        })
+      } else {
+        onUploadError()
+      }
+    }
   }, [])
 
-  // Hooks
-  const {
-    acceptedFiles,
-    getRootProps,
-    getInputProps,
-    isDragActive
-  } = useDropzone({
-    onDrop,
-    multiple: false
-  })
+  // File input events
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false })
 
   // JSX
   return (
@@ -63,21 +87,36 @@ export const FileUpload: FC<{
           >
             <input {...getInputProps()} />
             {
-              acceptedFiles.length > 0
-                ? <Text>Arquivo selecionado</Text>
-                : isDragActive
-                  ? (
-                    <>
-                      <Icon as={FaPhotoVideo} mb="2" />
-                      <Text>Solte os arquivos aqui</Text>
-                    </> 
-                  ) 
-                  : (
-                    <>
-                      <Icon as={FaPhotoVideo} mb="2" />
-                      <Text textAlign="center">Arraste seus arquivos aqui, ou clique para selecionar os arquivos</Text>
-                    </>
-                  ) 
+              (source !== '' && !isLoading) && (
+                <Avatar
+                  src={source}
+                  name="Logo da banda"
+                  size="xl"
+                />
+              )
+            }
+            {
+              (isDragActive && !source && !isLoading) && (
+                <>
+                  <Icon as={FaPhotoVideo} mb="2" />
+                  <Text>Solte os arquivos aqui</Text>
+                </> 
+              )
+            }
+            {
+              (!isDragActive && !source && !isLoading) && (
+                <>
+                  <Icon as={FaPhotoVideo} mb="2" />
+                  <Text textAlign="center">
+                    Arraste seus arquivos aqui, ou clique para selecionar os arquivos
+                  </Text>
+                </>
+              )
+            }
+            {
+              isLoading && (
+                <Spinner size="xl" />
+              )
             }
           </Flex>
         </Box>

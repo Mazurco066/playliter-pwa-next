@@ -1,5 +1,5 @@
 // Dependencies
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useQuery, useMutation } from '@tanstack/react-query'
@@ -37,6 +37,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
   // Hooks
   const router = useRouter()
   const toast = useToast()
+  const [ logoPreview, setLogoPreview ] = useState<string>('')
   const {
     register,
     handleSubmit,
@@ -63,6 +64,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
       const options = { shouldValidate: true, shouldDirty: true }
       setValue('title', band.data?.title, options)
       setValue('description', band.data?.description, options)
+      setLogoPreview(band.data?.logo)
     }
   }, [band])
 
@@ -99,7 +101,9 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
   // Actions
   const onSubmit = async (data: any) => {
     // Request api via server side
-    const response = await mutateAsync(id ? { id, ...data } : { ...data })
+    const payload = id ? { id, ...data } : { ...data }
+    if (logoPreview) payload['logo'] = logoPreview
+    const response = await mutateAsync(payload)
 
     // Verify if request was successfull
     if ([200, 201].includes(response.status)) {
@@ -135,7 +139,21 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
     <div>
       <Container maxWidth="6xl">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FileUpload />
+          <FileUpload
+            source={logoPreview}
+            onUploadSuccess={({ url }) => {
+              setLogoPreview(url)
+            }}
+            onUploadError={() => {
+              toast({
+                title: 'Ops...',
+                description: 'Ocorreu um erro ao realizar o upload de sua imagem. Por favor tente novamente mais tarde.',
+                status: 'error',
+                duration: 3500,
+                isClosable: true
+              })
+            }}
+          />
           <FormControl
             isDisabled={isLoading || (id != '' && bandLoading)}
             isRequired
