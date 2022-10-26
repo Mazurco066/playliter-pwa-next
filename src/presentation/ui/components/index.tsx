@@ -1,4 +1,5 @@
 // Unified export components
+export * from './AvatarUpload'
 export * from './BottomNavigation'
 export * from './ChordDiagram'
 export * from './ChordLyricsPair'
