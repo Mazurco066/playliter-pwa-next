@@ -1,5 +1,8 @@
 // PDF preview styles
 export const pdfPreviewStyles: string = `
+  @page {
+    size: A4;
+  }
   #ghost-preview {
     page-break-after: always;
   }
