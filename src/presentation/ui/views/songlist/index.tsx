@@ -87,7 +87,7 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
       printable: 'printable-songs',
       type: 'html',
       style: pdfPreviewStyles + pdfPrintStyles,
-      font_size: '18px'
+      font_size: '16px'
     })
   }
 

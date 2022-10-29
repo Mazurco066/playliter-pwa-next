@@ -18,15 +18,13 @@ const LandingView: FC = () => {
   return (
     <div>
       <Container maxWidth="6xl">
-        <Heading as="h2" size="xl" mb="5">
-          <Button
-            variant="fade"
-            width="full"
-            onClick={() => router.push('/login')}
-          >
-            Acessar
-          </Button>
-        </Heading>
+        <Button
+          variant="fade"
+          width="full"
+          onClick={() => router.push('/login')}
+        >
+          Acessar
+        </Button>
       </Container>
     </div>
   )
