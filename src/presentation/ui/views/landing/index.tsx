@@ -3,10 +3,11 @@ import { FC } from 'react'
 import { useRouter } from 'next/router'
 
 // Layout and Components
+import { Hero } from './elements'
 import {
-  Button,
+  Box,
   Container,
-  Heading
+  Text
 } from '@chakra-ui/react'
 
 // Sign in component
@@ -16,17 +17,16 @@ const LandingView: FC = () => {
 
   // View JSX
   return (
-    <div>
-      <Container maxWidth="6xl">
-        <Button
-          variant="fade"
-          width="full"
-          onClick={() => router.push('/login')}
-        >
-          Acessar
-        </Button>
+    <Box bgColor="gray.100">
+      <Hero />
+      <Container
+        maxWidth="6xl"
+        py="20px"
+        color="gray.900"
+      >
+        <Text>Conteúdo da landing page em breve aqui</Text>
       </Container>
-    </div>
+    </Box>
   )
 }
 

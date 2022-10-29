@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react'
 
 // Component
-export const LandingFooter = () => {
+export const LandingFooter: FC = () => {
   // Styles
   const footerDirection: any = useBreakpointValue({ base: 'column', md: 'row' })
   const footerJustify: any = useBreakpointValue({ base: 'center', md: 'space-between' })
