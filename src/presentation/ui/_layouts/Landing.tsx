@@ -16,13 +16,13 @@ export const LandingLayout: FC<{ children: ReactNode }> = ({
       position="relative"
       height="full"
     >
-      <LandingHeader />
+      <LandingHeader />  
       <Grid
         templateRows="1fr auto"
         templateColumns="100%"
         height="full"
-        overflowY="auto"
         pt="80px"
+        overflowY="auto"
       >
         <GridItem>
           {children}

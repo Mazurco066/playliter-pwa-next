@@ -7,6 +7,7 @@ import { Hero } from './elements'
 import {
   Box,
   Container,
+  Heading,
   Text
 } from '@chakra-ui/react'
 
@@ -24,7 +25,13 @@ const LandingView: FC = () => {
         py="20px"
         color="gray.900"
       >
-        <Text>Conteúdo da landing page em breve aqui</Text>
+        <Heading
+          as="h3"
+          size="md"
+          textTransform="uppercase"
+        >
+          Funcionalidades do aplicativo
+        </Heading>
       </Container>
     </Box>
   )

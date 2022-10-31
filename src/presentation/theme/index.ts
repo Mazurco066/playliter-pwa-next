@@ -48,6 +48,14 @@ const styles: Styles = {
       printColorAdjust: 'exact',
       WebkitPrintColorAdjust: 'exact'
     },
+    '#playliter-hero #tsparticles canvas': {
+      position: 'absolute',
+      zIndex: 0,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0
+    },
     '#__next': {
       height: '100%',
       overflowX: 'hidden',

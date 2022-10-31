@@ -29,6 +29,7 @@ export const LandingHeader: FC = () => {
       left="0"
       right="0"
       top="0"
+      zIndex="2"
     >
       <Container maxWidth="6xl" height="full">
         <Flex
