@@ -61,7 +61,15 @@ export const Hero: FC = () => {
               <Text fontSize="md" mb="6">
                 Aqui você encontra ferramentas para automatizar a organização de suas apresentações.
               </Text>
-              <Button width="full" onClick={() => router.push('/login')}>
+              <Button
+                width="full"
+                bgColor="whiteAlpha.300"
+                color="gray.100"
+                onClick={() => router.push('/login')}
+                _hover={{
+                  bgColor: 'whiteAlpha.400'
+                }}
+              >
                 Acessar Aplicativo
               </Button>
             </Box>

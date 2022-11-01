@@ -24,7 +24,7 @@ export const LandingHeader: FC = () => {
   return (
     <Box
       height="80px"
-      bgColor="rgba(0, 0, 0, 0.3)"
+      bgColor="gray.900"
       position="fixed"
       left="0"
       right="0"
@@ -54,18 +54,28 @@ export const LandingHeader: FC = () => {
             <Button
               size="sm"
               leftIcon={<Icon as={FiLogIn} />}
-              colorScheme='secondary'
+              bgColor="secondary.500"
+              color="gray.100"
               variant='solid'
               onClick={() => router.push('/login')}
+              _hover={{
+                bgColor: 'secondary.600'
+              }}
             >
               Entrar
             </Button>
             <Button
               size="sm"
               rightIcon={<ArrowForwardIcon />}
-              colorScheme='secondary'
+              color="secondary.400"
+              borderColor="secondary.500"
               variant='outline'
               onClick={() => router.push('/signup')}
+              _hover={{
+                bgColor: 'secondary.600',
+                borderColor: 'secondary.600',
+                color: 'gray.100'
+              }}
             >
               Cadastrar
             </Button>
