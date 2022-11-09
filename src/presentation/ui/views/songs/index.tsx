@@ -26,7 +26,6 @@ import {
   Text,
   useColorModeValue
 } from '@chakra-ui/react'
-import { Router } from 'next/router'
 
 // Paging default values
 const PAGE_SIZE = 30
@@ -97,6 +96,12 @@ const SongsView: FC = () => {
                 placeholder="Pesquisar..."
                 minLength={2}
                 value={filterSearch}
+                onKeyUp={event => {
+                  if (event.code === 'Enter') {
+                    setSearchedState(true)
+                    refetch()
+                  }
+                }}
                 onChange={e => {
                   const inputValue = e.target.value
                   setFilterSearch(inputValue)

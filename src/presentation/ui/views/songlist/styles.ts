@@ -23,24 +23,24 @@ export const pdfPreviewStyles: string = `
     z-index: 0;
   }
   .svg-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: auto;
-    margin-top: 0!important;
-    margin-bottom: 0!important;
+    position: relative;
+    height: 100%!important;
+    width: 100%!important;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-size: contain;
-    background-image: url("/img/pdf-prev.svg");
-    background-repeat: no-repeat;
-    background-position: bottom;
+    z-index: 1;
+  }
+  .svg-container img {
+    object-fit: contain;
+    height: 100%!important;
+    width: 100%!important;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
     z-index: 1;
   }
   .show-info {

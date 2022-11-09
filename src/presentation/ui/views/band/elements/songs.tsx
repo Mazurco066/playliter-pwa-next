@@ -89,6 +89,12 @@ export const SongsComponent: FC<{
               _placeholder={{
                 color: 'gray.300'
               }}
+              onKeyUp={event => {
+                if (event.code === 'Enter' && status !== 'loading') {
+                  setSearchedState(true)
+                  refetch()
+                }
+              }}
               onChange={e => {
                 const inputValue = e.target.value
                 setFilterSearch(inputValue)
