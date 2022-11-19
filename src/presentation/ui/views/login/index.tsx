@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { useUser } from 'infra/services/session'
 import { requestClient } from 'infra/services/http'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 
 // Layout and Components
 import { Icon } from '@chakra-ui/icons'
@@ -28,20 +29,13 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic error msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Sign in component
 const LogInView: FC = () => {
   // Hooks
   const toast = useToast()
   const router = useRouter()
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('login')
   const { mutateUser } = useUser({
     redirectTo: '/home',
     redirectIfFound: true
@@ -57,6 +51,15 @@ const LogInView: FC = () => {
     return requestClient('/api/login', 'post', data)
   })
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Actions
   const onSubmit = async (data: any) => {
     // Request api
@@ -66,8 +69,8 @@ const LogInView: FC = () => {
     } else {
       if ([401, 403, 404].includes(response.status)) {
         toast({
-          title: 'Autenticação inválida.',
-          description: "Usuário ou senha incorreto(s).",
+          title: t('messages.incorrect_login_title'),
+          description: t('messages.incorrect_login_msg'),
           status: 'info',
           duration: 2000,
           isClosable: true
@@ -91,7 +94,7 @@ const LogInView: FC = () => {
       <Box p="5" borderRadius="lg" bg={bgBox}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl mb="5" isDisabled={isLoading}>
-            <FormLabel>Usuário</FormLabel>
+            <FormLabel>{t('form.user_label')}</FormLabel>
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
@@ -99,18 +102,18 @@ const LogInView: FC = () => {
               />
               <Input
                 type="text"
-                placeholder="Usuário"
+                placeholder={t('form.user_label')}
                 {...register('username', { required: true })}
               />
             </InputGroup>
             {errors.username ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              <FormHelperText color="red.500">{t('messages.required_field_msg')}</FormHelperText>
             ) : (
-              <FormHelperText>Digite seu usuário dentro do app.</FormHelperText>
+              <FormHelperText>{t('form.user_hint')}</FormHelperText>
             )}
           </FormControl>
           <FormControl mb="5" isDisabled={isLoading}>
-            <FormLabel>Senha</FormLabel>
+            <FormLabel>{t('form.password_label')}</FormLabel>
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
@@ -118,14 +121,14 @@ const LogInView: FC = () => {
               />
               <Input
                 type="password"
-                placeholder="Senha"
+                placeholder={t('form.password_label')}
                 {...register('password', { required: true })}
               />
             </InputGroup>
             {errors.password ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              <FormHelperText color="red.500">{t('messages.required_field_msg')}</FormHelperText>
             ) : (
-              <FormHelperText>Digite sua senha.</FormHelperText>
+              <FormHelperText>{t('form.password_hint')}</FormHelperText>
             )}
           </FormControl>
           <Text textAlign="center" mb="3">
@@ -134,7 +137,7 @@ const LogInView: FC = () => {
               color="secondary.500"
               onClick={() => router.push('/forgotPassword')}
             >
-              Esqueci minha senha
+              {t('form.forgot_password')}
             </Link>
           </Text>
           <Button
@@ -144,18 +147,18 @@ const LogInView: FC = () => {
             width="full"
             mb="3"
           >
-            Acessar
+            {t('form.button')}
           </Button>
           <Text
             textAlign="center"
           >
-            Não possui conta?{' '}
+            {t('form.no_account')}
             <Link
               fontWeight="bold"
               color="secondary.500"
               onClick={() => router.push('/signup')}
             >
-              Criar uma agora!
+              {t('form.create_account')}
             </Link>
           </Text>
         </form>

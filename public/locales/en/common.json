@@ -1,3 +1,7 @@
 {
-  "appname": "Playliter"
+  "appname": "Playliter",
+  "messages": {
+    "internal_error_title": "Internal error.",
+    "internal_error_msg": "An unespected error ocourred. Please notify the application developer."
+  }
 }
