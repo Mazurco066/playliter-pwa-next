@@ -1,0 +1,22 @@
+{
+  "form": {
+    "name_label": "Name",
+    "name_hint": "Display name.",
+    "user_label": "Username",
+    "user_hint": "Username used in authentication.",
+    "email_label": "E-mail",
+    "email_hint": "E-mail for password recovery.",
+    "password_label": "Password",
+    "password_hint": "Password for your account.",
+    "button": "Sign Up",
+    "has_account": "Has an account? ",
+    "login": "Login!"
+  },
+  "messages": {
+    "welcome_title": "Welcome!",
+    "welcome_msg": "Your account was successfully created",
+    "in_use_title": "Ops.. Username already taken!",
+    "in_use_msg": "Email or username is already in use by another user!",
+    "required_field_msg": "Required field."
+  }
+}

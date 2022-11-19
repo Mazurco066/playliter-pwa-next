@@ -40,7 +40,6 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   },
 })
 
-
 // Applying layout
 LogIn.getLayout = function getLayout(page: ReactElement) {
   return (

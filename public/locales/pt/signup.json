@@ -1,0 +1,22 @@
+{
+  "form": {
+    "name_label": "Nome",
+    "name_hint": "Nome que será mostrado no app.",
+    "user_label": "Usuário",
+    "user_hint": "Usuário que será usado na autenticação.",
+    "email_label": "E-mail",
+    "email_hint": "E-mail que será usado para redefinição de senha.",
+    "password_label": "Senha",
+    "password_hint": "Senha utilizada para entrar no app.",
+    "button": "Criar conta",
+    "has_account": "Já possui conta? ",
+    "login": "Fazer login!"
+  },
+  "messages": {
+    "welcome_title": "Seja bem vindo!",
+    "welcome_msg": "Sua conta foi criado com sucesso",
+    "in_use_title": "Ops.. Há campos em uso!",
+    "in_use_msg": "Usuário ou E-mail informados já estão em uso por outra pessoa!",
+    "required_field_msg": "Esse campo é requerido."
+  }
+}

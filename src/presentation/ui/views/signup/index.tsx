@@ -5,6 +5,7 @@ import { useUser } from 'infra/services/session'
 import { useRouter } from 'next/router'
 import { useMutation } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
+import { useTranslation } from 'next-i18next'
 
 // Layout and Components
 import { Icon } from '@chakra-ui/icons'
@@ -28,20 +29,13 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: "Um erro inesperado ocorreu! Entre em contato com algum administrador do App.",
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Sign in component
 const SignUpView: FC = () => {
   // Hooks
   const router = useRouter()
   const toast = useToast()
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('signup')
   const { mutateUser } = useUser()
   const {
     register,
@@ -63,6 +57,15 @@ const SignUpView: FC = () => {
     return requestClient('/api/login', 'post', data)
   })
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Actions
   const onSubmit = async (data: any) => {
     // Request api via server side
@@ -73,8 +76,8 @@ const SignUpView: FC = () => {
 
       // Notify user about created account
       toast({
-        title: 'Seja bem vindo!',
-        description: `Sua conta foi criado com sucesso ${response.data?.name}`,
+        title: t('messages.welcome_title'),
+        description: `${t('messages.welcome_msg')} ${response.data?.name}`,
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -96,8 +99,8 @@ const SignUpView: FC = () => {
     } else {
       if ([400].includes(response.status)) {
         toast({
-          title: 'Ops.. Há campos em uso!',
-          description: 'Usuário ou E-mail informados já estão em uso por outra pessoa!',     
+          title: t('messages.in_use_title'),
+          description: t('messages.in_use_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -122,7 +125,7 @@ const SignUpView: FC = () => {
         <Box p="5" borderRadius="lg" bg={bgBox}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isRequired mb="5" isDisabled={isLoading || isLogging}>
-              <FormLabel>Nome</FormLabel>
+              <FormLabel>{t('form.name_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -130,19 +133,19 @@ const SignUpView: FC = () => {
                 />
                 <Input
                   type="text"
-                  placeholder="Nome"
+                  placeholder={t('form.name_label')}
                   minLength={2}
                   {...register('name', { required: true })}
                 />
               </InputGroup>
               {errors.name ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('messages.required_field_msg')}</FormHelperText>
               ) : (
-                <FormHelperText>Nome que será mostrado no app.</FormHelperText>
+                <FormHelperText>{t('form.name_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl isRequired mb="5" isDisabled={isLoading || isLogging}>
-              <FormLabel>Usuário</FormLabel>
+              <FormLabel>{t('form.user_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -150,19 +153,19 @@ const SignUpView: FC = () => {
                 />
                 <Input
                   type="text"
-                  placeholder="Usuário"
+                  placeholder={t('form.user_label')}
                   minLength={3}
                   {...register('username', { required: true })}
                 />
               </InputGroup>
               {errors.username ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('messages.required_field_msg')}</FormHelperText>
               ) : (
-                <FormHelperText>Usuário que será usado na autenticação.</FormHelperText>
+                <FormHelperText>{t('form.user_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl isRequired mb="5" isDisabled={isLoading || isLogging}>
-              <FormLabel>E-mail</FormLabel>
+              <FormLabel>{t('form.email_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -170,18 +173,18 @@ const SignUpView: FC = () => {
                 />
                 <Input
                   type="email"
-                  placeholder="E-mail"
+                  placeholder={t('form.email_label')}
                   {...register('email', { required: true })}
                 />
               </InputGroup>
               {errors.email ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('messages.required_field_msg')}</FormHelperText>
               ) : (
-                <FormHelperText>E-mail que será usado para redefinição de senha.</FormHelperText>
+                <FormHelperText>{t('form.email_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl isRequired mb="5" isDisabled={isLoading || isLogging}>
-              <FormLabel>Senha</FormLabel>
+              <FormLabel>{t('form.password_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -189,15 +192,15 @@ const SignUpView: FC = () => {
                 />
                 <Input
                   type="password"
-                  placeholder="Senha"
+                  placeholder={t('form.password_label')}
                   minLength={8}
                   {...register('password', { required: true })}
                 />
               </InputGroup>
               {errors.password ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('messages.required_field_msg')}</FormHelperText>
               ) : (
-                <FormHelperText>Senha utilizada para entrar no app.</FormHelperText>
+                <FormHelperText>{t('form.password_hint')}</FormHelperText>
               )}
             </FormControl>
             <Button
@@ -207,18 +210,18 @@ const SignUpView: FC = () => {
               width="full"
               mb="3"
             >
-              Criar conta
+              {t('form.button')}
             </Button>
             <Text
               textAlign="center"
             >
-              Já possui conta?{' '}
+              {t('form.has_account')}
               <Link
                 fontWeight="bold"
                 color="secondary.500"
                 onClick={() => router.push('/login')}
               >
-                Fazer login!
+                {t('form.login')}
               </Link>
             </Text>
           </form>
