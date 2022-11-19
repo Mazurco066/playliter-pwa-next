@@ -51,7 +51,7 @@ const SignUpView: FC = () => {
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
-  const logoImg =  useColorModeValue('logo-black.svg', 'logo.svg')
+  const logoImg =  useColorModeValue('/logo-black.svg', '/logo.svg')
 
   // SignUp request
   const { isLoading, mutateAsync } = useMutation((data: any) => {

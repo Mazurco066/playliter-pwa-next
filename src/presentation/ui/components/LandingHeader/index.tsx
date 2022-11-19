@@ -1,6 +1,7 @@
 // Dependencies
 import { FC } from 'react'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 
 // Components
 import Link from 'next/link'
@@ -19,6 +20,7 @@ import {
 export const LandingHeader: FC = () => {
   // Hooks
   const router = useRouter()
+  const { t } = useTranslation('landing')
 
   // JSX
   return (
@@ -62,7 +64,7 @@ export const LandingHeader: FC = () => {
                 bgColor: 'secondary.600'
               }}
             >
-              Entrar
+              {t('access_btn')}
             </Button>
             <Button
               size="sm"
@@ -77,7 +79,7 @@ export const LandingHeader: FC = () => {
                 color: 'gray.100'
               }}
             >
-              Cadastrar
+              {t('signup_btn')}
             </Button>
           </Stack>
         </Flex>

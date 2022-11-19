@@ -2,6 +2,7 @@
 import dynamic from 'next/dynamic'
 import { FC } from 'react'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 
 // Components
 const AnimatedBg = dynamic(() => import('./bg-animated'), { ssr: false, })
@@ -20,6 +21,7 @@ import {
 export const Hero: FC = () => {
   // Hooks
   const router = useRouter()
+  const { t } = useTranslation('landing')
 
   // Styles
   const heroDirection: any = useBreakpointValue({ base: 'column-reverse', md: 'row' })
@@ -53,13 +55,13 @@ export const Hero: FC = () => {
                 color="gray.50"
                 mb="2"
               >
-                Gerencie o repertório de sua banda
+                {t('hero.highlight')}
               </Text>
               <Heading as="h2" size="lg" mb="2">
-                Utilizando o Playliter
+                {t('hero.title')}
               </Heading>
               <Text fontSize="md" mb="6">
-                Aqui você encontra ferramentas para automatizar a organização de suas apresentações.
+                {t('hero.description')}
               </Text>
               <Button
                 width="full"
@@ -70,7 +72,7 @@ export const Hero: FC = () => {
                   bgColor: 'whiteAlpha.400'
                 }}
               >
-                Acessar Aplicativo
+                {t('hero.button')}
               </Button>
             </Box>
           </Box>

@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 
 // Layout and Components
 import { Hero, Feature } from './elements'
@@ -15,6 +16,9 @@ import {
 
 // Sign in component
 const LandingView: FC = () => {
+  // Hooks
+  const { t } = useTranslation('landing')
+
   // Styles
   const featureDirection: any = useBreakpointValue({ base: 'column', md: 'row' })
 
@@ -39,7 +43,7 @@ const LandingView: FC = () => {
             textAlign="center"
             mb="3"
           >
-            Funcionalidades do aplicativo
+            {t('feature.title')}
           </Heading>
           <Heading
             as="h3"
@@ -48,7 +52,7 @@ const LandingView: FC = () => {
             textAlign="center"
             mb="5"
           >
-            O Playliter pode te ajudar em suas apresentações com:
+            {t('feature.subtitle')}
           </Heading>
           <Flex
             gap="1rem"
@@ -57,18 +61,18 @@ const LandingView: FC = () => {
             mb="3"
           >
             <Feature
-              title="Repertório músical"
-              description="Organize o repertório de sua banda de um modo em que todos os membros da banda tenham acesso a informação."
+              title={t('feature.card_1_title')}
+              description={t('feature.card_1_text')}
               image="/img/arts/musical-note.png"
             />
-              <Feature
-              title="Apresentações"
-              description="As apresentações ficam visiveis a todos os membros da banda assim como as músicas que seram usadas e seus respectivos tons."
+            <Feature
+              title={t('feature.card_2_title')}
+              description={t('feature.card_2_text')}
               image="/img/arts/musical-concert.png"
             />
               <Feature
-              title="Simplicidade"
-              description="Uma interface simples para ter uma navegação eficiente entre os recursos do aplicativo."
+              title={t('feature.card_3_title')}
+              description={t('feature.card_3_text')}
               image="/img/arts/android.png"
             />
           </Flex>
@@ -77,13 +81,13 @@ const LandingView: FC = () => {
             fontSize="lg"
             fontWeight="light"
           >
-            O código do aplicativo é <strong>open source</strong>. Você pode acessá-lo{' '}
+            {t('feature.link_prev')}<strong>{t('feature.link_feature')}</strong>{t('feature.link_next')}
             <Link
               href="https://github.com/Mazurco066/playliter-pwa-next"
               target="_blank"
               rel="noreferrer noopener"
               color="primary.500"
-            >clicando aqui</Link>.
+            >{t('feature.link_url')}</Link>.
           </Text>
         </Box>
       </Container>

@@ -53,14 +53,14 @@ export const BottomNavigation: FC<{
               href={path}
               as={NextLink}
               key={i}
-              cursor="pointer"
               _hover={{
-                textDecoration: "none",
+                textDecoration: "none"
               }}
             >
               <Flex
                 direction="column"
                 alignItems="center"
+                cursor="pointer"
               >
                 <Icon
                   as={icon}

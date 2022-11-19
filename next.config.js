@@ -3,6 +3,7 @@ const isProd = process.env.NODE_ENV === 'production'
 
 // Nextjs plugins
 const { createSecureHeaders } = require('next-secure-headers')
+const { i18n } = require('./next-i18next.config')
 const withPWA = require('next-pwa')({
   dest: 'public',
   disable: !isProd
@@ -17,6 +18,8 @@ const nextConfig = withPWA({
   eslint: {
     ignoreDuringBuilds: true
   },
+  // Translations setup
+  i18n,
   // Secure headers
   async headers() {
     return [

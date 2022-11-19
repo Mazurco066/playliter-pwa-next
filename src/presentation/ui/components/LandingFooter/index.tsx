@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 
 // Components
 import { FaGithub, FaPortrait, FaEnvelope } from 'react-icons/fa'
@@ -16,6 +17,9 @@ import {
 
 // Component
 export const LandingFooter: FC = () => {
+  // Hooks
+  const { t } = useTranslation('landing')
+
   // Styles
   const footerDirection: any = useBreakpointValue({ base: 'column', md: 'row' })
   const footerJustify: any = useBreakpointValue({ base: 'center', md: 'space-between' })
@@ -46,14 +50,14 @@ export const LandingFooter: FC = () => {
               mb="2"
               color="gray.100"
             >
-              Autor
+              {t('footer.author_title')}
             </Text>
             <Text
               fontSize="sm"
               color="gray.100"
               mb="2"
             >
-              Aplicativo desenvolvido por:
+              {t('footer.credits')}
             </Text>
             <Flex
               alignItems="center"
@@ -64,7 +68,7 @@ export const LandingFooter: FC = () => {
               <Box maxWidth="2.5rem">
                 <Image 
                   src="img/me.png"
-                  alt="Gabriel Mazurco"
+                  alt={t('footer.author')}
                 />
               </Box>
               <Box>
@@ -75,7 +79,7 @@ export const LandingFooter: FC = () => {
                   color="gray.100"
                   mb="0"
                 >
-                  Gabriel Mazurco
+                  {t('footer.author')}
                 </Text>
               </Box>
             </Flex>
@@ -84,7 +88,7 @@ export const LandingFooter: FC = () => {
               color="gray.100"
               mb="2"
             >
-              Tecnologias utilizadas:
+              {t('footer.techs')}
             </Text>
             <Flex
               alignItems="center"
@@ -113,7 +117,7 @@ export const LandingFooter: FC = () => {
               mb="2"
               color="gray.100"
             >
-              Contato
+              {t('footer.contact')}
             </Text>
             <Link
               fontSize="md"
@@ -134,7 +138,7 @@ export const LandingFooter: FC = () => {
               mb="2"
               color="gray.100"
             >
-              Links úteis
+              {t('footer.links')}
             </Text>
             <Link
               display="block"
@@ -156,7 +160,7 @@ export const LandingFooter: FC = () => {
               target="_blank"
               mb="1"
             >
-              Código Fonte<Icon as={FaGithub} ml="2"/>
+              {t('footer.code')}<Icon as={FaGithub} ml="2"/>
             </Link>
             <Link
               display="block"
@@ -166,7 +170,7 @@ export const LandingFooter: FC = () => {
               href='https://mazurco066.github.io'
               target="_blank"
             >
-              Portifólio<Icon as={FaPortrait} ml="2"/>
+              {t('footer.portfolio')}<Icon as={FaPortrait} ml="2"/>
             </Link>
           </Box>
         </Box>
@@ -178,7 +182,7 @@ export const LandingFooter: FC = () => {
       >
         <Container maxWidth="6xl">
           <Text fontSize="sm" color="gray.100">
-            © {new Date().getFullYear()}, Gabriel Mazurco
+            © {new Date().getFullYear()}, {t('footer.author')}
           </Text>
         </Container>
       </Box>

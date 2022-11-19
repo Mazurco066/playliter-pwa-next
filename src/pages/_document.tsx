@@ -1,11 +1,21 @@
 // Dependencies
 import Document, { Html, Head, Main, NextScript } from 'next/document'
+import i18nextConfig from '../../next-i18next.config'
+
+// Types
+import type { DocumentProps } from 'next/document'
+
+// Document props
+type Props = DocumentProps & {
+  // add custom document props
+}
 
 // Nest nase document
-class MyDocument extends Document {
+class MyDocument extends Document<Props> {
   render() {
+    const currentLocale = this.props.__NEXT_DATA__.locale ?? i18nextConfig.i18n.defaultLocale
     return (
-      <Html>
+      <Html lang={currentLocale}>
         <Head>
           <link rel="manifest" href="/manifest.json" />
           <link rel="apple-touch-startup-image" href="img/icons/apple-splash-2048-2732.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"></link>

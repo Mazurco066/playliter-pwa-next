@@ -1,0 +1,34 @@
+{
+  "access_btn": "Login",
+  "signup_btn": "Sign Up",
+  "hero": {
+    "highlight": "Manage your band songbook",
+    "title": "Using Playliter",
+    "description": "You will find awesome tools to share your concert songs with band members.",
+    "button": "Access Application"
+  },
+  "feature": {
+    "title": "App features",
+    "subtitle": "Playliter offers the following features to help you manage your band songs:",
+    "card_1_title": "Songbook",
+    "card_1_text": "Organize your band's repertoire in a way that all band members have access to information.",
+    "card_2_title": "Concerts",
+    "card_2_text": "The presentations are visible to all band members as well as the songs that will be used and their respective tones.",
+    "card_3_title": "Simplicity",
+    "card_3_text": "A simple interface for efficient navigation between the application's resources.",
+    "link_prev": "The app code is ",
+    "link_feature": "open source",
+    "link_next": ". You can accesss ",
+    "link_url": "clicking here"
+  },
+  "footer": {
+    "author_title": "Author",
+    "credits": "App develop by:",
+    "author": "Gabriel Mazurco",
+    "techs": "Used techs:",
+    "contact": "Contact",
+    "links": "Utils",
+    "code": "Source Code",
+    "portfolio": "Portfolio"
+  }
+}

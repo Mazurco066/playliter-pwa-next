@@ -50,7 +50,7 @@ const LogInView: FC = () => {
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
-  const logoImg =  useColorModeValue('logo-black.svg', 'logo.svg')
+  const logoImg =  useColorModeValue('/logo-black.svg', '/logo.svg')
 
   // Login request
   const { isLoading, mutateAsync } = useMutation((data: any) => {

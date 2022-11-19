@@ -8,6 +8,9 @@ import { SWRConfig } from 'swr'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
 
+// I18n wrappers
+import { appWithTranslation } from 'next-i18next'
+
 // Component packages
 import theme from 'presentation/theme'
 import NextNProgress from 'nextjs-progressbar'
@@ -54,4 +57,4 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 }
 
 // Exporting app
-export default MyApp
+export default appWithTranslation(MyApp)
