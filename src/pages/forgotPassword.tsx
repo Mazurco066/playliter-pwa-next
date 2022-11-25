@@ -2,11 +2,15 @@
 import Head from 'next/head'
 import { ReactElement } from 'react'
 import { useUser } from 'infra/services/session'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 // Layout and Components
 import { NextPageWithLayout } from './_app'
 import { AccountLayout } from 'presentation/ui/_layouts'
 import { ForgotPasswordView } from 'presentation/ui/views'
+
+// Types
+import type { GetStaticProps } from 'next'
 
 // Sign in component
 const ForgotPassword: NextPageWithLayout = () => {
@@ -28,6 +32,13 @@ const ForgotPassword: NextPageWithLayout = () => {
     </main>
   )
 }
+
+// Load translation files
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+  props: {
+    ...await serverSideTranslations(locale ?? 'pt', ['common', 'forgotPassword']),
+  },
+})
 
 // Applying layout
 ForgotPassword.getLayout = function getLayout(page: ReactElement) {

@@ -3,6 +3,7 @@ import { FC } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Layout and Components
@@ -27,31 +28,32 @@ import {
   useColorModeValue,
   UseToastOptions
 } from '@chakra-ui/react'
-
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Sign in component
 const ForgotPasswordView: FC = () => {
   // Hooks
   const router = useRouter()
   const toast = useToast()
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('forgotPassword')
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
-  const logoImg =  useColorModeValue('logo-black.svg', 'logo.svg')
+  const logoImg =  useColorModeValue('/logo-black.svg', '/logo.svg')
 
   // Forget password request
   const { isLoading, mutateAsync } = useMutation((data: any) => {
     return requestClient('/api/accounts/forgot_password', 'post', data)
   })
+
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
 
   // Actions
   const onSubmit = async (data: any) => {
@@ -63,8 +65,8 @@ const ForgotPasswordView: FC = () => {
 
       // Notify user about recovery E-mail
       toast({
-        title: 'Sua conta foi encontrada!',
-        description: 'Um E-mail de recuperação de senha foi enviado para sua caixa de entrada! Siga as instruções presentes nele para recuperar sua conta.',
+        title: t('messages.email_sent_title'),
+        description: t('messages.email_sent_msg'),
         status: 'success',
         duration: 5000,
         isClosable: true
@@ -76,8 +78,8 @@ const ForgotPasswordView: FC = () => {
     } else {
       if ([404].includes(response.status)) {
         toast({
-          title: 'Ops.. A conta informada não existe!',
-          description: 'Não há contas cadastradas no E-mail informado!',     
+          title: t('messages.account_not_exists_title'),
+          description: t('messages.account_not_exists_msg'),     
           status: 'warning',
           duration: 3000,
           isClosable: true
@@ -102,14 +104,13 @@ const ForgotPasswordView: FC = () => {
         <Box p="5" borderRadius="lg" bg={bgBox}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Heading as="h3" size="lg" mb="1">
-              Esqueceu sua senha?
+              {t('form.title')}
             </Heading>
             <Text mb="3">
-              Sem problemas😁. Informe o E-mail vinculado a sua conta para receber uma
-              notificação para redefinição de sua senha.
+              {t('form.subtitle')}
             </Text>
             <FormControl isRequired mb="5" isDisabled={isLoading}>
-              <FormLabel>E-mail</FormLabel>
+              <FormLabel>{t('form.email_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -117,14 +118,14 @@ const ForgotPasswordView: FC = () => {
                 />
                 <Input
                   type="email"
-                  placeholder="E-mail"
+                  placeholder={t('form.email_label')}
                   {...register('email', { required: true })}
                 />
               </InputGroup>
               {errors.email ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{(t('messages.required_field_msg'))}</FormHelperText>
               ) : (
-                <FormHelperText>Digite o E-mail cadastrado em sua conta.</FormHelperText>
+                <FormHelperText>{t('form.email_hint')}</FormHelperText>
               )}
             </FormControl>
             <Button
@@ -134,18 +135,18 @@ const ForgotPasswordView: FC = () => {
               width="full"
               mb="3"
             >
-              Enviar redefinição
+              {(t('form.submit'))}
             </Button>
             <Text
               textAlign="center"
             >
-              Lembrou sua conta?{' '}
+              {(t('form.remember_account'))}
               <Link
                 fontWeight="bold"
                 color="secondary.500"
                 onClick={() => router.push('/login')}
               >
-                Fazer login!
+                {(t('form.login'))}
               </Link>
             </Text>
           </form>
