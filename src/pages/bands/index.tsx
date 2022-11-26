@@ -1,12 +1,16 @@
 // Dependencies
 import Head from 'next/head'
 import { ReactElement } from 'react'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useUser } from 'infra/services/session'
 
 // Layout and Components
 import { NextPageWithLayout } from '../_app'
 import { SecureLayout } from 'presentation/ui/_layouts'
 import { BandsView } from 'presentation/ui/views'
+
+// Types
+import type { GetStaticProps } from 'next'
 
 // Bands component
 const Bands: NextPageWithLayout = () => {
@@ -25,6 +29,13 @@ const Bands: NextPageWithLayout = () => {
     </main>
   )
 }
+
+// Load translation files
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+  props: {
+    ...await serverSideTranslations(locale ?? 'pt', ['common', 'bands']),
+  },
+})
 
 // Applying layout
 Bands.getLayout = function getLayout(page: ReactElement) {

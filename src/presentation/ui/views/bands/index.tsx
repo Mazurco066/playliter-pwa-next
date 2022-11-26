@@ -2,6 +2,7 @@
 import { FC } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -23,6 +24,7 @@ import {
 const BandsView: FC = () => {
   // Hooks
   const router = useRouter()
+  const { t } = useTranslation('bands')
 
   // Color hooks
   const colorSubtile = useColorModeValue('gray.500', 'gray.400')
@@ -47,13 +49,13 @@ const BandsView: FC = () => {
           textTransform="uppercase"
           mb="1"
         >
-          Deseja criar uma nova banda?
+          {t('create_label')}
         </Heading>
         <Text
           mb="5"
           color={colorSubtile}
         >
-          Clique no botão abaixo e preencha os dados.
+          {t('create_hint')}
         </Text>
         <Button
           variant="fade"
@@ -61,7 +63,7 @@ const BandsView: FC = () => {
           mb="5"
           onClick={() => router.push('/bands/save')}
         >
-          Criar banda
+          {t('create_btn')}
         </Button>
         <Heading
           as="h3"
@@ -70,13 +72,13 @@ const BandsView: FC = () => {
           textTransform="uppercase"
           mb="1"
         >
-          Minhas bandas
+          {t('my_bands')}
         </Heading>
         <Text
           mb="5"
           color={colorSubtile}
         >
-          Lista de bandas que você participa.
+          {t('my_bands_label')}
         </Text>
         { bands && !bandsLoading ? (
           <>
@@ -96,7 +98,7 @@ const BandsView: FC = () => {
               </Grid>
             ) : (
               <Text mb="5">
-                Você não participa de nenhuma banda!
+                {t('no_bands')}
               </Text>
             ) }
           </>

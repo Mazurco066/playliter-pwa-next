@@ -1,0 +1,14 @@
+{
+  "title": "My Bands",
+  "create_label": "Want to create a new band?",
+  "create_hint": "Click the button below and fill in the details.",
+  "create_btn": "New band",
+  "my_bands": "My Bands",
+  "my_bands_label": "List of bands you associate in",
+  "no_bands": "You are not part of any band.",
+  "roles": {
+    "founder": "Founder",
+    "admin": "Admin",
+    "member": "Integrant"
+  }
+}

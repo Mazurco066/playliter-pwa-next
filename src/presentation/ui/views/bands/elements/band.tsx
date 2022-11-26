@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 import { useUser } from 'infra/services/session'
 
 // Types
@@ -25,6 +26,7 @@ export const BandItem: FC<{
 }) => {
   // Hooks
   const { user } = useUser()
+  const { t } = useTranslation('bands')
 
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
@@ -35,10 +37,10 @@ export const BandItem: FC<{
 
   // Utils
   const role = owner.id === user?.id 
-    ? 'Fundador'
+    ? t('roles.founder')
     : admins.find(a => a.id === user?.id) 
-      ? 'Admin' 
-      : 'Membro' 
+      ? t('roles.admin')
+      : t('roles.member') 
 
   // JSX
   return (
