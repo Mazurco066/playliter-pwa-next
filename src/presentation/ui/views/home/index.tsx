@@ -2,6 +2,7 @@
 import { FC } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { useUser } from 'infra/services/session'
 import { requestClient } from 'infra/services/http'
 
@@ -26,6 +27,7 @@ const HomeView: FC = () => {
   // Hooks
   const router = useRouter()
   const { user } = useUser()
+  const { t } = useTranslation('home')
 
   // Color hooks
   const showSubtitleColor = useColorModeValue('gray.500', 'gray.400')
@@ -56,7 +58,7 @@ const HomeView: FC = () => {
           size="lg"
           textTransform="uppercase"
         >
-          Bem vindo(a)<br/>{user?.name}! 
+          {t('welcome')}<br/>{user?.name}! 
         </Heading>
         {/* Pending shows section */}
         {pendingShows?.data && !pendingShowsLoading ? (
@@ -64,8 +66,8 @@ const HomeView: FC = () => {
             <Text color={showSubtitleColor} mb="3">
               { 
                 pendingShows?.data?.length
-                  ? `Você tem ${pendingShows.data?.length} ${pendingShows.data?.length === 1 ? 'Apresentação pendente' : 'Apresentações pendentes'}`
-                  : 'Não há apresentações pendentes.'
+                  ? `${t('concerts_label')} ${pendingShows.data?.length} ${pendingShows.data?.length === 1 ? t('concerts_singular') : t('concerts_plural')}.`
+                  : t('no_concerts')
               }
             </Text>
             <Stack
@@ -114,7 +116,7 @@ const HomeView: FC = () => {
                     textTransform="uppercase"
                     mb="4"
                   >
-                    Minhas Bandas
+                    {t('my_bands')}
                   </Heading>
                   <Box
                     px="3"
@@ -160,7 +162,7 @@ const HomeView: FC = () => {
                             fontWeight="semibold"
                             color="gray.50"
                           >
-                            Ver<br/>mais
+                            {t('see')}<br/>{t('more')}
                           </Text>
                         </Flex>
                       </Box>
@@ -189,7 +191,7 @@ const HomeView: FC = () => {
         <Text
           textAlign="center"
         >
-          Versão: <Text as="strong" color="secondary.500">1.0.0</Text>
+          {t('version')}<Text as="strong" color="secondary.500">1.0.0</Text>
         </Text>
       </Container>
     </div>

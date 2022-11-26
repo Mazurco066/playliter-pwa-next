@@ -1,4 +1,13 @@
 {
   "title": "Playliter",
-  "subtitle": "App"
+  "subtitle": "App",
+  "welcome": "Bem vindo(a)",
+  "concerts_label": "Você tem",
+  "concerts_singular": "Apresentação pendente",
+  "concerts_plural": "Apresentações pendentes",
+  "no_concerts": "Não há apresentações pendentes.",
+  "my_bands": "Minhas Bandas",
+  "see": "Ver",
+  "more": "mais",
+  "version": "Versão: "
 }

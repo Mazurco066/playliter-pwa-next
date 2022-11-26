@@ -1,4 +1,13 @@
 {
   "title": "Playliter",
-  "subtitle": "App"
+  "subtitle": "App",
+  "welcome": "Welcome",
+  "concerts_label": "You have",
+  "concerts_singular": "scheduled concert",
+  "concerts_plural": "scheduled concerts",
+  "no_concerts": "There is no future concerts scheduled.",
+  "my_bands": "My Bands",
+  "see": "Load",
+  "more": "more",
+  "version": "Version: "
 }
