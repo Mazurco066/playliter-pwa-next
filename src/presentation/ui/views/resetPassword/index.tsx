@@ -3,6 +3,7 @@ import { FC } from 'react'
 import { useRouter } from 'next/router'
 import { useMutation } from  '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Components
@@ -28,31 +29,32 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Component
 const ResetPasswordView: FC<{ params: string[] }> = ({ params }) => {
   // Hooks
   const toast = useToast()
   const router = useRouter()
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('resetPassword')
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   // Theme hooks
-  const pathSize = params.reduce((pv: string, _: string) => pv + '../', '')
   const bgBox = useColorModeValue('gray.50', 'gray.800')
-  const logoImg = useColorModeValue(`${pathSize}logo-black.svg`, `${pathSize}logo.svg`)
+  const logoImg = useColorModeValue(`/logo-black.svg`, `/logo.svg`)
 
   // Reset password request
   const { isLoading, mutateAsync } = useMutation((data: any) => {
     return requestClient('/api/accounts/reset_password', 'post', { ...data })
   })
+
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
 
   // Actions
   const onSubmit = async (data: any) => {
@@ -62,8 +64,8 @@ const ResetPasswordView: FC<{ params: string[] }> = ({ params }) => {
     // Validate page params
     if (!accountId || !token) {
       toast({
-        title: 'Ops... URL inválida',
-        description: 'A url informada nessá página é inválida. Por favor solicite uma url de refefinição de senha pelo app e a acesse pelo seu E-mail.',
+        title: t('messages.invalid_url_title'),
+        description: t('messages.invalid_url_msg'),
         status: 'error',
         duration: 3500,
         isClosable: true
@@ -73,8 +75,8 @@ const ResetPasswordView: FC<{ params: string[] }> = ({ params }) => {
     
     // Validate both passwords
     if (data.password !== data.confirmPassword) return toast({
-      title: 'Ops... senhas inválidas',
-      description: 'A senha digitada deve ser igual a confirmação da senha',
+      title: t('messages.invalid_password_title'),
+      description: t('messages.invalid_password_msg'),
       status: 'warning',
       duration: 2000,
       isClosable: true
@@ -92,8 +94,8 @@ const ResetPasswordView: FC<{ params: string[] }> = ({ params }) => {
      
       // Notify user about operation success
       toast({
-        title: 'Senha atualizada com sucesso!',
-        description: 'Agora faça o login utilizando sua nova senha.',
+        title: t('messages.reset_success_title'),
+        description: t('messages.reset_success_msg'),
         status: 'success',
         duration: 3000,
         isClosable: true
@@ -103,8 +105,8 @@ const ResetPasswordView: FC<{ params: string[] }> = ({ params }) => {
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Preenchimento do formulário inválido',
-          description: 'Verifique se as senhas possuem mais de 8 caracteres e se as 2 senhas correspondem!',
+          title: t('messages.invalid_form_title'),
+          description: t('messages.invalid_form_msg'),
           status: 'error',
           duration: 2500,
           isClosable: true
@@ -129,13 +131,13 @@ const ResetPasswordView: FC<{ params: string[] }> = ({ params }) => {
         <Box p="5" borderRadius="lg" bg={bgBox}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Heading as="h3" size="lg" mb="1">
-              Redefinir Senha
+              {t('form.title')}
             </Heading>
             <Text mb="3">
-              Entre com uma nova senha para sua conta e a confirme
+              {t('form.subtitle')}
             </Text>
             <FormControl mb="5" isRequired isDisabled={isLoading}>
-              <FormLabel>Senha</FormLabel>
+              <FormLabel>{t('form.password_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -145,18 +147,18 @@ const ResetPasswordView: FC<{ params: string[] }> = ({ params }) => {
                   type="password"
                   disabled={isLoading}
                   minLength={8}
-                  placeholder="Senha"
+                  placeholder={t('form.password_label')}
                   {...register('password', { required: true, minLength: 8 })}
                 />
               </InputGroup>
               {errors.password ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{(t('messages.required_field_msg'))}</FormHelperText>
               ) : (
-                <FormHelperText>Digite uma nova senha para sua conta.</FormHelperText>
+                <FormHelperText>{t('form.password_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl mb="5" isRequired isDisabled={isLoading}>
-              <FormLabel>Confirmar senha</FormLabel>
+              <FormLabel>{t('form.confirm_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -166,14 +168,14 @@ const ResetPasswordView: FC<{ params: string[] }> = ({ params }) => {
                   type="password"
                   disabled={isLoading}
                   minLength={8}
-                  placeholder="Confirmar senha"
+                  placeholder={t('form.confirm_label')}
                   {...register('confirmPassword', { required: true,  minLength: 8 })}
                 />
               </InputGroup>
               {errors.confirmPassword ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{(t('messages.required_field_msg'))}</FormHelperText>
               ) : (
-                <FormHelperText>Confirme a nova senha escolhida para a conta.</FormHelperText>
+                <FormHelperText>{t('form.confirm_hint')}</FormHelperText>
               )}
             </FormControl>
             <Button
@@ -183,18 +185,18 @@ const ResetPasswordView: FC<{ params: string[] }> = ({ params }) => {
               width="full"
               mb="3"
             >
-              Redefinir senha
+              {t('form.submit')}
             </Button>
             <Text
               textAlign="center"
             >
-              Lembrou sua senha?{' '}
+              {t('form.remember_account')}
               <Link
                 fontWeight="bold"
                 color="secondary.500"
                 onClick={() => router.push('/login')}
               >
-                Voltar para autenticação.
+                {t('form.login')}
               </Link>
             </Text>
           </form>

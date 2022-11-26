@@ -37,7 +37,7 @@ const ForgotPassword: NextPageWithLayout = () => {
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
     ...await serverSideTranslations(locale ?? 'pt', ['common', 'forgotPassword']),
-  },
+  }
 })
 
 // Applying layout
