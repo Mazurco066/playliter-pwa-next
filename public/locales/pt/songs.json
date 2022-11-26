@@ -1,0 +1,13 @@
+{
+  "title": "Músicas",
+  "subtitle": "Públicas",
+  "label": "Músicas Públicas",
+  "input_label": "Pequisar músicas",
+  "input_placeholder": "Pequisar músicas...",
+  "input_hint": "Buscar",
+  "published": "Publicado por: ",
+  "messages": {
+    "request_error": "Ocorreu um erro ao tentar recuperar a lista de músicas públicas. Notifique um adiministrados do aplicativo assim que possível!",
+    "loading_more": "Carregando mais músicas..."
+  }
+}

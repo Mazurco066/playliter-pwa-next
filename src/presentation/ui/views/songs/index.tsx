@@ -3,6 +3,7 @@ import { FC, Fragment, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useInView } from 'react-intersection-observer'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -37,6 +38,7 @@ const SongsView: FC = () => {
   const { ref, inView } = useInView()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
   const [ hasSearched, setSearchedState ] = useState<boolean>(false)
+  const { t } = useTranslation('songs')
 
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
@@ -79,11 +81,11 @@ const SongsView: FC = () => {
             textTransform="uppercase"
             mb="1"
           >
-            Músicas Públicas
+            {t('label')}
           </Heading>
           <FormControl mb="5" isDisabled={(status === 'loading' || isFetchingNextPage)}>
             <FormLabel fontWeight="normal">
-              Pequisar músicas
+              {t('input_label')}
             </FormLabel>
             <InputGroup>
               <InputLeftElement
@@ -93,7 +95,7 @@ const SongsView: FC = () => {
               <Input
                 disabled={(status === 'loading' || isFetchingNextPage)}
                 type="text"
-                placeholder="Pesquisar..."
+                placeholder={t('input_placeholder')}
                 minLength={2}
                 value={filterSearch}
                 onKeyUp={event => {
@@ -115,7 +117,7 @@ const SongsView: FC = () => {
               />
               <InputRightAddon
                 cursor="pointer"
-                children="Buscar"
+                children={t('input_hint')}
                 _hover={{
                   opacity: '0.7'
                 }}
@@ -150,8 +152,7 @@ const SongsView: FC = () => {
             </>
           ) : status === 'error' ? (
             <Text>
-              Ocorreu um erro ao tentar recuperar a lista de músicas públicas. 
-              Notifique um adiministrados do aplicativo assim que possível!
+              {t('messages.request_error')}
             </Text>
           ) : (
             <Grid
@@ -191,7 +192,7 @@ const SongsView: FC = () => {
                 fontSize="md"
                 fontWeight="bold"
               >
-                Carregando mais músicas...
+                {t('messages.loading_more')}
               </Text>
             </Box>
           )

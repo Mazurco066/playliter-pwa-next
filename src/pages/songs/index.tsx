@@ -2,11 +2,15 @@
 import Head from 'next/head'
 import { ReactElement } from 'react'
 import { useUser } from 'infra/services/session'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 // Layout and Components
 import { NextPageWithLayout } from '../_app'
 import { SecureLayout } from 'presentation/ui/_layouts'
 import { SongsView } from 'presentation/ui/views'
+
+// Types
+import type { GetStaticProps } from 'next'
 
 // Songs component
 const Songs: NextPageWithLayout = () => {
@@ -25,6 +29,13 @@ const Songs: NextPageWithLayout = () => {
     </main>
   )
 }
+
+// Load translation files
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+  props: {
+    ...await serverSideTranslations(locale ?? 'pt', ['common', 'songs']),
+  },
+})
 
 // Applying layout
 Songs.getLayout = function getLayout(page: ReactElement) {

@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 
 // Types
 import type { SongType } from 'domain/models'
@@ -22,6 +23,9 @@ export const SongItem: FC<{
   song,
   onClick = () => {}
 }) => {
+  // Hooks
+  const { t } = useTranslation('songs')
+
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
 
@@ -74,7 +78,7 @@ export const SongItem: FC<{
           />
         </Box>
       </Box>
-      <Tooltip label={`Publicado por: ${publisher}`}>
+      <Tooltip label={`${t('published')}${publisher}`}>
         <Box
           px="3"
           py="4"

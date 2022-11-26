@@ -1,0 +1,13 @@
+{
+  "title": "Songs",
+  "subtitle": "Public",
+  "label": "Public songs",
+  "input_label": "Search songs",
+  "input_placeholder": "Search...",
+  "input_hint": "Filter",
+  "published": "Published by: ",
+  "messages": {
+    "request_error": "An error ocourred while fething the songs! Please try again later",
+    "loading_more": "Loading more songs..."
+  }
+}
