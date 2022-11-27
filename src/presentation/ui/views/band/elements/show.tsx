@@ -48,7 +48,7 @@ export const ShowItem:FC<{
       >
         <Box flex="0 0 auto" mr="4">
           <Image
-            src="../img/arts/white/concert.svg"
+            src="/img/arts/white/concert.svg"
             alt="img"
             h="32px"
             w="32px"
@@ -129,7 +129,7 @@ export const ShowItemMinified: FC<{
           pt="6"
         >
           <Image 
-            src="../img/arts/white/concert.svg"
+            src="/img/arts/white/concert.svg"
             alt="Concert image"
             width="96px"
             height="96px"

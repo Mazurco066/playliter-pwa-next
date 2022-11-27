@@ -2,6 +2,7 @@
 import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 import { useUser } from 'infra/services/session'
 
@@ -45,21 +46,14 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Band component
 const BandView: FC<{ id: string }> = ({ id }) => {
   // Hooks
   const router = useRouter()
   const toast = useToast()
   const { user } = useUser()
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('home')
 
   // Page members action state
   const [ action, setAction ] = useState<{
@@ -192,13 +186,22 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     return requestClient('/api/bands/delete', 'post', data)
   })
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Notify user about error while fetching his banda data
   useEffect(() => {
     if (band && band?.status !== 200) {
       if ([404].includes(band.status)) {
         toast({
-          title: 'Banda não encontrada.',
-          description: 'A banda informada não foi encontrada em sua conta!',
+          title: t('messages.band_not_found_title'),
+          description: t('messages.band_not_found_msg'),
           status: 'info',
           duration: 5000,
           isClosable: true
@@ -238,8 +241,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: `O membro selecionado foi definido como membro!`,
+        title: t('messages.demote_member_title'),
+        description: t('messages.demote_member_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -251,8 +254,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Membro não encontrado!',
-          description: 'O integrante solicitado não foi encontrado na banda!',     
+          title: t('messages.member_not_fount_title'),
+          description: t('messages.member_not_found_msg'),
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -272,8 +275,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: `O membro selecionado foi definido como admin!`,
+        title: t('messages.admin_promote_title'),
+        description: t('messages.admin_promote_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -285,8 +288,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Membro não encontrado!',
-          description: 'O integrante solicitado não foi encontrado na banda!',     
+          title: t('messages.member_not_fount_title'),
+          description: t('messages.member_not_found_msg'), 
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -306,8 +309,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: `O membro selecionado foi removido da banda!`,
+        title: t('messages.remove_member_title'),
+        description: t('messages.remove_member_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -319,8 +322,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Membro não encontrado!',
-          description: 'O integrante solicitado não foi encontrado na banda!',     
+          title: t('messages.member_not_fount_title'),
+          description: t('messages.member_not_found_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -340,8 +343,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: `A banda foi removida com sucesso!`,
+        title: t('messages.remove_band_title'),
+        description: t('messages.remove_band_msg'), 
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -353,8 +356,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Banda não encontrada!',
-          description: 'A banda solicitada não foi encontrada!',     
+          title: t('messages.band_not_found_title'),
+          description: t('messages.band_not_found_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -402,13 +405,13 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                         icon={<Icon as={FaUserPlus} />}
                         onClick={() => onInviteMemberOpen()}
                       >
-                        Convidar
+                        {t('menu.invite')}
                       </MenuItem>
                       <MenuItem
                         icon={<EditIcon />}
                         onClick={() => router.push(`../bands/save/${band?.data?.id}`)}
                       >
-                        Editar
+                        {t('menu.edit')}
                       </MenuItem>
                       {
                         isUserOwner && (
@@ -419,7 +422,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                               onConfirmOpen()
                             }}
                           >
-                            Remover Banda
+                            {t('menu.remove')}
                           </MenuItem>
                         )
                       }
@@ -457,7 +460,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                   {band?.data?.description}
                 </Text>
                 <Text fontSize="sm">
-                  Criada em{' '}
+                  {t('created_at')}
                   <Text as="strong" color="secondary.500">
                     {band?.data?.createdAt?.split('T')[0].split('-').reverse().join('/')}
                   </Text>
@@ -487,7 +490,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
             textTransform="uppercase"
             mb="0"
           >
-            Apresentações
+            {t('concerts_label')}
           </Heading>
           <Button
             variant="fade"
@@ -495,7 +498,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
             disabled={showsLoading}
             onClick={() => onShowsOpen()}
           >
-            Ver mais
+            {t('see_more')}
           </Button>
         </Flex>
         {
@@ -520,7 +523,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                   </Stack>
                 ) : (
                   <Text mb="5">
-                    Não há apresentações registradas nessa banda!
+                    {t('no_concerts')}
                   </Text>
                 )
               }
@@ -545,7 +548,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
           onClose={onShowsClose}
           onOpen={onShowsOpen}
           isOpen={isShowsOpen}
-          title="Apresentações da banda"
+          title={t('concerts_drawer')}
         >
           {
             isShowsOpen && <ShowsComponent bandId={band?.data?.id} />

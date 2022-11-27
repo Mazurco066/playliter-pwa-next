@@ -1,0 +1,27 @@
+{
+  "title": "Detalhes Da Banda",
+  "created_at": "Criada em ",
+  "concerts_label": "Apresentações",
+  "concerts_drawer": "Apresentações da banda",
+  "no_concerts": "Não há apresentações registradas nessa banda!",
+  "see_more": "Ver mais",
+  "menu": {
+    "invite": "Convidar",
+    "edit": "Editar",
+    "remove": "Remover Banda"
+  },
+  "messages": {
+    "band_not_found_title": "Banda não encontrada.",
+    "band_not_found_msg": "A banda informada não foi encontrada em sua conta!",
+    "demote_member_title": "Sucesso!",
+    "demote_member_msg": "O membro selecionado foi definido como membro!",
+    "member_not_fount_title": "Ops.. Membro não encontrado!",
+    "member_not_found_msg": "O integrante solicitado não foi encontrado na banda!",
+    "admin_promote_title": "Sucesso!",
+    "admin_promote_msg": "O membro selecionado foi definido como admin!",
+    "remove_member_title": "Sucesso!",
+    "remove_member_msg": "O membro selecionado foi removido da banda!",
+    "remove_band_title": "Sucesso!",
+    "remove_band_msg": "A banda foi removida com sucesso!"
+  }
+}

@@ -46,7 +46,7 @@ export const CategoryItem:FC<{
       >
         <Box flex="0 0 auto" mr="4">
           <Image
-            src="../img/arts/white/swing.svg"
+            src="/img/arts/white/swing.svg"
             alt="img"
             h="32px"
             w="32px"
@@ -121,7 +121,7 @@ export const CategoryItemMinified: FC<{
           }}
         >
           <Image
-            src="../img/arts/white/swing.svg"
+            src="/img/arts/white/swing.svg"
             alt="img"
             h="full"
             w="full"

@@ -1,0 +1,27 @@
+{
+  "title": "Band details",
+  "created_at": "Created at ",
+  "concerts_label": "Concerts",
+  "concerts_drawer": "Band concerts",
+  "no_concerts": "There is no concerts registered for this band!",
+  "see_more": "See more",
+  "menu": {
+    "invite": "Invite",
+    "edit": "Edit",
+    "remove": "Remove Band"
+  },
+  "messages": {
+    "band_not_found_title": "Band not found.",
+    "band_not_found_msg": "The requested band was not found!",
+    "demote_member_title": "Success!",
+    "demote_member_msg": "The selected user was set as member!",
+    "member_not_fount_title": "Ops.. Member not found!",
+    "member_not_found_msg": "The requested member was not found in the band!",
+    "admin_promote_title": "Success!",
+    "admin_promote_msg": "The selected member as set as Admin!",
+    "remove_member_title": "Success!",
+    "remove_member_msg": "The selected member was removed from band!",
+    "remove_band_title": "Success!",
+    "remove_band_msg": "Band successfully removed!"
+  }
+}
