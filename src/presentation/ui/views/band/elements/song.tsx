@@ -22,8 +22,8 @@ export const SongItem:FC<{
   song,
   onClick = () => {}
 }) => {
-   // Destruct song data
-   const { id, title, writter, category: { title: categoryTitle } } = song
+  // Destruct song data
+  const { id, title, writter, category: { title: categoryTitle } } = song
 
   // JSX
   return (

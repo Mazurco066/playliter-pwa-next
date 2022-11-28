@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 import { useUser } from 'infra/services/session'
 
 // Types
@@ -44,6 +45,7 @@ export const MemberItem: FC<{
 }) => {
   // Hooks
   const { user } = useUser()
+  const { t } = useTranslation('band')
 
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
@@ -110,7 +112,7 @@ export const MemberItem: FC<{
                                 onClose()
                               }}
                             >
-                              Tornar Admin
+                              {t('menu.turn_admin')}
                             </Button>
                           ) : role === 'Admin' && (
                             <Button
@@ -123,7 +125,7 @@ export const MemberItem: FC<{
                                 onClose()
                               }}
                             >
-                              Tornar Membro
+                              {t('menu.turn_member')}
                             </Button>
                           )
                         }
@@ -140,7 +142,7 @@ export const MemberItem: FC<{
                                   onClose()
                                 }}
                               >
-                                Remover
+                                {t('menu.remove_member')}
                               </Button>
                             </>
                           )

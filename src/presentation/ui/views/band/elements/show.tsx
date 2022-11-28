@@ -24,8 +24,8 @@ export const ShowItem:FC<{
   show,
   onClick = () => {}
 }) => {
-   // Destruct show data
-   const { id, title, description, date } = show
+  // Destruct show data
+  const { id, title, description, date } = show
 
   // JSX
   return (

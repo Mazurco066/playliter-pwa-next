@@ -4,11 +4,27 @@
   "concerts_label": "Apresentações",
   "concerts_drawer": "Apresentações da banda",
   "no_concerts": "Não há apresentações registradas nessa banda!",
+  "songs_label": "Músicas",
+  "songs_drawer": "Repertório da banda",
+  "no_songs": "Não há músicas registradas nessa banda!",
+  "categories_label": "Categorias",
+  "categories_drawer": "Categorias da banda",
+  "no_categories": "Não há categorias registradas nessa banda!",
+  "members_label": "Membros",
+  "manage": "Gerenciar",
   "see_more": "Ver mais",
+  "roles": {
+    "founder": "Fundador",
+    "admin": "Admin",
+    "member": "Membro"
+  },
   "menu": {
     "invite": "Convidar",
     "edit": "Editar",
-    "remove": "Remover Banda"
+    "remove": "Remover Banda",
+    "turn_member": "Tornar Membro",
+    "turn_admin": "Tornar Admin",
+    "remove_member": "Remover"
   },
   "messages": {
     "band_not_found_title": "Banda não encontrada.",

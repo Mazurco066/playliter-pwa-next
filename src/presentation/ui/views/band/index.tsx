@@ -53,7 +53,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
   const toast = useToast()
   const { user } = useUser()
   const { t: common } = useTranslation('common')
-  const { t } = useTranslation('home')
+  const { t } = useTranslation('band')
 
   // Page members action state
   const [ action, setAction ] = useState<{
@@ -567,7 +567,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
             textTransform="uppercase"
             mb="0"
           >
-            Músicas
+            {t('songs_label')}
           </Heading>
           <Button
             variant="fade"
@@ -575,7 +575,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
             disabled={songsLoading}
             onClick={() => onSongsOpen()}
           >
-            Ver mais
+            {t('see_more')}
           </Button>
         </Flex>
         {
@@ -600,7 +600,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                   </Stack>
                 ) : (
                   <Text mb="5">
-                    Não há músicas registradas nessa banda!
+                    {t('no_songs')}
                   </Text>
                 )
               }
@@ -625,7 +625,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
           onClose={onSongsClose}
           onOpen={onSongsOpen}
           isOpen={isSongsOpen}
-          title="Repertório da banda"
+          title={t('songs_drawer')}
         >
           {
             isSongsOpen && <SongsComponent
@@ -647,7 +647,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
             textTransform="uppercase"
             mb="0"
           >
-            Categorias
+            {t('categories_label')}
           </Heading>
           <Button
             variant="fade"
@@ -655,7 +655,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
             disabled={categoriesLoading}
             onClick={() => onCategoriesOpen()}
           >
-            Gerenciar
+            {t('manage')}
           </Button>
         </Flex>
         {
@@ -680,7 +680,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                   </Stack>
                 ) : (
                   <Text mb="5">
-                    Não há categorias registradas nessa banda!
+                    {t('no_categories')}
                   </Text>
                 )
               }
@@ -710,7 +710,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
           onClose={onCategoriesClose}
           onOpen={onCategoriesOpen}
           isOpen={isCategoriesOpen}
-          title="Categorias da banda"
+          title={t('categories_drawer')}
         >
           {
             isCategoriesOpen && <CategoriesComponent
@@ -733,7 +733,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
               textTransform="uppercase"
               mb="3"
             >
-              Membros
+              {t('members_label')}
             </Heading>
             <Box
               //bgGradient="linear(to-b, secondary.600, primary.600)"
@@ -756,7 +756,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                     const { id } = acc
                     const isOwner = id === owner.id
                     const isAdmin = admins.find((a: AccountType) => a.id === id) !== undefined
-                    const role = isOwner ? 'Fundador' : isAdmin ? 'Admin' : 'Membro'
+                    const role = isOwner ? t('roles.founder') : isAdmin ? t('roles.admin') : t('roles.member')
 
                     // JSX
                     return (

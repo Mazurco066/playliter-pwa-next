@@ -65,7 +65,7 @@ export const ShowItem: FC<{
           pt="6"
         >
           <Image 
-            src="img/arts/white/concert.svg"
+            src="/img/arts/white/concert.svg"
             alt="Concert image"
             width="96px"
             height="96px"

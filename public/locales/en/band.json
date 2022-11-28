@@ -4,11 +4,27 @@
   "concerts_label": "Concerts",
   "concerts_drawer": "Band concerts",
   "no_concerts": "There is no concerts registered for this band!",
+  "songs_label": "Songs",
+  "songs_drawer": "Band repertory",
+  "no_songs": "There is no songs registered to this band!",
+  "categories_label": "Categories",
+  "categories_drawer": "Band categories",
+  "no_categories": "There is no categories registered for this band!",
+  "members_label": "Members",
+  "manage": "Manage",
   "see_more": "See more",
+  "roles": {
+    "founder": "Founder",
+    "admin": "Admin",
+    "member": "Integrant"
+  },
   "menu": {
     "invite": "Invite",
     "edit": "Edit",
-    "remove": "Remove Band"
+    "remove": "Remove Band",
+    "turn_member": "Demote",
+    "turn_admin": "Promote",
+    "remove_member": "Remove"
   },
   "messages": {
     "band_not_found_title": "Band not found.",
