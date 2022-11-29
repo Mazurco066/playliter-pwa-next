@@ -1,6 +1,7 @@
 // Dependencies
 import { FC, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -33,7 +34,7 @@ export const CategoriesComponent: FC<{
 }) => {
   // Hooks
   const [ filterSearch, setFilterSearch ] = useState<string>('')
-  //const { isOpen, onOpen, onClose } = useDisclosure()
+  const { t } = useTranslation('band')
 
   // Categories request
   const {
@@ -64,7 +65,7 @@ export const CategoriesComponent: FC<{
             />
             <Input
               type="text"
-              placeholder="Buscar..."
+              placeholder={t('categories.search_placeholder')}
               minLength={2}
               value={filterSearch}
               color="gray.50"
@@ -87,7 +88,7 @@ export const CategoriesComponent: FC<{
             bgColor: 'primary.600'
           }}
         >
-          <AddIcon mr="2" /> Nova Categoria
+          <AddIcon mr="2" /> {t('categories.new_action')}
         </Button>
       </Box>
       { categories && !categoriesLoading ? (
@@ -115,14 +116,14 @@ export const CategoriesComponent: FC<{
                     </VStack>
                   ) : (
                     <Text>
-                      Não há categorias correspondentes ao filtro informado.
+                      {t('categories.no_categories_filtered')}
                     </Text>
                   )
                 }
               </>
             ) : (
               <Text>
-                Não há categorias registradas nessa banda.
+                {t('categories.no_categories')}
               </Text>
             )
           }

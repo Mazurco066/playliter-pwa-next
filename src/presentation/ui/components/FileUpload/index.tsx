@@ -1,6 +1,7 @@
 // Dependencies
 import { FC, useCallback, useState} from 'react'
 import { useDropzone } from 'react-dropzone'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Components
@@ -28,6 +29,7 @@ export const FileUpload: FC<{
 }) => {
   // Hooks
   const [ isLoading, setLoadingState ] = useState<boolean>(false)
+  const { t: common } = useTranslation('common')
 
   // Events
   const onDrop = useCallback(async (acceptedFiles: any) => {
@@ -66,7 +68,9 @@ export const FileUpload: FC<{
   // JSX
   return (
     <FormControl mb="5">
-      <FormLabel>Logotipo da banda</FormLabel>
+      <FormLabel>
+        {common('file_upload.label')}
+      </FormLabel>
       <Box
         bgGradient="linear(to-b, secondary.500, primary.500)"
         cursor="pointer"
@@ -90,7 +94,7 @@ export const FileUpload: FC<{
               (source !== '' && !isLoading) && (
                 <Avatar
                   src={source}
-                  name="Logo da banda"
+                  name={common('file_upload.placeholder')}
                   size="xl"
                 />
               )
@@ -99,7 +103,7 @@ export const FileUpload: FC<{
               (isDragActive && !source && !isLoading) && (
                 <>
                   <Icon as={FaPhotoVideo} mb="2" />
-                  <Text>Solte os arquivos aqui</Text>
+                  <Text>{common('file_upload.drag_here')}</Text>
                 </> 
               )
             }
@@ -108,7 +112,7 @@ export const FileUpload: FC<{
                 <>
                   <Icon as={FaPhotoVideo} mb="2" />
                   <Text textAlign="center">
-                    Arraste seus arquivos aqui, ou clique para selecionar os arquivos
+                    {common('file_upload.hint')}
                   </Text>
                 </>
               )

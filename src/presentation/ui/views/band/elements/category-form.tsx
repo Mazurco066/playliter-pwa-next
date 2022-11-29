@@ -2,6 +2,7 @@
 import { FC, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -38,15 +39,6 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Component
 export const CategoryForm: FC<{
   bandId: string,
@@ -65,7 +57,9 @@ export const CategoryForm: FC<{
   onRemoveSuccess = () => {}
 }) => {
   // Hooks
-  const toast = useToast() 
+  const toast = useToast()
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('band')
   const {
     register,
     handleSubmit,
@@ -99,6 +93,15 @@ export const CategoryForm: FC<{
     return requestClient('/api/bands/delete_category', 'post', data)
   })
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Actions
   const onSubmit = async (data: any) => {
     // Destruct data
@@ -111,8 +114,8 @@ export const CategoryForm: FC<{
     if ([200, 201].includes(response.status)) {
       // Notify user about created band
       toast({
-        title: 'Sucesso!',
-        description: `Sua categoria de nome ${response?.data?.title} foi salva com sucesso!`,
+        title: t('messages.category_save_title'),
+        description: `${t('messages.category_save_title_1')}${response?.data?.title}${t('messages.category_save_title_2')}`,
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -125,8 +128,8 @@ export const CategoryForm: FC<{
     } else {
       if ([400].includes(response.status)) {
         toast({
-          title: 'Ops.. Há campos inválidos!',
-          description: 'Por favor revise o preenchimento de seu formulário!',     
+          title: t('messages.invalid_form_data_title'),
+          description: t('messages.invalid_form_data_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -148,8 +151,8 @@ export const CategoryForm: FC<{
     if ([200, 201].includes(response.status)) {
       // Notify user about created band
       toast({
-        title: 'Sucesso!',
-        description: `Sua categoria de nome ${category?.title} foi removida com sucesso!`,
+        title: t('messages.category_remove_title'),
+        description: `${t('messages.category_remove_title_1')}${category?.title}${t('messages.category_remove_title_2')}`,
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -162,8 +165,8 @@ export const CategoryForm: FC<{
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Categoria não encontrada!',
-          description: 'A categoria selecionada não foi encontrada em nossa base de dados!',     
+          title: t('messages.category_not_found_title'),
+          description: t('messages.category_not_found_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -189,7 +192,7 @@ export const CategoryForm: FC<{
           {
             category
               ? category.title
-              : 'Nova Categoria'
+              : t('category_form.new_label')
           }
         </ModalHeader>
         <ModalCloseButton />
@@ -200,7 +203,7 @@ export const CategoryForm: FC<{
               mb="5"
               isDisabled={isLoading || isDeleteLoading}
             >
-              <FormLabel>Nome da categoria</FormLabel>
+              <FormLabel>{t('category_form.name_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -209,15 +212,15 @@ export const CategoryForm: FC<{
                 <Input
                   disabled={isLoading || isDeleteLoading}
                   type="text"
-                  placeholder="Nome da categoria"
+                  placeholder={t('category_form.name_placeholder')}
                   minLength={2}
                   {...register('title', { required: true })}
                 />
               </InputGroup>
               {errors.title ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('messages.required_field')}</FormHelperText>
               ) : (
-                <FormHelperText>Insira um nome para a categoria.</FormHelperText>
+                <FormHelperText>{t('category_form.name_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl
@@ -225,7 +228,7 @@ export const CategoryForm: FC<{
               mb="5"
               isDisabled={isLoading || isDeleteLoading}
             >
-              <FormLabel>Descrição</FormLabel>
+              <FormLabel>{t('category_form.desc_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -233,16 +236,16 @@ export const CategoryForm: FC<{
                 />
                 <Textarea
                   disabled={isLoading || isDeleteLoading}
-                  placeholder="Descrição da categoria"
+                  placeholder={t('category_form.desc_placeholder')}
                   pl="10"
                   minLength={2}
                   {...register('description', { required: true })}
                 />
               </InputGroup>
               {errors.description ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('messages.required_field')}</FormHelperText>
               ) : (
-                <FormHelperText>Insira uma breve descrição para a categoria.</FormHelperText>
+                <FormHelperText>{t('category_form.desc_hint')}</FormHelperText>
               )}
             </FormControl>
             <Button
@@ -252,7 +255,7 @@ export const CategoryForm: FC<{
               width="full"
               mb="3"
             >
-              Salvar
+              {t('category_form.submit')}
             </Button>
             {
               category && (
@@ -267,15 +270,15 @@ export const CategoryForm: FC<{
                           colorScheme="red"
                           mb="3"
                         >
-                          Remover
+                          {t('category_form.remove')}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent maxW="200px">
-                        <PopoverHeader fontWeight='semibold'>Confirmação</PopoverHeader>
+                        <PopoverHeader fontWeight='semibold'>{t('category_form.remove_confirmation')}</PopoverHeader>
                         <PopoverArrow />
                         <PopoverCloseButton />
                         <PopoverBody>
-                          Deseja realmente remover essa categoria?
+                          {t('category_form.remove_label')}
                         </PopoverBody>
                         <PopoverFooter display='flex' justifyContent='flex-end'>
                           <ButtonGroup size='sm'>
@@ -284,7 +287,7 @@ export const CategoryForm: FC<{
                               variant='outline'
                               onClick={onPopoverClose}
                             >
-                              Não
+                              {t('category_form.no')}
                             </Button>
                             <Button
                               disabled={isLoading || isDeleteLoading}
@@ -294,7 +297,7 @@ export const CategoryForm: FC<{
                                 await onRemoveSubmit()
                               }}
                             >
-                              Sim
+                              {t('category_form.yes')}
                             </Button>
                           </ButtonGroup>
                         </PopoverFooter>
@@ -312,7 +315,7 @@ export const CategoryForm: FC<{
               mb="3"
               onClick={isLoading ? () => {} : onClose}
             >
-              Cancelar
+              {t('category_form.cancel')}
             </Button>
           </form>
         </ModalBody>

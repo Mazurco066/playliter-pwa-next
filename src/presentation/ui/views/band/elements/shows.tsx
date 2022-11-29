@@ -2,6 +2,7 @@
 import { FC, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -27,6 +28,7 @@ export const ShowsComponent: FC<{ bandId: string }> = ({ bandId }) => {
   // Hooks
   const router = useRouter()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
+  const { t } = useTranslation('band')
 
    // Shows request
    const {
@@ -57,7 +59,7 @@ export const ShowsComponent: FC<{ bandId: string }> = ({ bandId }) => {
             />
             <Input
               type="text"
-              placeholder="Buscar..."
+              placeholder={t('concerts.search_placeholder')}
               minLength={2}
               value={filterSearch}
               color="gray.50"
@@ -80,7 +82,7 @@ export const ShowsComponent: FC<{ bandId: string }> = ({ bandId }) => {
             bgColor: 'primary.600'
           }}
         >
-          <AddIcon mr="2" /> Nova Apresentação
+          <AddIcon mr="2" /> {t('concerts.new_action')}
         </Button>
       </Box>
       { shows && !showsLoading ? (
@@ -106,14 +108,14 @@ export const ShowsComponent: FC<{ bandId: string }> = ({ bandId }) => {
                     </VStack>
                   ) : (
                     <Text>
-                      Não há apresentações correspondentes ao filtro informado.
+                      {t('concerts.no_presentations_filtered')}
                     </Text>
                   )
                 }
               </>
             ) : (
               <Text>
-                Não há apresentações registradas nessa banda.
+                {t('concerts.no_presentations')}
               </Text>
             )
           }

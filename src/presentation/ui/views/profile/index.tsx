@@ -2,6 +2,7 @@
 import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { useUser } from 'infra/services/session'
 import { requestClient } from 'infra/services/http'
 
@@ -29,15 +30,6 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: "Um erro inesperado ocorreu! Entre em contato com algum administrador do App.",
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Bands list component
 const ProfileView: FC = () => {
   // Hooks
@@ -48,6 +40,8 @@ const ProfileView: FC = () => {
   const [ userEmail, setUserEmail ] = useState<string>('')
   const [ userAvatar, setUserAvatar ] = useState<string>('')
   const [ uploadedUrl, setUploadedUrl ] = useState<string>('')
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('profile')
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
@@ -80,6 +74,15 @@ const ProfileView: FC = () => {
   } = useMutation((data: any) => {
     return requestClient('/api/bands/respond_invite', 'post', data)
   })
+
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
 
   // Utils
   const notificationsCount = (pendingInvites?.data?.length || 0) + (isEmailconfirmed ? 0 : 1)
@@ -122,8 +125,8 @@ const ProfileView: FC = () => {
 
       // Notify user about avatar update
       toast({
-        title: 'Sucesso!',
-        description: `O avatar de sua conta foi alterado!`,
+        title: t('messages.avatar_update_title'),
+        description: t('messages.avatar_update_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -133,8 +136,8 @@ const ProfileView: FC = () => {
       setUserAvatar(user?.avatar || '')
       if ([400].includes(accountResponse.status)) {
         toast({
-          title: 'Informação!',
-          description: 'Nenhum dado da conta foi atualizado!',     
+          title: t('messages.no_info_title'),
+          description: t('messages.no_info_msg'),     
           status: 'info',
           duration: 3500,
           isClosable: true
@@ -153,8 +156,8 @@ const ProfileView: FC = () => {
     if (!newValue || newValue.length <= 3) {
       setName(user?.name || '')
       return toast({
-        title: 'Nome inválido!',
-        description: 'Por favor insira um nome com no mínimo 3 caracteres!',     
+        title: t('messages.invalid_name_title'),
+        description: t('messages.invalid_name_msg'),     
         status: 'warning',
         duration: 3500,
         isClosable: true
@@ -179,8 +182,8 @@ const ProfileView: FC = () => {
 
       // Notify user about name update
       toast({
-        title: 'Sucesso!',
-        description: `O nome referente a sua conta foi alterado!`,
+        title: t('messages.name_update_title'),
+        description: t('messages.name_update_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -190,8 +193,8 @@ const ProfileView: FC = () => {
       setName(user?.name || '')
       if ([400].includes(accountResponse.status)) {
         toast({
-          title: 'Informação!',
-          description: 'Nenhum dado da conta foi atualizado!',     
+          title: t('messages.no_info_title'),
+          description: t('messages.no_info_msg'), 
           status: 'info',
           duration: 3500,
           isClosable: true
@@ -210,8 +213,8 @@ const ProfileView: FC = () => {
     if (!newValue || !/\S+@\S+\.\S+/.test(newValue)) {
       setUserEmail(user?.email || '')
       return toast({
-        title: 'E-mail inválido!',
-        description: 'Por favor insira um endereço de E-mail válido!',     
+        title: t('messages.invalid_email_title'),
+        description: t('messages.invalid_email_msg'),     
         status: 'warning',
         duration: 3500,
         isClosable: true
@@ -240,8 +243,8 @@ const ProfileView: FC = () => {
 
       // Notify user about name update
       toast({
-        title: 'Sucesso!',
-        description: `O E-mail referente a sua conta foi alterado! Lembre-se de confirmá lo em sequência.`,
+        title: t('messages.email_update_title'),
+        description: t('messages.email_update_msg'),
         status: 'success',
         duration: 3000,
         isClosable: true
@@ -251,8 +254,8 @@ const ProfileView: FC = () => {
       setUserEmail(user?.email || '')
       if ([400].includes(accountResponse.status)) {
         toast({
-          title: 'E-mail em uso!',
-          description: 'O E-mail inserido já está em uso por outra conta cadastrada no app!',     
+          title: t('messages.email_in_use_title'),
+          description: t('messages.email_in_use_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -275,8 +278,8 @@ const ProfileView: FC = () => {
 
       // Notify user about name update
       toast({
-        title: 'Sucesso!',
-        description: `Você ${response === 'denied'? 'negou' : 'aceitou'} o convite para banda.`,
+        title: t('messages.invite_response_title'),
+        description: `${t('messages.invite_response_msg_1')}${response === 'denied'? 'negou' : 'aceitou'}${t('messages.invite_response_msg_2')}`,
         status: 'success',
         duration: 3000,
         isClosable: true
@@ -288,8 +291,8 @@ const ProfileView: FC = () => {
     } else {
       if ([400].includes(inviteResponse.status)) {
         toast({
-          title: 'Resposta inválida!',
-          description: 'Envie uma respostá válida para api ao responder o convite!',     
+          title: t('messages.invalid_response_title'),
+          description: t('messages.invalid_response_msg'),     
           status: 'info',
           duration: 3000,
           isClosable: true
@@ -322,8 +325,8 @@ const ProfileView: FC = () => {
               onUploadSuccess={({ url }) => setUploadedUrl(url)}
               onUploadError={() => {
                 toast({
-                  title: 'Ops...',
-                  description: 'Ocorreu um erro ao realizar o upload de sua imagem. Por favor tente novamente mais tarde.',
+                  title: t('messages.upload_error_title'),
+                  description: t('messages.upload_error_msg'),
                   status: 'error',
                   duration: 3500,
                   isClosable: true
@@ -373,7 +376,7 @@ const ProfileView: FC = () => {
             textTransform="uppercase"
             mr="2"
           >
-            Notificações
+            {t('notifications_label')}
           </Heading>
           {
             notificationsCount > 0 && (
@@ -412,10 +415,10 @@ const ProfileView: FC = () => {
                     mb="1"
                     color="red.300"
                   >
-                    E-mail ainda não foi confirmado
+                    {t('email_not_confirmed')}
                   </Heading>
                   <Text>
-                    Clique aqui para confirmar
+                    {t('click_to_confirm')}
                   </Text>
                 </Box>
               </Flex>
@@ -442,7 +445,7 @@ const ProfileView: FC = () => {
                 </Grid>
               ) : !isEmailconfirmed && (
                 <Text>
-                  Não há notificações pendentes
+                  {t('empty_notifications')}
                 </Text>
               )}
             </>

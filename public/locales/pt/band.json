@@ -13,6 +13,27 @@
   "members_label": "Membros",
   "manage": "Gerenciar",
   "see_more": "Ver mais",
+  "concerts": {
+    "search_placeholder": "Buscar...",
+    "new_action": "Nova Apresentação",
+    "no_presentations_filtered": "Não há apresentações correspondentes ao filtro informado.",
+    "no_presentations": "Não há apresentações registradas nessa banda."
+  },
+  "songs": {
+    "search_placeholder": "Buscar...",
+    "search_btn": "Buscar",
+    "no_categories": "Ops.. Não há categorias registradas!",
+    "no_categories_msg": "Registre no mínimo uma categoria antes de criar uma música para sua banda!",
+    "new_song": "Nova Música",
+    "songs_error": "Ocorreu um erro ao tentar recuperar a lista de músicas. Notifique um adiministrados do aplicativo assim que possível!",
+    "load_more": "Carregando mais músicas..."
+  },
+  "categories": {
+    "search_placeholder": "Buscar...",
+    "new_action": "Nova Categoria",
+    "no_categories_filtered": "Não há categorias correspondentes ao filtro informado.",
+    "no_categories": "Não há categorias registradas nessa banda."
+  },
   "roles": {
     "founder": "Fundador",
     "admin": "Admin",
@@ -38,6 +59,47 @@
     "remove_member_title": "Sucesso!",
     "remove_member_msg": "O membro selecionado foi removido da banda!",
     "remove_band_title": "Sucesso!",
-    "remove_band_msg": "A banda foi removida com sucesso!"
+    "remove_band_msg": "A banda foi removida com sucesso!",
+    "required_field": "Esse campo é requerido.",
+    "upload_error_title": "Ops...",
+    "upload_error_msg": "Ocorreu um erro ao realizar o upload de sua imagem. Por favor tente novamente mais tarde.",
+    "invalid_form_data_title": "Ops.. Há campos inválidos!",
+    "invalid_form_data_msg": "Por favor revise o preenchimento de seu formulário!",
+    "save_success_title": "Sucesso!",
+    "save_success_msg_1": "Sua banda de nome ",
+    "save_success_msg_2": " foi salva com sucesso!",
+    "category_save_title": "Sucesso!",
+    "category_save_title_1": "Sua categoria de nome ",
+    "category_save_title_2": " foi salva com sucesso!",
+    "category_remove_title": "Sucesso!",
+    "category_remove_title_1": "Sua categoria de nome ",
+    "category_remove_title_2": " foi removida com sucesso!",
+    "category_not_found_title": "Ops.. Categoria não encontrada!",
+    "category_not_found_msg": "A categoria selecionada não foi encontrada em nossa base de dados!"
+  },
+  "save": {
+    "name_label": "Nome da banda",
+    "name_placeholder": "Nome da banda",
+    "name_hint": "Insira um nome para identificar sua banda.",
+    "desc_label": "Descrição",
+    "desc_placeholder": "Descrição da banda",
+    "desc_hint": "Insira uma breve descrição para a banda.",
+    "submit": "Salvar"
+  },
+  "category_form": {
+    "new_label": "Nova Categoria",
+    "name_label": "Nome da categoria",
+    "name_placeholder": "Nome da categoria",
+    "name_hint": "Insira um nome para a categoria.",
+    "desc_label": "Descrição",
+    "desc_placeholder": "Descrição da categoria",
+    "desc_hint": "Insira uma breve descrição para a categoria.",
+    "submit": "Salvar",
+    "remove": "Remover",
+    "remove_confirmation": "Confirmação",
+    "remove_label": "Deseja realmente remover essa categoria?",
+    "yes": "Sim",
+    "no": "Não",
+    "cancel": "Cancelar"
   }
 }

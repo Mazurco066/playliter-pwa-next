@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 
 // Types
 import type { InviteType } from 'domain/models'
@@ -36,6 +37,9 @@ export const InviteItem: FC<{
   isLoading = false,
   onResponse = () => {}
 }) => {
+  // Hooks
+  const { t } = useTranslation('profile')
+
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
 
@@ -74,10 +78,10 @@ export const InviteItem: FC<{
                   </Box>
                   <Box flexGrow="1">
                     <Heading as="h4" size="sm" mb="1">
-                      Você foi convidado
+                      {t('you_were_invited')}
                     </Heading>
                     <Text>
-                      a se juntar a banda{' '}
+                      {t('to_join')}
                       <Text as="strong" color="secondary.500">
                         {bandTitle}
                       </Text>
@@ -92,12 +96,12 @@ export const InviteItem: FC<{
               borderColor='secondary.700'
             >
               <PopoverHeader pt={4} fontWeight='bold' border='0'>
-                Responder convite
+                {t('respond_title')}
               </PopoverHeader>
               <PopoverArrow />
               <PopoverCloseButton />
               <PopoverBody>
-                Deseja aceitar o convite e participar da banda {bandTitle}?
+                {t('respond_desc')}{bandTitle}?
               </PopoverBody>
               <PopoverFooter
                 border='0'
@@ -115,7 +119,7 @@ export const InviteItem: FC<{
                       onClose()
                     }}
                   >
-                    Aceitar
+                    {t('accept')}
                   </Button>
                   <Button
                     disabled={isLoading}
@@ -125,7 +129,7 @@ export const InviteItem: FC<{
                       onClose()
                     }}
                   >
-                    Negar
+                    {t('deny')}
                   </Button>
                 </ButtonGroup>
               </PopoverFooter>

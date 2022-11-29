@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useQuery, useMutation } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Layout and Components
@@ -23,21 +24,14 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Save band component
 const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
   // Hooks
   const router = useRouter()
   const toast = useToast()
   const [ logoPreview, setLogoPreview ] = useState<string>('')
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('band')
   const {
     register,
     handleSubmit,
@@ -80,8 +74,8 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
     if (band && band?.status !== 200) {
       if ([404].includes(band.status)) {
         toast({
-          title: 'Banda não encontrada.',
-          description: 'A banda informada não foi encontrada em sua conta!',
+          title: t('messages.band_not_found_title'),
+          description: t('messages.band_not_found_msg'),
           status: 'info',
           duration: 5000,
           isClosable: true
@@ -98,6 +92,15 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
     return requestClient('/api/bands/save', 'post', data)
   })
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Actions
   const onSubmit = async (data: any) => {
     // Request api via server side
@@ -109,8 +112,8 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
     if ([200, 201].includes(response.status)) {
       // Notify user about created band
       toast({
-        title: 'Sucesso!',
-        description: `Sua banda de nome ${response?.data?.title} foi salva com sucesso!`,
+        title: t('messages.save_success_title'),
+        description: `${t('messages.save_success_msg_1')}${response?.data?.title}${t('messages.save_success_msg_2')}`,
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -122,8 +125,8 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
     } else {
       if ([400].includes(response.status)) {
         toast({
-          title: 'Ops.. Há campos inválidos!',
-          description: 'Por favor revise o preenchimento de seu formulário!',     
+          title: t('messages.invalid_form_data_title'),
+          description: t('messages.invalid_form_data_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -144,8 +147,8 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
             onUploadSuccess={({ url }) => setLogoPreview(url)}
             onUploadError={() => {
               toast({
-                title: 'Ops...',
-                description: 'Ocorreu um erro ao realizar o upload de sua imagem. Por favor tente novamente mais tarde.',
+                title: t('messages.upload_error_title'),
+                description: t('messages.upload_error_msg'),
                 status: 'error',
                 duration: 3500,
                 isClosable: true
@@ -157,7 +160,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
             isRequired
             mb="5"
           >
-            <FormLabel>Nome da banda</FormLabel>
+            <FormLabel>{t('save.name_label')}</FormLabel>
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
@@ -166,15 +169,15 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
               <Input
                 disabled={isLoading || (id != '' && bandLoading)}
                 type="text"
-                placeholder="Nome da banda"
+                placeholder={t('save.name_placeholder')}
                 minLength={2}
                 {...register('title', { required: true })}
               />
             </InputGroup>
             {errors.title ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              <FormHelperText color="red.500">{t('messages.required_field')}</FormHelperText>
             ) : (
-              <FormHelperText>Insira um nome para identificar sua banda.</FormHelperText>
+              <FormHelperText>{t('save.name_hint')}</FormHelperText>
             )}
           </FormControl>
           <FormControl
@@ -182,7 +185,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
             isRequired
             mb="5"
           >
-            <FormLabel>Descrição</FormLabel>
+            <FormLabel>{t('save.desc_label')}</FormLabel>
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
@@ -190,16 +193,16 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
               />
               <Textarea
                 disabled={isLoading || (id != '' && bandLoading)}
-                placeholder="Descrição da banda"
+                placeholder={t('save.desc_placeholder')}
                 pl="10"
                 minLength={2}
                 {...register('description', { required: true })}
               />
             </InputGroup>
             {errors.description ? (
-              <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+              <FormHelperText color="red.500">{t('messages.required_field')}</FormHelperText>
             ) : (
-              <FormHelperText>Insira uma breve descrição para a banda.</FormHelperText>
+              <FormHelperText>{t('save.desc_hint')}</FormHelperText>
             )}
           </FormControl>
           <Button
@@ -209,7 +212,7 @@ const SaveBandView: FC<{ id?: string }> = ({ id = '' }) => {
             width="full"
             mb="5"
           >
-            Salvar
+            {t('save.submit')}
           </Button>
         </form>
       </Container>

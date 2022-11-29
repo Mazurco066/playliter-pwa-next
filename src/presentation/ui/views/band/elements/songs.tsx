@@ -3,6 +3,7 @@ import { FC, useEffect, useState, Fragment } from 'react'
 import { useRouter } from 'next/router'
 import { useInView } from 'react-intersection-observer'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -42,6 +43,7 @@ export const SongsComponent: FC<{
   const { ref, inView } = useInView()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
   const [ hasSearched, setSearchedState ] = useState<boolean>(false)
+  const { t } = useTranslation('band')
 
   // Infinite scroll request
   const {
@@ -82,7 +84,7 @@ export const SongsComponent: FC<{
             <Input
               disabled={(status === 'loading' || isFetchingNextPage)}
               type="text"
-              placeholder="Buscar..."
+              placeholder={t('songs.search_placeholder')}
               minLength={2}
               value={filterSearch}
               color="gray.50"
@@ -108,7 +110,7 @@ export const SongsComponent: FC<{
             />
             <InputRightAddon
               cursor="pointer"
-              children="Buscar"
+              children={t('songs.search_btn')}
               fontWeight="medium"
               bgColor="primary.500"
               color="gray.100"
@@ -129,8 +131,8 @@ export const SongsComponent: FC<{
           w="full"
           onClick={() => {
             if (!canAddSongs) return toast({
-              title: 'Ops.. Não há categorias registradas!',
-              description: 'Registre no mínimo uma categoria antes de criar uma música para sua banda!',     
+              title: t('songs.no_categories'),
+              description: t('songs.no_categories_msg'),     
               status: 'info',
               duration: 3500,
               isClosable: true
@@ -143,7 +145,7 @@ export const SongsComponent: FC<{
             bgColor: 'primary.600'
           }}
         >
-          <AddIcon mr="2" /> Nova Música
+          <AddIcon mr="2" /> {t('songs.new_song')}
         </Button>
       </Box>
       <Box>
@@ -166,8 +168,7 @@ export const SongsComponent: FC<{
             </>
           ) : status === 'error' ? (
             <Text>
-              Ocorreu um erro ao tentar recuperar a lista de músicas públicas. 
-              Notifique um adiministrados do aplicativo assim que possível!
+              {t('songs.songs_error')}
             </Text>
           ) : (
             <VStack
@@ -206,7 +207,7 @@ export const SongsComponent: FC<{
                 fontSize="md"
                 fontWeight="bold"
               >
-                Carregando mais músicas...
+                {t('songs.load_more')}
               </Text>
             </Box>
           )

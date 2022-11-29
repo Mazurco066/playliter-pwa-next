@@ -13,6 +13,27 @@
   "members_label": "Members",
   "manage": "Manage",
   "see_more": "See more",
+  "concerts": {
+    "search_placeholder": "Search...",
+    "new_action": "New concert",
+    "no_presentations_filtered": "There is no concerts matching the current filter.",
+    "no_presentations": "There is no concerts registered for this band."
+  },
+  "songs": {
+    "search_placeholder": "Search...",
+    "search_btn": "Search",
+    "no_categories": "Ops.. There is no registered categories!",
+    "no_categories_msg": "Save at least 1 category to create a song for this band!",
+    "new_song": "New song",
+    "songs_error": "An error ocourred while fetching the songs list. Please try again later!",
+    "load_more": "Loading more songs..."
+  },
+  "categories": {
+    "search_placeholder": "Search...",
+    "new_action": "New category",
+    "no_categories_filtered": "There is no categories matching the current filter.",
+    "no_categories": "There is no categories registered for this band!."
+  },
   "roles": {
     "founder": "Founder",
     "admin": "Admin",
@@ -38,6 +59,47 @@
     "remove_member_title": "Success!",
     "remove_member_msg": "The selected member was removed from band!",
     "remove_band_title": "Success!",
-    "remove_band_msg": "Band successfully removed!"
+    "remove_band_msg": "Band successfully removed!",
+    "required_field": "Required.",
+    "upload_error_title": "Ops...",
+    "upload_error_msg": "An error ocourred while upload your image. Please try again later.",
+    "invalid_form_data_title": "Ops.. invalid data!",
+    "invalid_form_data_msg": "Please review your form data!",
+    "save_success_title": "Success!",
+    "save_success_msg_1": "Your band named as ",
+    "save_success_msg_2": " was successfully saved!",
+    "category_save_title": "Success!",
+    "category_save_title_1": "Your category named as ",
+    "category_save_title_2": " was successfullu saved!",
+    "category_remove_title": "Success!",
+    "category_remove_title_1": "Your category named as ",
+    "category_remove_title_2": " was successfullu deleted!",
+    "category_not_found_title": "Ops.. Category not found!",
+    "category_not_found_msg": "The requested category was not found!"
+  },
+  "save": {
+    "name_label": "Band name",
+    "name_placeholder": "Band name",
+    "name_hint": "Insert an awesome name for your band.",
+    "desc_label": "Description",
+    "desc_placeholder": "Band description",
+    "desc_hint": "Add a brief description to your band.",
+    "submit": "Save"
+  },
+  "category_form": {
+    "new_label": "New Category",
+    "name_label": "Category name",
+    "name_placeholder": "Category name",
+    "name_hint": "Type a name for your category.",
+    "desc_label": "Description",
+    "desc_placeholder": "Category description",
+    "desc_hint": "Insert a brief description to your category.",
+    "submit": "Save",
+    "remove": "Remove",
+    "remove_confirmation": "Are you sure?",
+    "remove_label": "This action is permanent!",
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel"
   }
 }

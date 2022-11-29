@@ -3,5 +3,11 @@
   "messages": {
     "internal_error_title": "Internal error.",
     "internal_error_msg": "An unespected error ocourred. Please notify the application developer."
+  },
+  "file_upload": {
+    "label": "Band logo",
+    "placeholder": "Band logo",
+    "drag_here": "Drop the files here",
+    "hint": "Drag your files here, or just click to select them."
   }
 }

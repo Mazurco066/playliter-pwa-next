@@ -101,7 +101,7 @@ export const MemberItem: FC<{
                     ((isOwner || canManage) && (id !== userId)) && (
                       <>
                         {
-                          role === 'Membro' ? (
+                          [t('roles.member')].includes(role) ? (
                             <Button
                               mt="5"
                               colorScheme="primary"
