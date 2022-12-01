@@ -3,6 +3,7 @@ import { FC, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useQuery, useMutation } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Layout and Components
@@ -24,15 +25,6 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Save show component
 const SaveShowView: FC<{
   id?: string,
@@ -44,6 +36,8 @@ const SaveShowView: FC<{
   // Hooks
   const router = useRouter()
   const toast = useToast()
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('concert')
   const {
     register,
     handleSubmit,
@@ -81,8 +75,8 @@ const SaveShowView: FC<{
   useEffect(() => {
     if (!id && !bandId) {
       toast({
-        title: 'Parâmetros inválidos.',
-          description: 'Para acessar a página de salvar show por favor utilize uma URL valida!',
+        title: t('messages.invalid_parameters_title'),
+          description: t('messages.invalid_parameters_msg'),
           status: 'info',
           duration: 3500,
           isClosable: true
@@ -104,8 +98,8 @@ const SaveShowView: FC<{
     if (show && show?.status !== 200) {
       if ([404].includes(show.status)) {
         toast({
-          title: 'Apresentação não encontrada.',
-          description: 'A apresentação informada não foi encontrada!',
+          title: t('messages.show_not_found_title'),
+          description: t('messages.show_not_found_msg'),
           status: 'info',
           duration: 5000,
           isClosable: true
@@ -122,6 +116,15 @@ const SaveShowView: FC<{
     return requestClient('/api/shows/save', 'post', data)
   })
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Actions
   const onSubmit = async (data: any) => {
     // Request api via server side
@@ -131,8 +134,8 @@ const SaveShowView: FC<{
     if ([200, 201].includes(response.status)) {
       // Notify user about created show
       toast({
-        title: 'Sucesso!',
-        description: `Sua apresentação com título de ${response?.data?.title} foi salva com sucesso!`,
+        title: t('messages.create_show_title'),
+        description: `${t('messages.create_show_msg_1')}${response?.data?.title}${t('messages.create_show_msg_2')}`,
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -144,16 +147,16 @@ const SaveShowView: FC<{
     } else {
       if ([400].includes(response.status)) {
         toast({
-          title: 'Ops.. Há campos inválidos!',
-          description: 'Por favor revise o preenchimento de seu formulário!',     
+          title: t('messages.invalid_form_title'),
+          description: t('messages.invalid_form_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
         })
       } else if ([401, 403].includes(response.status)) {
         toast({
-          title: 'Permissão insuficiente!',
-          description: 'Você não tem permissão para criar/salvar apresentações desta banda!',     
+          title: t('messages.no_permissions_title'),
+          description: t('messages.no_permissions_msg'),     
           status: 'info',
           duration: 3500,
           isClosable: true
@@ -181,7 +184,7 @@ const SaveShowView: FC<{
               isRequired
               mb="5"
             >
-              <FormLabel>Título da apresentação</FormLabel>
+              <FormLabel>{t('save.title_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -191,15 +194,15 @@ const SaveShowView: FC<{
                   disabled={isLoading || (id != '' && showLoading)}
                   variant="filled"
                   type="text"
-                  placeholder="Título da apresentação"
+                  placeholder={t('save.title_placeholder')}
                   minLength={2}
                   {...register('title', { required: true })}
                 />
               </InputGroup>
               {errors.title ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('save.required_field')}</FormHelperText>
               ) : (
-                <FormHelperText>Insira um nome para identificar essa apresentação.</FormHelperText>
+                <FormHelperText>{t('save.title_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl
@@ -207,7 +210,7 @@ const SaveShowView: FC<{
               isRequired
               mb="5"
             >
-              <FormLabel>Data da apresentação</FormLabel>
+              <FormLabel>{t('save.date_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -221,9 +224,9 @@ const SaveShowView: FC<{
                 />
               </InputGroup>
               {errors.date ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('save.required_field')}</FormHelperText>
               ) : (
-                <FormHelperText>Insira uma data para apresentação.</FormHelperText>
+                <FormHelperText>{t('save.date_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl
@@ -231,7 +234,7 @@ const SaveShowView: FC<{
               isRequired
               mb="5"
             >
-              <FormLabel>Descrição</FormLabel>
+              <FormLabel>{t('save.desc_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -240,16 +243,16 @@ const SaveShowView: FC<{
                 <Textarea
                   disabled={isLoading || (id != '' && showLoading)}
                   variant="filled"
-                  placeholder="Descrição da apresentação"
+                  placeholder={t('save.desc_placeholder')}
                   pl="10"
                   minLength={2}
                   {...register('description', { required: true })}
                 />
               </InputGroup>
               {errors.description ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('save.required_field')}</FormHelperText>
               ) : (
-                <FormHelperText>Insira uma breve descrição para a apresentação.</FormHelperText>
+                <FormHelperText>{t('save.desc_hint')}</FormHelperText>
               )}
             </FormControl>
             <Button
@@ -258,7 +261,7 @@ const SaveShowView: FC<{
               type="submit"
               width="full"
             >
-              Salvar
+              {t('save.submit')}
             </Button>
           </form>
         </Box>

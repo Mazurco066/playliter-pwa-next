@@ -40,6 +40,18 @@
     "submit": "Save",
     "cancel": "Cancel"
   },
+  "save": {
+    "required_field": "Required.",
+    "title_label": "Concert title",
+    "title_placeholder": "Concert title",
+    "title_hint": "Insert a name to identify your concert.",
+    "date_label": "Concert date",
+    "date_hint": "Select the concert date.",
+    "desc_label": "Description",
+    "desc_placeholder": "Brief description",
+    "desc_hint": "Type a brief description to your concert.",
+    "submit": "Save"
+  },
   "messages": {
     "show_not_found_title": "Concert not found.",
     "show_not_found_msg": "The informed concert is not present on this band!",
@@ -62,6 +74,13 @@
     "liturgy_error_title": "Ops...",
     "liturgy_error_msg": "Some notes failed on fetiching from 'Pocket Terço' website!",
     "reorder_title": "Success!",
-    "reorder_msg": "Concert songs successfully reordered!"
+    "reorder_msg": "Concert songs successfully reordered!",
+    "invalid_parameters_title": "Invalid parameters.",
+    "invalid_parameters_msg": "To access this page the query parameters should be valid",
+    "create_show_title": "Success!",
+    "create_show_msg_1": "Your concert named as ",
+    "create_show_msg_2": " was successfully saved!",
+    "no_permissions_title": "Insufficient permissions!",
+    "no_permissions_msg": "You don't have permissions to edit concerts from a band that you are not associated!"
   }
 }

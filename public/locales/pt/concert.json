@@ -40,6 +40,18 @@
     "submit": "Salvar",
     "cancel": "Cancelar"
   },
+  "save": {
+    "required_field": "Esse campo é requerido.",
+    "title_label": "Título da apresentação",
+    "title_placeholder": "Título da apresentação",
+    "title_hint": "Insira um nome para identificar essa apresentação.",
+    "date_label": "Data da apresentação",
+    "date_hint": "Insira uma data para apresentação.",
+    "desc_label": "Descrição",
+    "desc_placeholder": "Descrição da apresentação",
+    "desc_hint": "Insira uma breve descrição para a apresentação.",
+    "submit": "Salvar"
+  },
   "messages": {
     "show_not_found_title": "Apresentação não encontrada.",
     "show_not_found_msg": "A Apresentação informada não foi encontrada em sua conta!",
@@ -62,6 +74,13 @@
     "liturgy_error_title": "Ops...",
     "liturgy_error_msg": "Alguma anotações referentes a liturgia diária falharam a ser importadas do site 'Pocket Terço'!",
     "reorder_title": "Sucesso!",
-    "reorder_msg": "A apresentação foi reordenada com sucesso!"
+    "reorder_msg": "A apresentação foi reordenada com sucesso!",
+    "invalid_parameters_title": "Parâmetros inválidos.",
+    "invalid_parameters_msg": "Para acessar a página de salvar show por favor utilize uma URL valida!",
+    "create_show_title": "Sucesso!",
+    "create_show_msg_1": "Sua apresentação com título de ",
+    "create_show_msg_2": " foi salva com sucesso!",
+    "no_permissions_title": "Permissão insuficiente!",
+    "no_permissions_msg": "Você não tem permissão para criar/salvar apresentações desta banda!"
   }
 }
