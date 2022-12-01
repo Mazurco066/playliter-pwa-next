@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 
 // Components
 import {
@@ -27,10 +28,13 @@ export const ConfirmAction: FC<{
 }> = ({
   isOpen,
   onClose,
-  title = 'Tem Certeza?',
-  message = 'Essa ação é permanente!',
+  title = '',
+  message = '',
   onConfirm = () => {}
 }) => {
+  // Hooks
+  const { t } = useTranslation('common')
+
   // JSX
   return (
     <Modal
@@ -43,12 +47,12 @@ export const ConfirmAction: FC<{
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          {title}
+          {title ? title : t('confirm_action.title')}
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
           <Text>
-            {message}
+            {message ? message : t('confirm_action.message')}
           </Text>
         </ModalBody>
         <ModalFooter>
@@ -60,7 +64,7 @@ export const ConfirmAction: FC<{
               onClose()
             }}
           >
-            Continuar
+            {t('confirm_action.confirm')}
           </Button>
           <Button
             colorScheme="red"
@@ -68,7 +72,7 @@ export const ConfirmAction: FC<{
               onClose()
             }}
           >
-            Cancelar
+            {t('confirm_action.cancel')}
           </Button>
         </ModalFooter>
       </ModalContent>

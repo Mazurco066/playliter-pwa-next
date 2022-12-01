@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 
 // Types and interfaces
 import type { SongType } from 'domain/models'
@@ -23,7 +24,6 @@ import {
 
 // Drag Component
 export const DraggableSongItem: FC<{ item: SongType, index: number }> = ({ item, index }) => {
-  
   // Color Hooks
   const bgBox = useColorModeValue('blackAlpha.500', 'blackAlpha.500')
 
@@ -104,6 +104,9 @@ export const OrderedSong: FC<{
   order = 0,
   song
 }) => {
+  // Hooks
+  const { t } = useTranslation('concert')
+
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
   const colorOrder = useColorModeValue('secondary.700', 'secondary.400')
@@ -183,21 +186,21 @@ export const OrderedSong: FC<{
                   icon={<ViewIcon />}
                   onClick={onClick}
                 >
-                  Ver música
+                  {t('options.see')}
                 </MenuItem>
                 <MenuItem
                   disabled={isLoading}
                   icon={<EditIcon />}
                   onClick={onEdit}
                 >
-                  Editar música
+                  {t('options.edit')}
                 </MenuItem>
                 <MenuItem
                   disabled={isLoading}
                   icon={<DeleteIcon />}
                   onClick={onRemove}
                 >
-                  Remover da apresentação
+                  {t('options.remove')}
                </MenuItem>
             </MenuList>
           </Menu>

@@ -1,0 +1,67 @@
+{
+  "title": "Concert details",
+  "btn_sequential": "Ordered view",
+  "added_songs": "Added songs",
+  "no_songs": "There is no songs in this concert!",
+  "notes_drawer": "Concert notes",
+  "reorder_drawer": "Reorder songs",
+  "menu": {
+    "edit": "Edit",
+    "reorder": "Reorder concert",
+    "remove": "Remove concert"
+  },
+  "options": {
+    "see": "Go to song",
+    "edit": "Edit song",
+    "remove": "Remove from concert"
+  },
+  "notes": {
+    "import_liturgy": "Import liturgy",
+    "import_loading": "Please wait... we are importing the daily liturgy for you.",
+    "no_registers": "There is no notes registered on this concert."
+  },
+  "reorder": {
+    "btn_reorder": "Reorder songs",
+    "btn_cancel": "Cancel"
+  },
+  "note_options": {
+    "edit": "Edit",
+    "remove": "Remove"
+  },
+  "form": {
+    "new_note": "New note",
+    "required_field": "Required.",
+    "title_label": "Note title",
+    "title_placeholder": "Note title",
+    "title_hint": "Insert a title for your note.",
+    "content_label": "Content",
+    "content_placeholder": "Content",
+    "content_hint": "Insert a content for your note.",
+    "submit": "Save",
+    "cancel": "Cancel"
+  },
+  "messages": {
+    "show_not_found_title": "Concert not found.",
+    "show_not_found_msg": "The informed concert is not present on this band!",
+    "remove_from_show_title": "Success!",
+    "remove_from_show_msg": "The selected song was successfully removed from this concert!",
+    "song_not_present_title": "Ops.. Song not found!",
+    "song_not_present_msg": "The requested song is not present in this concert!",
+    "remove_note_title": "Success!",
+    "remove_note_msg": "Note successfully removed!",
+    "note_not_found_title": "Ops.. Note not found!",
+    "note_not_found_msg": "The informed note was not found in this concert!",
+    "remove_show_title": "Success!",
+    "remove_show_msg": "The selected concert was successfully removed!",
+    "invalid_form_title": "Ops... Invalid fields!",
+    "invalid_form_msg": "Please review your form data!",
+    "save_note_title": "Success!",
+    "save_note_msg": "Your note was successfully saved!",
+    "liturgy_import_title": "Success!",
+    "liturgy_import_msg": "The daily liturgy was successfully imported from 'Pocket Terço' website!",
+    "liturgy_error_title": "Ops...",
+    "liturgy_error_msg": "Some notes failed on fetiching from 'Pocket Terço' website!",
+    "reorder_title": "Success!",
+    "reorder_msg": "Concert songs successfully reordered!"
+  }
+}

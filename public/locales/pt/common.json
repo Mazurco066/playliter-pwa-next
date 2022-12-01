@@ -9,5 +9,11 @@
     "placeholder": "Logo da banda",
     "drag_here": "Solte os arquivos aqui",
     "hint": "Arraste seus arquivos aqui, ou clique para selecionar os arquivos"
+  },
+  "confirm_action": {
+    "title": "Tem certeza?",
+    "message": "Essa ação é permanente!",
+    "confirm": "Continuar",
+    "cancel": "Cancelar"
   }
 }

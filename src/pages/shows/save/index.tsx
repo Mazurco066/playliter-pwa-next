@@ -2,12 +2,16 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { ReactElement } from 'react'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useUser } from 'infra/services/session'
 
 // Layout and Components
 import { NextPageWithLayout } from '../../_app'
 import { SecureLayout } from 'presentation/ui/_layouts'
 import { SaveShowView } from 'presentation/ui/views'
+
+// Types
+import type { GetStaticProps } from 'next'
 
 // SaveShow component
 const SaveShow: NextPageWithLayout = () => {
@@ -32,6 +36,13 @@ const SaveShow: NextPageWithLayout = () => {
     </main>
   )
 }
+
+// Load translation files
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+  props: {
+    ...await serverSideTranslations(locale ?? 'pt', ['common', 'concert']),
+  },
+})
 
 // Applying layout
 SaveShow.getLayout = function getLayout(page: ReactElement) {

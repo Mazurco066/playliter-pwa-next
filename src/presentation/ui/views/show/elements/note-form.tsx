@@ -2,6 +2,7 @@
 import { FC, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -29,15 +30,6 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Component
 export const NoteForm: FC<{
   showId: string,
@@ -54,7 +46,9 @@ export const NoteForm: FC<{
   onSaveSuccess = () => {}
 }) => {
   // Hooks
-  const toast = useToast() 
+  const toast = useToast()
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('concert')
   const {
     register,
     handleSubmit,
@@ -80,6 +74,15 @@ export const NoteForm: FC<{
     return requestClient('/api/shows/save_note', 'post', data)
   })
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Actions
   const onSubmit = async (data: any) => {
     // Destruct data
@@ -92,8 +95,8 @@ export const NoteForm: FC<{
     if ([200, 201].includes(response.status)) {
       // Notify user about created band
       toast({
-        title: 'Sucesso!',
-        description: `Sua anotação foi salva com sucesso!`,
+        title: t('messages.save_note_title'),
+        description: t('messages.save_note_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -106,8 +109,8 @@ export const NoteForm: FC<{
     } else {
       if ([400].includes(response.status)) {
         toast({
-          title: 'Ops.. Há campos inválidos!',
-          description: 'Por favor revise o preenchimento de seu formulário!',     
+          title: t('messages.invalid_form_title'),
+          description: t('messages.invalid_form_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -133,7 +136,7 @@ export const NoteForm: FC<{
           {
             note
               ? note.title
-              : 'Nova anotação'
+              : t('form.new_note')
           }
         </ModalHeader>
         <ModalCloseButton />
@@ -144,7 +147,7 @@ export const NoteForm: FC<{
               mb="5"
               isDisabled={isLoading}
             >
-              <FormLabel>Título da anotação</FormLabel>
+              <FormLabel>{t('form.title_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -153,15 +156,15 @@ export const NoteForm: FC<{
                 <Input
                   disabled={isLoading}
                   type="text"
-                  placeholder="Título da anotação"
+                  placeholder={t('form.title_placeholder')}
                   minLength={2}
                   {...register('title', { required: true })}
                 />
               </InputGroup>
               {errors.title ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('form.required_field')}</FormHelperText>
               ) : (
-                <FormHelperText>Insira um título para a anotação.</FormHelperText>
+                <FormHelperText>{t('form.title_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl
@@ -169,7 +172,7 @@ export const NoteForm: FC<{
               mb="5"
               isDisabled={isLoading}
             >
-              <FormLabel>Conteúdo</FormLabel>
+              <FormLabel>{t('form.content_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -177,7 +180,7 @@ export const NoteForm: FC<{
                 />
                 <Textarea
                   disabled={isLoading}
-                  placeholder="Conteúdo"
+                  placeholder={t('form.content_placeholder')}
                   pl="10"
                   minLength={2}
                   minHeight="200px"
@@ -185,9 +188,9 @@ export const NoteForm: FC<{
                 />
               </InputGroup>
               {errors.data ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('form.required_field')}</FormHelperText>
               ) : (
-                <FormHelperText>Insira o conteúdo de sua anotação.</FormHelperText>
+                <FormHelperText>{t('form.content_hint')}</FormHelperText>
               )}
             </FormControl>
             <Button
@@ -197,7 +200,7 @@ export const NoteForm: FC<{
               width="full"
               mb="3"
             >
-              Salvar
+              {t('form.submit')}
             </Button>
  
             <Button
@@ -208,7 +211,7 @@ export const NoteForm: FC<{
               mb="3"
               onClick={isLoading ? () => {} : onClose}
             >
-              Cancelar
+              {t('form.cancel')}
             </Button>
           </form>
         </ModalBody>

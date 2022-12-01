@@ -1,6 +1,7 @@
 // Dependencies
 import { FC, useEffect, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -22,15 +23,6 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Component
 export const ReorderSongs: FC<{
   show: ShowType,
@@ -44,6 +36,8 @@ export const ReorderSongs: FC<{
   // Hooks
   const toast = useToast()
   const [ songsCopy, setSongsCopy ] = useState<SongType[]>([])
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('concert')
 
   // Effects
   useEffect(() => {
@@ -58,6 +52,15 @@ export const ReorderSongs: FC<{
   } = useMutation((data: any) => {
     return requestClient('/api/shows/reorder', 'post', { ...data })
   })
+
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
 
   // Actions
   const onDragEnd = (result: DropResult) => {
@@ -95,8 +98,8 @@ export const ReorderSongs: FC<{
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: `A apresentação foi reordenada com sucesso!`,
+        title: t('messages.reorder_title'),
+        description: t('messages.reorder_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -127,7 +130,7 @@ export const ReorderSongs: FC<{
             opacity: '0.7'
           }}
         >
-          Reordernar Apresentação
+          {t('reorder.btn_reorder')}
         </Button>
       </Box>
       <Box mb="3">
@@ -144,7 +147,7 @@ export const ReorderSongs: FC<{
             opacity: '0.7'
           }}
         >
-          Cancelar
+          {t('reorder.btn_cancel')}
         </Button>
       </Box>
       <DragDropContext onDragEnd={onDragEnd}>

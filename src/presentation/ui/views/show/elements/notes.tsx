@@ -1,6 +1,7 @@
 // Dependencies
 import { FC, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -22,15 +23,6 @@ import {
   VStack
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Component
 export const Notes: FC<{
   isLoading?: boolean,
@@ -51,6 +43,8 @@ export const Notes: FC<{
   // Hooks
   const toast = useToast()
   const [ isImportLoading, setImportLoading ] = useState<boolean>(false)
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('concert')
 
   // Scrap liturgy request
   const { isLoading: isScrapLoading, mutateAsync } = useMutation((data: any) => {
@@ -61,6 +55,15 @@ export const Notes: FC<{
   const { mutateAsync: saveNoteRequest } = useMutation((data: any) => {
     return requestClient('/api/shows/save_note', 'post', data)
   })
+
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
 
   // Actions
   const onScrapLiturgy = async (date: string) => {
@@ -91,16 +94,16 @@ export const Notes: FC<{
       onImportSuccess()
       if (!hasImportErrors) {
         toast({
-          title: 'Sucesso!',
-          description: `A liturgia diária correpondente a data da aprensentação foi importada do site "Pocket Terço"!`,
+          title: t('messages.liturgy_import_title'),
+          description: t('messages.liturgy_import_msg'),
           status: 'success',
           duration: 2000,
           isClosable: true
         })
       } else {
         toast({
-          title: 'Ops...!',
-          description: `Alguma anotações referentes a liturgia diária falharam a ser importadas do site "Pocket Terço"!`,
+          title: t('messages.liturgy_error_title'),
+          description: t('messages.liturgy_error_msg'),
           status: 'error',
           duration: 2000,
           isClosable: true
@@ -143,7 +146,7 @@ export const Notes: FC<{
               </Box>
               <Box flexGrow="1">
                 <Text color="gray.900" fontWeight="medium">
-                  Aguarde.. Estamos importando a liturgia diária correspondente a data dessa apresentação.
+                  {t('notes.import_loading')}
                 </Text>
               </Box>
             </Flex>
@@ -167,7 +170,7 @@ export const Notes: FC<{
               opacity: '0.7'
             }}
           >
-            Importar Liturgia
+            {t('notes.import_liturgy')}
           </Button>
           <IconButton
             aria-label='Adicionar Anotação'
@@ -195,7 +198,7 @@ export const Notes: FC<{
           </VStack>
         ) : (
           <Text>
-            Não há anotações registradas nessa apresentação.
+            {t('notes.no_registers')}
           </Text>
         )
       }

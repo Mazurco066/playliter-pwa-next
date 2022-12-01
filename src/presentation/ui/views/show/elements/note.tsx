@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 
 // Types and interfaces
 import type { ObservationType } from 'domain/models'
@@ -32,11 +33,14 @@ export const NoteItem: FC<{
   isLoading = false,
   observation
 }) => {
+  // Hooks
+  const { t } = useTranslation('concert')
+
   // Color Hooks
   const bgBox = useColorModeValue('blackAlpha.500', 'blackAlpha.500')
 
   // Destruct song data
-  const { id, title, data } = observation
+  const { title, data } = observation
 
   // JSX
   return (
@@ -76,14 +80,14 @@ export const NoteItem: FC<{
                   icon={<EditIcon />}
                   onClick={isLoading ? () => {} : () => onEdit(observation)}
                 >
-                  Editar
+                  {t('note_options.edit')}
                 </MenuItem>
                 <MenuItem
                   disabled={isLoading}
                   icon={<DeleteIcon />}
                   onClick={isLoading ? () => {} : () => onRemove(observation)}
                 >
-                  Remover
+                  {t('note_options.remove')}
                </MenuItem>
             </MenuList>
           </Menu>

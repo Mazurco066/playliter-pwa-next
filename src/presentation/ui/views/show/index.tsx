@@ -2,6 +2,7 @@
 import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 import { formatDate } from 'presentation/utils'
 
@@ -38,15 +39,6 @@ import {
   VStack
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Component
 const ShowView: FC<{ id: string }> = ({ id }) => {
   // Hooks
@@ -54,6 +46,8 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
   const router = useRouter()
   const [ action, setAction ] = useState<ConfirmShowAction>({ type: 'remove', id: '' })
   const [ currentNote, setCurrentNote ] = useState<ObservationType | null>(null)
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('concert')
 
   // Confirm dialog state
   const {
@@ -102,8 +96,8 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     if (show && show?.status !== 200) {
       if ([404].includes(show.status)) {
         toast({
-          title: 'Apresentação não encontrada.',
-          description: 'A Apresentação informada não foi encontrada em sua conta!',
+          title: t('messages.show_not_found_title'),
+          description: t('messages.show_not_found_msg'),
           status: 'info',
           duration: 5000,
           isClosable: true
@@ -139,6 +133,15 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     return requestClient('/api/shows/delete', 'post', { ...data })
   })
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Actions
   const handleConfirmShowAction = () => {
     switch (action.type) {
@@ -162,8 +165,8 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: `A música selecionada foi removida dessa apresentação!`,
+        title: t('messages.remove_from_show_title'),
+        description: t('messages.remove_from_show_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -175,8 +178,8 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Música não encontrada!',
-          description: 'A música solicitada não se encontra nessa apresentação!',     
+          title: t('messages.song_not_present_title'),
+          description: t('messages.song_not_present_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -195,8 +198,8 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: 'Anotação removida com sucesso!',
+        title: t('messages.remove_note_title'),
+        description: t('messages.remove_note_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -208,8 +211,8 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Anotação não encontrada!',
-          description: 'A anotação solicitada não se encontra nessa apresentação!',     
+          title: t('messages.note_not_found_title'),
+          description: t('messages.note_not_found_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -228,8 +231,8 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: `A apresentação selecionada foi removida!`,
+        title: t('messages.remove_show_title'),
+        description: t('messages.remove_show_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -241,8 +244,8 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Apresentação não encontrada!',
-          description: 'A apresentação solicitada não foi encontrada!',     
+          title: t('messages.show_not_found_title'),
+          description: t('messages.show_not_found_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -322,14 +325,14 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                         icon={<EditIcon />}
                         onClick={() => router.push(`../shows/save/${show?.data.id}`)}
                       >
-                        Editar
+                        {t('menu.edit')}
                       </MenuItem>
                       <MenuItem
                         disabled={removeSongLoading || showLoading || removeShowLoading}
                         icon={<Icon as={FaHandPointer} />}
                         onClick={() => onReorderOpen()}
                       >
-                        Reordenar Músicas
+                        {t('menu.reorder')}
                       </MenuItem>    
                       <MenuItem
                         disabled={removeSongLoading || showLoading || removeShowLoading}
@@ -339,7 +342,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                           onConfirmOpen()
                         }}
                       >
-                        Remover Apresentação
+                        {t('menu.remove')}
                       </MenuItem>
                     </MenuList>
                   </Menu>
@@ -364,7 +367,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                     flexGrow="1"
                     onClick={() => router.push(`../../songlist/${show.data.id}`)}
                   >
-                    Visualização sequencial
+                    {t('btn_sequential')}
                   </Button>
                 </Flex>
               </Box>
@@ -376,7 +379,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
               textTransform="uppercase"
               mb="3"
             >
-              Músicas Adicionadas
+              {t('added_songs')}
             </Heading>
             {
               songs.length > 0 ? (          
@@ -400,7 +403,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                 </VStack>    
               ) : (
                 <Text>
-                  Não há músicas adicionadas a essa apresentação!
+                  {t('no_songs')}
                 </Text>
               )
             }
@@ -438,7 +441,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
         onClose={onNotesClose}
         onOpen={onNotesOpen}
         isOpen={isNotesOpen}
-        title="Anotações da apresentação"
+        title={t('notes_drawer')}
       >
         { (show && !showLoading) && (
           <Notes
@@ -461,7 +464,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
         onClose={onReorderClose}
         onOpen={onReorderOpen}
         isOpen={isReorderOpen}
-        title="Reordenar músicas"
+        title={t('reorder_drawer')}
       >
         { (show && !showLoading && isReorderOpen) && (
           <ReorderSongs

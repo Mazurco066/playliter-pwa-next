@@ -1,0 +1,67 @@
+{
+  "title": "Detalhes da Apresentação",
+  "btn_sequential": "Visualização sequencial",
+  "added_songs": "Músicas Adicionadas",
+  "no_songs": "Não há músicas adicionadas a essa apresentação!",
+  "notes_drawer": "Anotações da apresentação",
+  "reorder_drawer": "Reordenar músicas",
+  "menu": {
+    "edit": "Editar",
+    "reorder": "Reordenar músicas",
+    "remove": "Remover apresentação"
+  },
+  "options": {
+    "see": "Ver música",
+    "edit": "Editar música",
+    "remove": "Remover da apresentação"
+  },
+  "notes": {
+    "import_liturgy": "Importar Liturgia",
+    "import_loading": "Aguarde.. Estamos importando a liturgia diária correspondente a data dessa apresentação.",
+    "no_registers": "Não há anotações registradas nessa apresentação."
+  },
+  "reorder": {
+    "btn_reorder": "Reordernar Apresentação",
+    "btn_cancel": "Cancelar"
+  },
+  "note_options": {
+    "edit": "Editar",
+    "remove": "Remover"
+  },
+  "form": {
+    "new_note": "Nova anotação",
+    "required_field": "Esse campo é requerido.",
+    "title_label": "Título da anotação",
+    "title_placeholder": "Título da anotação",
+    "title_hint": "Insira um título para a anotação.",
+    "content_label": "Conteúdo",
+    "content_placeholder": "Conteúdo",
+    "content_hint": "Insira o conteúdo de sua anotação.",
+    "submit": "Salvar",
+    "cancel": "Cancelar"
+  },
+  "messages": {
+    "show_not_found_title": "Apresentação não encontrada.",
+    "show_not_found_msg": "A Apresentação informada não foi encontrada em sua conta!",
+    "remove_from_show_title": "Sucesso!",
+    "remove_from_show_msg": "A música selecionada foi removida dessa apresentação!",
+    "song_not_present_title": "Ops.. Música não encontrada!",
+    "song_not_present_msg": "A música solicitada não se encontra nessa apresentação!",
+    "remove_note_title": "Sucesso!",
+    "remove_note_msg": "Anotação removida com sucesso!",
+    "note_not_found_title": "Ops.. Anotação não encontrada!",
+    "note_not_found_msg": "A anotação solicitada não se encontra nessa apresentação!",
+    "remove_show_title": "Sucesso!",
+    "remove_show_msg": "A apresentação selecionada foi removida!",
+    "invalid_form_title": "Ops.. Há campos inválidos!",
+    "invalid_form_msg": "Por favor revise o preenchimento de seu formulário!",
+    "save_note_title": "Sucesso!",
+    "save_note_msg": "Sua anotação foi salva com sucesso!",
+    "liturgy_import_title": "Sucesso!",
+    "liturgy_import_msg": "A liturgia diária correpondente a data da aprensentação foi importada do site 'Pocket Terço'!",
+    "liturgy_error_title": "Ops...",
+    "liturgy_error_msg": "Alguma anotações referentes a liturgia diária falharam a ser importadas do site 'Pocket Terço'!",
+    "reorder_title": "Sucesso!",
+    "reorder_msg": "A apresentação foi reordenada com sucesso!"
+  }
+}

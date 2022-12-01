@@ -9,5 +9,11 @@
     "placeholder": "Band logo",
     "drag_here": "Drop the files here",
     "hint": "Drag your files here, or just click to select them."
+  },
+  "confirm_action": {
+    "title": "Are you sure?",
+    "message": "This action is permanent!",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
   }
 }
