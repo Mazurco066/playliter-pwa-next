@@ -1,0 +1,37 @@
+{
+  "title": "Detalhes Da Música",
+  "add_to_concert_drawer": "Adicionar a apresentação",
+  "clone_drawer_title": "Clonar música",
+  "search_placeholder": "Buscar...",
+  "no_concerts_filtered": "Não há apresentações registradas correspondentes ao filtro de busca inserido.",
+  "no_concerts": "Não há apresentações registradas nas bandas que você participa! Para adicionar a música em uma aprensentação primeiramente adicione um a nova apresentação em alguma das bandas em que você é membro.",
+  "select_band": "Selecione a banda na qual você deseja clonar a música:",
+  "no_bands": "Você não participa de nenhuma banda! Crie uma ou entre em uma existente para conseguir clonar uma música.",
+  "add_confirmation": "Deseja adicionar essa música na apresentação selecionada?",
+  "clone_confirmation": "Deseja clonar a música para a banda selecionada?",
+  "remove_confirmation": "Deseja remover essa música? Primeiramente verifique se ela não está sendo usada em apresentações!",
+  "menu": {
+    "add": "Adicionar a apresentação",
+    "edit": "Editar",
+    "clone": "Clonar música",
+    "remove": "Remover música"
+  },
+  "messages": {
+    "song_not_found_title": "Música não encontrada.",
+    "song_not_found_msg": "A Música informada não foi encontrada em sua conta!",
+    "added_to_show_title": "Sucesso!'",
+    "added_to_show_msg": "A música selecionada foi adicionada na apresentação!",
+    "song_present_title": "Ops.. Música já se encontra presente!",
+    "song_present_msg": "A música solicitada já se encontra presenta na apresentação escolhida!",
+    "show_not_found_title": "Ops.. Música ou Apresentação não encontrada(s)!",
+    "show_not_found_msg": "A música solicitada ou apresentação não foram encontradas nos registros do aplicativo!",
+    "no_categories_title": "Não há categorias!'",
+    "no_categories_msg": "Não há categorias registradas na banda selecionada para clonar a música! Primeiramente crie uma categoria e após isso tente clonar a música novamente.",
+    "clone_title": "Sucesso!",
+    "clone_msg": "A música selecionada foi clonada com sucesso para banda informada! Você foi redirecionado para a página da música clonada.",
+    "removed_title": "Sucesso!",
+    "removed_msg": "A música selecionada foi removida!",
+    "no_permission_title": "Remoção negada!",
+    "no_permission_msg": "Você precisa ter permissões de Admin na banda que publicou a música para conseguir removê-la!"
+  }
+}

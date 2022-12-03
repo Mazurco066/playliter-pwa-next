@@ -2,12 +2,16 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { ReactElement } from 'react'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useUser } from 'infra/services/session'
 
 // Layout and Components
 import { NextPageWithLayout } from '../_app'
 import { SecureLayout } from 'presentation/ui/_layouts'
 import { SongView } from 'presentation/ui/views'
+
+// Types
+import type { GetServerSideProps } from 'next'
 
 // Song component
 const Song: NextPageWithLayout = () => {
@@ -32,6 +36,13 @@ const Song: NextPageWithLayout = () => {
     </main>
   )
 }
+
+// Load translation files
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => ({
+  props: {
+    ...await serverSideTranslations(locale ?? 'pt', ['common', 'song']),
+  }
+})
 
 // Applying layout
 Song.getLayout = function getLayout(page: ReactElement) {

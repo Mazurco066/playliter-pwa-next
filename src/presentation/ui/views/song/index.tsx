@@ -2,6 +2,7 @@
 import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 
 // Types
@@ -42,15 +43,6 @@ import {
   VStack
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Component
 const SongView: FC<{ id: string }> = ({ id }) => {
   // Hooks
@@ -58,6 +50,8 @@ const SongView: FC<{ id: string }> = ({ id }) => {
   const router = useRouter()
   const [ filterSearch, setFilterSearch ] = useState<string>('')
   const [ action, setAction ] = useState<ConfirmShowAction>({ type: 'add', id: '' })
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('song')
 
   // Confirm dialog state
   const {
@@ -141,13 +135,22 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     return requestClient('/api/songs/delete', 'post', { ...data })
   })
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Notify user about error while fetching show data
   useEffect(() => {
     if (song && song?.status !== 200) {
       if ([404].includes(song.status)) {
         toast({
-          title: 'Música não encontrada.',
-          description: 'A Música informada não foi encontrada em sua conta!',
+          title: t('messages.song_not_found_title'),
+          description: t('messages.song_not_found_msg'),
           status: 'info',
           duration: 5000,
           isClosable: true
@@ -182,8 +185,8 @@ const SongView: FC<{ id: string }> = ({ id }) => {
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: `A música selecionada foi adicionada na apresentação!`,
+        title: t('messages.added_to_show_title'),
+        description: t('messages.added_to_show_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -193,16 +196,16 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     } else {
       if ([400].includes(response.status)) {
         toast({
-          title: 'Ops.. Música já se encontra presente!',
-          description: 'A música solicitada já se encontra presenta na apresentação escolhida!',     
+          title: t('messages.song_present_title'),
+          description: t('messages.song_present_msg'),     
           status: 'info',
           duration: 3500,
           isClosable: true
         })
       } else if ([404].includes(response.status)) {
         toast({
-          title: 'Ops.. Música ou Apresentação não encontrada(s)!',
-          description: 'A música solicitada ou apresentação não foram encontradas nos registros do aplicativo!',     
+          title: t('messages.show_not_found_title'),
+          description: t('messages.show_not_found_msg'),     
           status: 'info',
           duration: 3500,
           isClosable: true
@@ -225,8 +228,8 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     const categoriesList: CategoryType[] = bandCategories.data
     if (categoriesList.length <= 0) {
       return toast({
-        title: 'Não há categorias!',
-        description: 'Não há categorias registradas na banda selecionada para clonar a música! Primeiramente crie uma categoria e após isso tente clonar a música novamente.',     
+        title: t('messages.no_categories_title'),
+        description: t('messages.no_categories_msg'),     
         status: 'info',
         duration: 3500,
         isClosable: true
@@ -253,8 +256,8 @@ const SongView: FC<{ id: string }> = ({ id }) => {
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: `A música selecionada foi clonada com sucesso para banda informada! Você foi redirecionado para a página da música clonada.`,
+        title: t('messages.clone_title'),
+        description: t('messages.clone_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -277,8 +280,8 @@ const SongView: FC<{ id: string }> = ({ id }) => {
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: `A música selecionada foi removida!`,
+        title: t('messages.removed_title'),
+        description: t('messages.removed_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -290,8 +293,8 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Música não encontrada!',
-          description: 'A música solicitada não foi encontrada!',     
+          title: t('messages.song_not_found_title'),
+          description: t('messages.song_not_found_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -299,8 +302,8 @@ const SongView: FC<{ id: string }> = ({ id }) => {
         router.push(`../bands/${song?.data.band.id}`)
       } else if ([401, 403].includes(response.status)) {
         toast({
-          title: 'Remoção negada!',
-          description: 'Você precisa ter permissões de Admin na banda que publicou a música para conseguir removê-la!',     
+          title: t('messages.no_permission_title'),
+          description: t('messages.no_permission_msg'),     
           status: 'info',
           duration: 3500,
           isClosable: true
@@ -366,21 +369,21 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                         onAddingOpen()
                       }}
                     >
-                      Adicionar a apresentação
+                      {t('menu.add')}
                     </MenuItem> 
                     <MenuItem
                       icon={<EditIcon />}
                       disabled={songLoading || removeSongLoading}
                       onClick={() => router.push(`../songs/save/${song.data.id}`)}
                     >
-                      Editar
+                      {t('menu.edit')}
                     </MenuItem>
                     <MenuItem
                       icon={<CopyIcon />}
                       disabled={bandsLoading || songLoading || isCloneLoading}
                       onClick={(bandsLoading || songLoading || isCloneLoading) ? () => {} : () => onCloningOpen()}
                     >
-                      Clonar Música
+                      {t('menu.clone')}
                     </MenuItem>  
                     <MenuItem
                       icon={<DeleteIcon />}
@@ -390,7 +393,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                         onConfirmOpen()
                       }}
                     >
-                      Remover Música
+                      {t('menu.remove')}
                     </MenuItem>
                   </MenuList>
                 </Menu>
@@ -421,7 +424,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
         onClose={onAddingClose}
         onOpen={onAddingOpen}
         isOpen={isAddingOpen}
-        title="Adicionar a apresentação"
+        title={t('add_to_concert_drawer')}
       >
         <Box py="3">
           <FormControl mb="5">
@@ -432,7 +435,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
               />
               <Input
                 type="text"
-                placeholder="Buscar..."
+                placeholder={t('search_placeholder')}
                 minLength={2}
                 value={filterSearch}
                 color="gray.50"
@@ -474,15 +477,14 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                           </VStack>
                         ) : (
                           <Text>
-                            Não há apresentações registradas correspondentes ao filtro de busca inserido.
+                            {t('no_concerts_filtered')}
                           </Text>
                         )
                       }
                     </>
                   ) : (
                     <Text>
-                      Não há apresentações registradas nas bandas que você participa! Para adicionar a música em 
-                      uma aprensentação primeiramente adicione um a nova apresentação em alguma das bandas em que você é membro.
+                      {t('no_concerts')}
                     </Text>
                   )
                 }
@@ -495,7 +497,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
         onClose={onCloningClose}
         onOpen={onCloningOpen}
         isOpen={isCloningOpen}
-        title="Clonar música"
+        title={t('clone_drawer_title')}
       >
         <Box py="3">
           {
@@ -505,7 +507,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                   bands.data.length > 0 ? (
                     <>
                       <Text mb="5">
-                        Selecione a banda na qual você deseja clonar a música:
+                        {t('select_band')}
                       </Text>
                       <VStack gap="0.25rem">
                         {
@@ -526,8 +528,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                     </>
                   ) : (
                     <Text textAlign="justify">
-                      Você não participa de nenhuma banda! Crie uma ou entre em uma existente para 
-                      conseguir clonar uma música.
+                      {t('no_bands')}
                     </Text>
                   )
                 }
@@ -542,10 +543,10 @@ const SongView: FC<{ id: string }> = ({ id }) => {
         isOpen={isConfirmOpen}
         onConfirm={handleConfirmShowAction}
         message={action.type === 'add'
-          ? 'Deseja adicionar essa música na apresentação selecionada?'
+          ? t('add_confirmation')
           : action.type === 'clone'
-            ? 'Deseja clonar a música para a banda selecionada?'
-            : 'Deseja remover essa música? Primeiramente verifique se ela não está sendo usada em apresentações!'
+            ? t('clone_confirmation')
+            : t('remove_confirmation')
         }
       />
     </div>

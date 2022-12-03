@@ -1,0 +1,37 @@
+{
+  "title": "Detalhes Da Música",
+  "add_to_concert_drawer": "Add to concert",
+  "clone_drawer_title": "Clone song",
+  "search_placeholder": "Search...",
+  "no_concerts_filtered": "No concerts found using this filter.",
+  "no_concerts": "There is no pending concerts on bands you are membered! To add songs to a concert please make sure you have a concert created.",
+  "select_band": "Select the band you wish to clone this song:",
+  "no_bands": "You dont't play in a band at the moment. Create or join one to access this feature.",
+  "add_confirmation": "Add song to selected concert?",
+  "clone_confirmation": "Clone song to selected band?",
+  "remove_confirmation": "Are you sure you want to delete this song? Please verify if this song is not beeing used in a concert!",
+  "menu": {
+    "add": "Add to concert",
+    "edit": "Edit",
+    "clone": "Clone song",
+    "remove": "Remove song"
+  },
+  "messages": {
+    "song_not_found_title": "Song not found.",
+    "song_not_found_msg": "The selected song was not found!",
+    "added_to_show_title": "Success!",
+    "added_to_show_msg": "The selected song was successfuly added to concert!",
+    "song_present_title": "Ops.. Song already present!",
+    "song_present_msg": "This song is already present in the selected concert!",
+    "show_not_found_title": "Ops.. Song/Concert not found!",
+    "show_not_found_msg": "The selected data was not found!",
+    "no_categories_title": "No categorias!'",
+    "no_categories_msg": "No categories registered to selected band. Create one first before cloning a song",
+    "clone_title": "Success!",
+    "clone_msg": "The song was successfully cloned. You have been redirected",
+    "removed_title": "Success!",
+    "removed_msg": "The selected song was successfully removed!",
+    "no_permission_title": "Permission denied!",
+    "no_permission_msg": "You have no permissions in the band to remove or edit songs!"
+  }
+}

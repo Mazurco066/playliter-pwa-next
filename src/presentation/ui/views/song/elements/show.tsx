@@ -46,7 +46,7 @@ export const ShowItem:FC<{
       >
         <Box flex="0 0 auto" mr="4">
           <Image
-            src="../img/arts/white/concert.svg"
+            src="/img/arts/white/concert.svg"
             alt="img"
             h="32px"
             w="32px"
