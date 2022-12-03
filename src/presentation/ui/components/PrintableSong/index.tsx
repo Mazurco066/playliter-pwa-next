@@ -1,6 +1,7 @@
 // Dependencies
 import { FC, useEffect, useState } from 'react'
 import { getTransposedSong } from 'presentation/utils'
+import { useTranslation } from 'next-i18next'
 
 // Types
 import type { SongType } from 'domain/models'
@@ -9,6 +10,7 @@ import type { SongType } from 'domain/models'
 export const PrintableSong: FC<{ song: SongType  }> = ({ song }) => {
   // Hooks
   const [ chordsheet, setChordsheet ] = useState<any | null>(null)
+  const { t: common } = useTranslation('common')
 
   // Effects
   useEffect(() => {
@@ -27,10 +29,10 @@ export const PrintableSong: FC<{ song: SongType  }> = ({ song }) => {
                 {chordsheet.title}
               </h1>
               <span className="song-artist">
-                Por {chordsheet.artist}
+                {common('songsheet.by')}{chordsheet.artist}
               </span>
               <span className="song-tone" style={{ fontSize: '14px!important' }}>
-                <small>Tom: <strong>{song.tone}</strong></small>
+                <small>{common('songsheet.tone')}<strong>{song.tone}</strong></small>
               </span>
             </div>
             <div className="song-section">

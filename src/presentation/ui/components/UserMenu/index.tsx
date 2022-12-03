@@ -1,11 +1,12 @@
 // Dependencies
 import { FC } from 'react'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { useUser } from 'infra/services/session'
 import { requestClient } from 'infra/services/http'
 
 // Components
-import { FaDoorOpen, FaUser, FaUsers, FaCompactDisc } from 'react-icons/fa'
+import { FaDoorOpen, FaUsers, FaCompactDisc } from 'react-icons/fa'
 import { Icon, SettingsIcon } from '@chakra-ui/icons'
 import {
   Divider,
@@ -21,6 +22,7 @@ export const UserMenu: FC = () => {
   // Hooks
   const router = useRouter()
   const { mutateUser } = useUser()
+  const { t: common } = useTranslation('common')
 
   // JSX
   return (
@@ -36,13 +38,13 @@ export const UserMenu: FC = () => {
           icon={<Icon as={FaUsers} />}
           onClick={() => router.push('/bands')}
         >
-          Minhas Bandas
+          {common('user_menu.my_bands')}
         </MenuItem>
         <MenuItem 
           icon={<Icon as={FaCompactDisc} />}
           onClick={() => router.push('/songs')}
         >
-          Músicas Públicas
+          {common('user_menu.my_songs')}
         </MenuItem>
         <Divider orientation="horizontal" />
         <MenuItem
@@ -59,7 +61,7 @@ export const UserMenu: FC = () => {
             router.push('/login')
           }}
         >
-          Logout
+          {common('user_menu.logout')}
         </MenuItem>
       </MenuList>
     </Menu>

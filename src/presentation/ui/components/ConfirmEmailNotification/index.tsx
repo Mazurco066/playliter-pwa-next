@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 
 // Components
 import { WarningIcon } from '@chakra-ui/icons'
@@ -16,6 +17,9 @@ export const ConfirmationEmailNotification: FC<{
 }> = ({
   onClick = () => {}
 }) => {
+  // Hooks
+  const { t: common } = useTranslation('common')
+
   // Color Hooks
   const colorText = useColorModeValue('gray.900', 'gray.100')
   const bgInvite = useColorModeValue('gray.100', 'gray.900')
@@ -50,7 +54,7 @@ export const ConfirmationEmailNotification: FC<{
             color: 'gray.100'
           }}
         >
-          O E-mail cadastrado em sua conta ainda não foi confirmado!
+          {common('confirm_email.notification_text')}
         </Text>
       </Flex>
     </Box>

@@ -27,5 +27,25 @@
     "capo": "Capo: ",
     "tone": "Tone: ",
     "by": "By "
+  },
+  "bottom_navigation": {
+    "bands": "Bands",
+    "home": "Home",
+    "songs": "Songs"
+  },
+  "confirm_email": {
+    "notification_text": "Please confirm your E-mail address!"
+  },
+  "invite_notification": {
+    "notification_text": "You were invited to join the band: "
+  },
+  "loading_alert": {
+    "title": "Please wait",
+    "message": "Loading..."
+  },
+  "user_menu": {
+    "my_bands": "My bands",
+    "my_songs": "Public songs",
+    "logout": "Logout"
   }
 }

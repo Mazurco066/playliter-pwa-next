@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 
 // Type
 import type { InviteType } from 'domain/models'
@@ -21,6 +22,9 @@ export const Invite: FC<{
   invite,
   onClick = () => {}
 }) => {
+  // Hooks
+  const { t: common } = useTranslation('common')
+
   // Color Hooks
   const colorText = useColorModeValue('gray.900', 'gray.100')
   const bgInvite = useColorModeValue('gray.100', 'gray.900')
@@ -59,7 +63,7 @@ export const Invite: FC<{
             color: 'gray.100'
           }}
         >
-          Você foi convidado a participar da banda:{' '} 
+          {common('invite_notification.notification_text')}
           <Text
             as="strong"
             color="secondary.500"

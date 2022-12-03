@@ -1,6 +1,7 @@
 // Dependencies
 import { FC, ReactNode }from 'react'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 
 // Types
 import type { BottomNav } from 'domain/types'
@@ -9,35 +10,6 @@ import type { BottomNav } from 'domain/types'
 import { Grid, GridItem, useMediaQuery } from '@chakra-ui/react'
 import { TopBar, TopNavigation, BottomNavigation } from 'presentation/ui/components'
 import { FaCompactDisc, FaHome, FaUsers } from 'react-icons/fa'
-
-// Secure navigation settings
-const navigation: BottomNav[] = [
-  {
-    label: 'Bandas',
-    icon: FaUsers,
-    path: '/bands',
-    activePaths: [
-      '/bands',
-      '/bands/save'
-    ]
-  },
-  {
-    label: 'Home',
-    icon: FaHome,
-    path: '/home',
-    activePaths: [
-      '/home'
-    ]
-  },
-  {
-    label: 'Músicas',
-    icon: FaCompactDisc,
-    path: '/songs',
-    activePaths: [
-      '/songs'
-    ]
-  }
-]
 
 // Layout component
 export const SecureLayout: FC<{
@@ -51,6 +23,7 @@ export const SecureLayout: FC<{
 }) => {
   // Hooks
   const router = useRouter()
+  const { t } = useTranslation('common')
 
   // Display hooks
   const [ isPrinting ] = useMediaQuery(['print'])
@@ -63,6 +36,35 @@ export const SecureLayout: FC<{
       </>
     )
   }
+
+  // Secure navigation settings
+  const navigation: BottomNav[] = [
+    {
+      label: t('bottom_navigation.bands'),
+      icon: FaUsers,
+      path: '/bands',
+      activePaths: [
+        '/bands',
+        '/bands/save'
+      ]
+    },
+    {
+      label: t('bottom_navigation.home'),
+      icon: FaHome,
+      path: '/home',
+      activePaths: [
+        '/home'
+      ]
+    },
+    {
+      label: t('bottom_navigation.songs'),
+      icon: FaCompactDisc,
+      path: '/songs',
+      activePaths: [
+        '/songs'
+      ]
+    }
+  ]
   
   // JSX for PWA
   return (

@@ -1,5 +1,6 @@
 // Dependencies
 import { FC } from 'react'
+import { useTranslation } from 'next-i18next'
 
 // Components
 import {
@@ -26,6 +27,9 @@ export const LoadingAlert: FC<{
   title = 'Por favor aguarde',
   message = 'Carregando...'
 }) => {
+  // Hooks
+  const { t: common } = useTranslation('common')
+
   // JSX
   return (
     <Modal
@@ -40,12 +44,14 @@ export const LoadingAlert: FC<{
         <ModalHeader>
           <Flex gap="1rem" alignItems="center">
             <Spinner color="gray.100" size="md" />
-            <Text color="gray.100">{title}</Text>
+            <Text color="gray.100">
+              {title || common('loading_alert.title')}
+            </Text>
           </Flex>
         </ModalHeader>
         <ModalBody pb={6}>
           <Text color="gray.100">
-            {message}
+            {message || common('loading_alert.message')}
           </Text>
         </ModalBody>
       </ModalContent>

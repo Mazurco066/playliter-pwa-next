@@ -27,5 +27,25 @@
     "capo": "Capo: ",
     "tone": "Tom: ",
     "by": "Por "
+  },
+  "bottom_navigation": {
+    "bands": "Bandas",
+    "home": "Home",
+    "songs": "Músicas"
+  },
+  "confirm_email": {
+    "notification_text": "O E-mail cadastrado em sua conta ainda não foi confirmado!"
+  },
+  "invite_notification": {
+    "notification_text": "Você foi convidado a participar da banda: "
+  },
+  "loading_alert": {
+    "title": "Por favor aguarde",
+    "message": "Carregando..."
+  },
+  "user_menu": {
+    "my_bands": "Minhas Bandas",
+    "my_songs": "Músicas Públicas",
+    "logout": "Logout"
   }
 }
