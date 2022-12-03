@@ -71,7 +71,7 @@ export const SongItem: FC<{
           }}
         >
           <Image
-            src="img/arts/white/radio-waves.svg"
+            src="/img/arts/white/radio-waves.svg"
             alt="img"
             h="full"
             w="full"

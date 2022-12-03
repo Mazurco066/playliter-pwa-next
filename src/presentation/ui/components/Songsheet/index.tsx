@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Chord } from 'chordsheetjs'
 import { useMutation } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { getTransposedSong, overwriteBaseTone } from 'presentation/utils'
 import { requestClient } from 'infra/services/http'
 
@@ -24,15 +25,6 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Component
 export const Songsheet: FC<{
   displayPdfHeaders?: boolean,
@@ -51,6 +43,7 @@ export const Songsheet: FC<{
   const [ transpose, setTranspose ] = useState<number>(0)
   const [ transpositions, setTranspositions ] = useState<Array<any>>([])
   const [ chordsheet, setChordsheet ] = useState<any | null>(null)
+  const { t: common } = useTranslation('common')
 
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
@@ -82,6 +75,15 @@ export const Songsheet: FC<{
     return requestClient('/api/songs/save', 'post', { ...data })
   })
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Actions
   const onUpdateTone = async () => {
     // Compute song key and transposed body
@@ -108,8 +110,8 @@ export const Songsheet: FC<{
       
       // Notify user about response success
       toast({
-        title: 'Sucesso!',
-        description: `O tom base da música foi alterado!`,
+        title: common('messages.tone_updated_title'),
+        description: common('messages.tone_updated_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -132,8 +134,8 @@ export const Songsheet: FC<{
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Música não encontrada!',
-          description: 'A música solicitada não foi encontrada!',     
+          title: common('messages.song_not_found_title'),
+          description: common('messages.song_not_found_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -141,8 +143,8 @@ export const Songsheet: FC<{
         router.push(`../bands/${song?.band.id}`)
       } else if ([401, 403].includes(response.status)) {
         toast({
-          title: 'Atualização de tom base negada!',
-          description: 'Você precisa ter um integrante da banda para atualizar o tom base da mesma! Clone essa música para uma banda que você participa para modificá-la.',     
+          title: common('messages.no_permissions_title'),
+          description: common('messages.no_permissions_msg'),     
           status: 'info',
           duration: 3500,
           isClosable: true
@@ -171,10 +173,10 @@ export const Songsheet: FC<{
                     {chordsheet.title}
                   </Heading>
                   <Text>
-                    Por {chordsheet.artist}
+                    {common('songsheet.by')}{chordsheet.artist}
                   </Text>
                   <Text mt="1" fontSize="sm">
-                    Tom: <Text
+                    {common('songsheet.tone')}<Text
                       as="strong"
                       fontWeight="medium"
                       color="secondary.500"
@@ -206,7 +208,7 @@ export const Songsheet: FC<{
                         mt="1"
                         fontSize="sm"
                       >
-                        Tom: <Text
+                        {common('songsheet.tone')}<Text
                           as="strong"
                           fontWeight="medium"
                           color="secondary.500"
@@ -217,7 +219,7 @@ export const Songsheet: FC<{
                   {
                     chordsheet.capo && (
                       <Text mt="1" fontSize="sm">
-                        Capo: {chordsheet.capo}
+                        {common('songsheet.capo')}{chordsheet.capo}
                       </Text>
                     )
                   }
@@ -249,7 +251,7 @@ export const Songsheet: FC<{
                               disabled={isLoading}
                               onClick={isLoading ? () => {} : () => onUpdateTone()}
                             >
-                              Atualizar tom base
+                              {common('songsheet.update_base_tone')}
                             </Button>
                           )
                         }

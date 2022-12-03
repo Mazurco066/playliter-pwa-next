@@ -2,7 +2,13 @@
   "appname": "Playliter",
   "messages": {
     "internal_error_title": "Internal error.",
-    "internal_error_msg": "An unespected error ocourred. Please notify the application developer."
+    "internal_error_msg": "An unespected error ocourred. Please notify the application developer.",
+    "tone_updated_title": "Success!",
+    "tone_updated_msg": "The song base tone was successfully updated!",
+    "song_not_found_title": "Ops.. Song not found!",
+    "song_not_found_msg": "The requested song was not found!",
+    "no_permissions_title": "No permissions!",
+    "no_permissions_msg": "You need to be a band member to update the base tone for this song! Clone this song to your band to be able to edit it."
   },
   "file_upload": {
     "label": "Band logo",
@@ -15,5 +21,11 @@
     "message": "This action is permanent!",
     "confirm": "Confirm",
     "cancel": "Cancel"
+  },
+  "songsheet": {
+    "update_base_tone": "Update base tone",
+    "capo": "Capo: ",
+    "tone": "Tone: ",
+    "by": "By "
   }
 }

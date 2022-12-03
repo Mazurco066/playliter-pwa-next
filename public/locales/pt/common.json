@@ -2,7 +2,13 @@
   "appname": "Playliter",
   "messages": {
     "internal_error_title": "Erro interno.",
-    "internal_error_msg": "Um erro inesperado ocorreu! Entre em contato com algum administrador do App."
+    "internal_error_msg": "Um erro inesperado ocorreu! Entre em contato com algum administrador do App.",
+    "tone_updated_title": "Sucesso!",
+    "tone_updated_msg": "O tom base da música foi alterado!",
+    "song_not_found_title": "Ops.. Música não encontrada!",
+    "song_not_found_msg": "A música solicitada não foi encontrada!",
+    "no_permissions_title": "Atualização de tom base negada!",
+    "no_permissions_msg": "Você precisa ter um integrante da banda para atualizar o tom base da mesma! Clone essa música para uma banda que você participa para modificá-la."
   },
   "file_upload": {
     "label": "Logotipo da banda",
@@ -15,5 +21,11 @@
     "message": "Essa ação é permanente!",
     "confirm": "Continuar",
     "cancel": "Cancelar"
+  },
+  "songsheet": {
+    "update_base_tone": "Atualizar tom base",
+    "capo": "Capo: ",
+    "tone": "Tom: ",
+    "by": "Por "
   }
 }
