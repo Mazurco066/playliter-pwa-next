@@ -58,7 +58,7 @@ export const pdfPreviewStyles: string = `
     display: flex;
     flex-direction: column;
     gap: 16px;
-    z-index: 2;
+    z-index: 3;
   }
   .show-title {
     color: #F5F5F5;

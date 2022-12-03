@@ -1,0 +1,11 @@
+{
+  "title": "Visualização Sequencial",
+  "no_songs": "Não há músicas adicionadas a essa apresentação!",
+  "presentation_date": "Apresentação ocorrerá no dia: ",
+  "generated_by": "Documento gerado pelo app ",
+  "generated_at": " em ",
+  "messages": {
+    "show_not_found_title": "Apresentação não encontrada.",
+    "show_not_found_msg": "A Apresentação informada não foi encontrada em sua conta!"
+  }
+}

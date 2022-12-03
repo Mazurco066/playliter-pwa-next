@@ -1,12 +1,16 @@
 // Dependencies
 import { FC } from 'react'
 import { formatDate } from 'presentation/utils'
+import { useTranslation } from 'next-i18next'
 
 //Types
 import type { ShowType } from 'domain/models'
 
 // Component
 export const PDFPrintPreview: FC<{ show: ShowType }> = ({ show }) => {
+  // Hooks
+  const { t } = useTranslation('songList')
+
   // Destruct show data
   const { title, description, date } = show
 
@@ -27,10 +31,10 @@ export const PDFPrintPreview: FC<{ show: ShowType }> = ({ show }) => {
               { description }
             </p>
             <p className="show-date">
-              Apresentação ocorrerá no dia: <strong>{ formatDate(date) }</strong>
+              {t('presentation_date')}<strong>{ formatDate(date) }</strong>
             </p>
             <p className="credits">
-              Documento gerado pelo app <strong>Playliter</strong> em <strong>{ formatDate(new Date().toISOString()) }</strong>
+              {t('generated_by')}<strong>Playliter</strong>{t('generated_at')}<strong>{ formatDate(new Date().toISOString()) }</strong>
             </p>
           </div>
         </div>

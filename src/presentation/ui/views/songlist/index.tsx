@@ -2,6 +2,7 @@
 import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
  
 // Types
@@ -28,22 +29,15 @@ import {
 // Custom component styles
 import { pdfPreviewStyles, pdfPrintStyles } from './styles'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Component
 const SonglistView: FC<{ id: string }> = ({ id }) => {
   // Hooks
   const toast = useToast()
   const router = useRouter()
   const [ songIndex, setSongIndex ] = useState<number>(0)
-  
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('songList')
+
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
 
@@ -57,13 +51,22 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
     { enabled: id !== '' }
   )
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Notify user about error while fetching show data
   useEffect(() => {
     if (show && show?.status !== 200) {
       if ([404].includes(show.status)) {
         toast({
-          title: 'Apresentação não encontrada.',
-          description: 'A Apresentação informada não foi encontrada em sua conta!',
+          title: t('messages.show_not_found_title'),
+          description: t('messages.show_not_found_msg'),
           status: 'info',
           duration: 5000,
           isClosable: true
@@ -176,7 +179,7 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
                 </> 
               ) : (
                 <Text>
-                  Não há músicas adicionadas a essa apresentação!
+                  {t('no_songs')}
                 </Text>
               )
             }
