@@ -1,5 +1,6 @@
 {
   "title": "Detalhes Da Música",
+  "save_title": "Salvar Música",
   "add_to_concert_drawer": "Adicionar a apresentação",
   "clone_drawer_title": "Clonar música",
   "search_placeholder": "Buscar...",
@@ -15,6 +16,31 @@
     "edit": "Editar",
     "clone": "Clonar música",
     "remove": "Remover música"
+  },
+  "save": {
+    "import_label": "Música está em site de terceiros?",
+    "import_desc": "Sem problemas? Cole a URL da música no campo abaixo e a importaremos para o app.",
+    "import_btn": "Importar música",
+    "required_label": "Esse campo é requerido.",
+    "public_label": "A música é pública?",
+    "title_label": "Título da música",
+    "title_placeholder": "Título...",
+    "title_hint": "Insira um título para a música.",
+    "author_label": "Autor da música",
+    "author_placeholder": "Autor..",
+    "author_hint": "Insira o autor da música.",
+    "tone_label": "Tom Base",
+    "tone_placeholder": "Tom Base",
+    "tone_hint": "Selecione o tom base da música.",
+    "category_label": "Categoria",
+    "category_placeholder": "Selecionar Categoria...",
+    "category_hint": "Selecione uma categoria música.",
+    "body_label": "Corpo da música",
+    "body_placeholder": "Corpo da música",
+    "body_hint": "Insira um corpo para a música.",
+    "submit": "Salvar",
+    "import_message_title": "Importando música",
+    "import_message_body": "Estamos importando a música indicada! Esse processo poderá demorar alguns segundos, por favor aguarde."
   },
   "messages": {
     "song_not_found_title": "Música não encontrada.",
@@ -32,6 +58,21 @@
     "removed_title": "Sucesso!",
     "removed_msg": "A música selecionada foi removida!",
     "no_permission_title": "Remoção negada!",
-    "no_permission_msg": "Você precisa ter permissões de Admin na banda que publicou a música para conseguir removê-la!"
+    "no_permission_msg": "Você precisa ter permissões de Admin na banda que publicou a música para conseguir removê-la!",
+    "invalid_parameters_title": "Parâmetros inválidos.",
+    "invalid_parameters_msg": "Para acessar a página de salvar música por favor utilize uma URL valida!",
+    "no_url_title": "URL inválida!",
+    "no_url_msg": "Por favor insira a url da música para realizar a importação.",
+    "invalid_url_title": "URL inválida!",
+    "invalid_url_msg": "Por favor insira uma URL válida.",
+    "import_error_title": "Ops...!",
+    "import_error_msg": "Ocorreu um erro durante a importação. Verifique se a URL informada corresponde a música.",
+    "save_success_title": "Sucesso!",
+    "save_success_msg_1": "Sua música com título de ",
+    "save_success_msg_2": " foi salva com sucesso!",
+    "forbidden_title": "Permissão insuficiente!",
+    "forbidden_msg": "Você não tem permissão para criar/salvar músicas desta banda!",
+    "invalid_fields_title": "Ops.. Há campos inválidos!",
+    "invalid_fields_msg": "Por favor revise o preenchimento de seu formulário!"
   }
 }

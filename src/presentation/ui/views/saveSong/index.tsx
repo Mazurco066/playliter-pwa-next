@@ -5,6 +5,7 @@ import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm, Controller } from 'react-hook-form'
 import { useQuery, useMutation } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 import { detecteSongFormat, plaintextToChordProFormat } from 'presentation/utils'
 
@@ -37,15 +38,6 @@ import {
 // Dynamic components import
 const CustomAceEditor = dynamic(() => import('./elements/ace-editor'), { ssr: false })
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Save song component
 const SaveSongView: FC<{
   id?: string,
@@ -62,6 +54,8 @@ const SaveSongView: FC<{
   const [ isPublic, setPublicState ] = useState<boolean>(true)
   const [ importUrl, setImportUrl ] = useState<string>('')
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('song')
   const {
     control,
     register,
@@ -86,6 +80,15 @@ const SaveSongView: FC<{
       refetchOnWindowFocus: false
     }
   )
+
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
   
   // Set form values if an id was received
   useEffect(() => {
@@ -110,8 +113,8 @@ const SaveSongView: FC<{
   useEffect(() => {
     if (!id && !bandId) {
       toast({
-        title: 'Parâmetros inválidos.',
-          description: 'Para acessar a página de salvar música por favor utilize uma URL valida!',
+        title: t('messages.invalid_parameters_title'),
+          description: t('messages.invalid_parameters_msg'),
           status: 'info',
           duration: 3500,
           isClosable: true
@@ -151,8 +154,8 @@ const SaveSongView: FC<{
     if (song && song?.status !== 200) {
       if ([404].includes(song.status)) {
         toast({
-          title: 'Música não encontrada.',
-          description: 'A música informada não foi encontrada!',
+          title: t('messages.song_not_found_title'),
+          description: t('messages.song_not_found_msg'),
           status: 'info',
           duration: 5000,
           isClosable: true
@@ -203,8 +206,8 @@ const SaveSongView: FC<{
     // Verify if response was successfull
     if ([401, 403].includes(response.status)) {
       toast({
-        title: 'Permissão negada!',
-        description: 'Você precisa ter permissões de Membro na banda que publicou a música para conseguir editá-la!',     
+        title: t('messages.no_permission_title'),
+        description: t('messages.no_permission_msg'),     
         status: 'info',
         duration: 3500,
         isClosable: true
@@ -221,15 +224,15 @@ const SaveSongView: FC<{
   // Import song text from cifra club
   const scrapSong = async (url: string) => {
     if (!url) return toast({
-      title: 'URL inválida!',
-      description: `Por favor insira a url da música para realizar a importação.`,
+      title: t('messages.no_url_title'),
+      description: t('messages.no_url_msg'),
       status: 'warning',
       duration: 2000,
       isClosable: true
     })
     if (!url.includes('https://')) return toast({
-      title: 'URL inválida!',
-      description: `Por favor insira uma URL válida.`,
+      title: t('messages.invalid_url_title'),
+      description: t('messages.invalid_url_msg'),
       status: 'warning',
       duration: 2000,
       isClosable: true
@@ -264,8 +267,8 @@ const SaveSongView: FC<{
 
     } else {
       toast({
-        title: 'Ops...!',
-        description: `Ocorreu um erro durante a importação. Verifique se a URL informada corresponde a música.`,
+        title: t('messages.import_error_title'),
+        description: t('messages.import_error_msg'),
         status: 'warning',
         duration: 2000,
         isClosable: true
@@ -307,8 +310,8 @@ const SaveSongView: FC<{
     if ([200, 201].includes(response.status)) {
       // Notify user about created show
       toast({
-        title: 'Sucesso!',
-        description: `Sua música com título de ${response?.data?.title} foi salva com sucesso!`,
+        title: t('messages.save_success_title'),
+        description: `${t('messages.save_success_msg_1')}${response?.data?.title}${t('messages.save_success_msg_2')}`,
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -320,16 +323,16 @@ const SaveSongView: FC<{
     } else {
       if ([400].includes(response.status)) {
         toast({
-          title: 'Ops.. Há campos inválidos!',
-          description: 'Por favor revise o preenchimento de seu formulário!',     
+          title: t('messages.invalid_fields_title'),
+          description: t('messages.invalid_fields_msg'),     
           status: 'warning',
           duration: 3500,
           isClosable: true
         })
       } else if ([401, 403].includes(response.status)) {
         toast({
-          title: 'Permissão insuficiente!',
-          description: 'Você não tem permissão para criar/salvar músicas desta banda!',     
+          title: t('messages.forbidden_title'),
+          description: t('messages.forbidden_msg'),     
           status: 'info',
           duration: 3500,
           isClosable: true
@@ -356,14 +359,14 @@ const SaveSongView: FC<{
             fontWeight="bold"
             fontSize="sm"
           >
-            Música está em site de terceiros?
+            {t('save.import_label')}
           </Text>
           <Text
             color="gray.100"
             mb="3"
             fontSize="sm"
           >
-            Sem problemas? Cole a URL da música no campo abaixo e a importaremos para o app.
+            {t('save.import_desc')}
           </Text>
           <FormControl isDisabled={isLoading || (id != '' && songLoading)} mb="3">
             <InputGroup
@@ -396,7 +399,7 @@ const SaveSongView: FC<{
             color={colorBtn}
             onClick={isScrapLoading ? () => {} : () => scrapSong(importUrl)}
           >
-            Importar música
+            {t('save.import_btn')}
           </Button>
         </Box>
         <Box
@@ -412,7 +415,7 @@ const SaveSongView: FC<{
               mb="5"
             >
               <FormLabel htmlFor='isPublic' mb='0'>
-                A música é pública?
+                {t('save.public_label')}
               </FormLabel>
               <Switch
                 id='isPublic'
@@ -426,7 +429,7 @@ const SaveSongView: FC<{
               isRequired
               mb="5"
             >
-              <FormLabel>Título da música</FormLabel>
+              <FormLabel>{t('save.title_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -436,15 +439,15 @@ const SaveSongView: FC<{
                   disabled={isLoading || (id != '' && songLoading)}
                   variant="filled"
                   type="text"
-                  placeholder="Título..."
+                  placeholder={t('save.title_placeholder')}
                   minLength={2}
                   {...register('title', { required: true })}
                 />
               </InputGroup>
               {errors.title ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('save.required_label')}</FormHelperText>
               ) : (
-                <FormHelperText>Insira um título para a música.</FormHelperText>
+                <FormHelperText>{t('save.title_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl
@@ -452,7 +455,7 @@ const SaveSongView: FC<{
               isRequired
               mb="5"
             >
-              <FormLabel>Autor da música</FormLabel>
+              <FormLabel>{t('save.author_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -462,15 +465,15 @@ const SaveSongView: FC<{
                   disabled={isLoading || (id != '' && songLoading)}
                   variant="filled"
                   type="text"
-                  placeholder="Autor..."
+                  placeholder={t('save.author_placeholder')}
                   minLength={2}
                   {...register('writter', { required: true })}
                 />
               </InputGroup>
               {errors.writter ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('save.required_label')}</FormHelperText>
               ) : (
-                <FormHelperText>Insira o autor da música.</FormHelperText>
+                <FormHelperText>{t('save.author_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl
@@ -478,12 +481,12 @@ const SaveSongView: FC<{
               isRequired
               mb="5"
             >
-              <FormLabel>Tom Base</FormLabel>
+              <FormLabel>{t('save.tone_label')}</FormLabel>
               <InputGroup>
                 <Select
                   disabled={isLoading || (id != '' && songLoading)}
                   variant="filled"
-                  placeholder="Tom Base"
+                  placeholder={t('save.tone_placeholder')}
                   {...register('tone', { required: true })}
                 >
                   {
@@ -496,9 +499,9 @@ const SaveSongView: FC<{
                 </Select>
               </InputGroup>
               {errors.tone ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('save.required_label')}</FormHelperText>
               ) : (
-                <FormHelperText>Selecione o tom base da música.</FormHelperText>
+                <FormHelperText>{t('save.tone_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl
@@ -506,12 +509,12 @@ const SaveSongView: FC<{
               isRequired
               mb="5"
             >
-              <FormLabel>Categoria</FormLabel>
+              <FormLabel>{t('save.category_label')}</FormLabel>
               <InputGroup>
                 <Select
                   disabled={isLoading || (id != '' && songLoading)}
                   variant="filled"
-                  placeholder="Selecionar Categoria..."
+                  placeholder={t('save.category_placeholder')}
                   {...register('category', { required: true })}
                 >
                   {
@@ -524,9 +527,9 @@ const SaveSongView: FC<{
                 </Select>
               </InputGroup>
               {errors.category ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('save.required_label')}</FormHelperText>
               ) : (
-                <FormHelperText>Selecione uma categoria música.</FormHelperText>
+                <FormHelperText>{t('save.category_hint')}</FormHelperText>
               )}
             </FormControl>
             <FormControl
@@ -534,7 +537,7 @@ const SaveSongView: FC<{
               isRequired
               mb="5"
             >
-              <FormLabel>Corpo da música</FormLabel>
+              <FormLabel>{t('save.body_label')}</FormLabel>
               <Controller
                 control={control}
                 name="body"
@@ -548,9 +551,9 @@ const SaveSongView: FC<{
                 )}
               />
               {errors.body ? (
-                <FormHelperText color="red.500">Esse campo é requerido.</FormHelperText>
+                <FormHelperText color="red.500">{t('save.required_label')}</FormHelperText>
               ) : (
-                <FormHelperText>Insira um corpo para a música.</FormHelperText>
+                <FormHelperText>{t('save.body_hint')}</FormHelperText>
               )}
             </FormControl>
             <Button
@@ -559,7 +562,7 @@ const SaveSongView: FC<{
               type="submit"
               width="full"
             >
-              Salvar
+              {t('save.submit')}
             </Button>
           </form>
         </Box>
@@ -568,8 +571,8 @@ const SaveSongView: FC<{
         isOpen={isOpen}
         onClose={onClose}
         onOpen={onOpen}
-        title="Importando música"
-        message="Estamos importando a música indicada! Esse processo poderá demorar alguns segundos, por favor aguarde."
+        title={t('save.import_message_title')}
+        message={t('save.import_message_body')}
       />
     </div>
   )

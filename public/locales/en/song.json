@@ -1,5 +1,6 @@
 {
-  "title": "Detalhes Da Música",
+  "title": "Song datails",
+  "save_title": "Save song",
   "add_to_concert_drawer": "Add to concert",
   "clone_drawer_title": "Clone song",
   "search_placeholder": "Search...",
@@ -15,6 +16,31 @@
     "edit": "Edit",
     "clone": "Clone song",
     "remove": "Remove song"
+  },
+  "save": {
+    "import_label": "Your song is stored in another website?",
+    "import_desc": "No problems! You can import the song to playliter pasting its URL.",
+    "import_btn": "Import song",
+    "required_label": "Required.",
+    "public_label": "It's a public song?",
+    "title_label": "Song title",
+    "title_placeholder": "Title...",
+    "title_hint": "Insert a title for your song.",
+    "author_label": "Author",
+    "author_placeholder": "Author..",
+    "author_hint": "Insert the name of the Song's author.",
+    "tone_label": "Base tone",
+    "tone_placeholder": "Base tone",
+    "tone_hint": "Select the song base tone.",
+    "category_label": "Category",
+    "category_placeholder": "Select category...",
+    "category_hint": "Please select a category.",
+    "body_label": "Song body",
+    "body_placeholder": "Song body",
+    "body_hint": "Insert the song body in chordpro format.",
+    "submit": "Save",
+    "import_message_title": "Please wait",
+    "import_message_body": "We are importing your song from the informed URL. In a few seconds your form will be automatically filled with song data."
   },
   "messages": {
     "song_not_found_title": "Song not found.",
@@ -32,6 +58,21 @@
     "removed_title": "Success!",
     "removed_msg": "The selected song was successfully removed!",
     "no_permission_title": "Permission denied!",
-    "no_permission_msg": "You have no permissions in the band to remove or edit songs!"
+    "no_permission_msg": "You have no permissions in the band to remove or edit songs!",
+    "invalid_parameters_title": "Invalid parameters.",
+    "invalid_parameters_msg": "Please access this page using a valid url",
+    "no_url_title": "Invalid URL!",
+    "no_url_msg": "Please insert an URL to import the desired song.",
+    "invalid_url_title": "Invalid URL!",
+    "invalid_url_msg": "Please insert a valid URL.",
+    "import_error_title": "Ops...!",
+    "import_error_msg": "An error ocourred while importing your song. Please verify if your url is correct.",
+    "save_success_title": "Success!",
+    "save_success_msg_1": "Your song named as ",
+    "save_success_msg_2": " was successfully saved!",
+    "forbidden_title": "Insuficient permissions!",
+    "forbidden_msg": "You do not have permissions to save songs on this band.",
+    "invalid_fields_title": "Ops.. Invalid fields!",
+    "invalid_fields_msg": "Please review your form data!"
   }
 }
