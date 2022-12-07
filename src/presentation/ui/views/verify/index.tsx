@@ -2,6 +2,7 @@
 import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useMutation } from  '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
 import { useUser } from 'infra/services/session'
 
@@ -21,15 +22,6 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
-
 // Component
 const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
   // Hooks
@@ -37,6 +29,8 @@ const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
   const toast = useToast()
   const [ verificationCode, setVerificationCode ] = useState<string>('')
   const { user, mutateUser } = useUser()
+  const { t: common } = useTranslation('common')
+  const { t } = useTranslation('verify')
 
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
@@ -62,6 +56,15 @@ const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
     return requestClient('/api/accounts/verify_account', 'post', { ...data })
   })
 
+  // Generic error msg
+  const genericMsg: UseToastOptions = {
+    title: common('messages.internal_error_title'),
+    description: common('messages.internal_error_msg'),
+    status: 'error',
+    duration: 5000,
+    isClosable: true
+  }
+
   // Actions
   const resendVerificationEmail = async () => {
     // Request endpoint
@@ -70,8 +73,8 @@ const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
     // Verify if response was successfull
     if ([200, 201].includes(response.status)) {
       toast({
-        title: 'Sucesso!',
-        description: `Um novo código de verificação foi enviado para seu E-mail!`,
+        title: t('messages.resend_success_title'),
+        description: t('messages.resend_success_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -84,8 +87,8 @@ const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
   const verifyAccountByCode = async () => {
     // Validate verification code
     if (verificationCode.length < 4) return toast({
-      title: 'Ops.. Código inválido',
-      description: 'O código de verificação deve ter 4 dígitos!',
+      title: t('messages.invalid_code_title'),
+      description: t('messages.invalid_code_msg'),
       status: 'warning',
       duration: 2000,
       isClosable: true
@@ -99,8 +102,8 @@ const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
      
       // Notify user about verification success
       toast({
-        title: 'Sucesso!',
-        description: `Seu E-mail foi verificado com sucesso! Seja bem vindo(a) ao Playliter.`,
+        title: t('messages.verified_email_title'),
+        description: t('messages.verified_email_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -116,8 +119,8 @@ const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
     } else {
       if ([400, 404].includes(response.status)) {
         toast({
-          title: 'Ops.. Código inválido',
-          description: 'O código de verificação inserido não corresponde ao gerado para sua conta!',
+          title: t('messages.code_not_found_title'),
+          description: t('messages.code_not_found_msg'),
           status: 'error',
           duration: 2000,
           isClosable: true
@@ -139,7 +142,7 @@ const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
           mb="5"
         >
           <Text textAlign="center" mb="5">
-            Digite o código de verificação que foi enviado para seu E-mail. Se não encontrar o E-mail pode ser que tenha caído na caixa de span.
+            {t('code_label')}
           </Text>
           <Flex
             gap="1rem"
@@ -163,12 +166,12 @@ const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
             </HStack>
           </Flex>
           <Text textAlign="center" mb="5">
-            Não recebeu o E-mail?{' '}
+            {t('resend_1')}
             <Link
               color='secondary.500'
               onClick={resendLoading ? () => {} : () => resendVerificationEmail()}
             >
-              Reenviar E-mail
+              {t('resend_2')}
             </Link>
           </Text>
           <Button
@@ -177,7 +180,7 @@ const VerifyAccountView: FC<{ code?: string }> = ({ code = '' }) => {
             disabled={verifyLoading}
             onClick={verifyLoading ? () => {} : () => verifyAccountByCode()}
           >
-            Validar E-mail
+            {t('submit')}
           </Button>
         </Box>
       </Container>

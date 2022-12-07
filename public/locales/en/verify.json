@@ -1,0 +1,16 @@
+{
+  "code_label" : "Enter the verification code that was sent to your Email. If you can't find the E-mail, it may have fallen into the span box.",
+  "resend_1": "Didn't you get the e-mail? ",
+  "resend_2": "Resend E-mail",
+  "submit": "Validate E-mail",
+  "messages": {
+    "resend_success_title": "Success!",
+    "resend_success_msg": "A new verification code was sent to your E-mail! Please chack your inbox.",
+    "invalid_code_title": "Ops.. Invalid code",
+    "invalid_code_msg": "Verification code must be a 4 digit code!",
+    "verified_email_title": "Success!",
+    "verified_email_msg": "Your E-mail was successfully verified! Welcome to Playliter.",
+    "code_not_found_title": "Ops.. Invalid code",
+    "code_not_found_msg": "The inserted code is not the one sent to your E-mail. Please insert the correct one."
+  }
+}
