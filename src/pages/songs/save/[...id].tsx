@@ -2,6 +2,7 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { ReactElement } from 'react'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useUser } from 'infra/services/session'
 
@@ -47,9 +48,10 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => ({
 
 // Applying layout
 SaveSong.getLayout = function getLayout(page: ReactElement) {
+  const { t } = useTranslation('song')
   return (
     <SecureLayout
-      pageTitle="Salvar Música"
+      pageTitle={t('save_title')}
       pageSubtitle=""
     >
       {page}

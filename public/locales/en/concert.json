@@ -1,5 +1,6 @@
 {
   "title": "Concert details",
+  "save_title": "Save Concert",
   "btn_sequential": "Ordered view",
   "added_songs": "Added songs",
   "no_songs": "There is no songs in this concert!",

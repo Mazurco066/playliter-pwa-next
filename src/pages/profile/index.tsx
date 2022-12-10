@@ -1,6 +1,7 @@
 // Dependencies
 import Head from 'next/head'
 import { ReactElement } from 'react'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useUser } from 'infra/services/session'
 
@@ -39,9 +40,10 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
 
 // Applying layout
 Profile.getLayout = function getLayout(page: ReactElement) {
+  const { t } = useTranslation('profile')
   return (
     <SecureLayout
-      pageTitle="Meu Perfil"
+      pageTitle={t('title')}
       pageSubtitle=""
     >
       {page}

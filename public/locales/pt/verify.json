@@ -1,4 +1,5 @@
 {
+  "title": "Verificar E-mail",
   "code_label" : "Digite o código de verificação que foi enviado para seu E-mail. Se não encontrar o E-mail pode ser que tenha caído na caixa de span.",
   "resend_1": "Não recebeu o E-mail? ",
   "resend_2": "Reenviar E-mail",

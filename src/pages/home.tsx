@@ -1,6 +1,7 @@
 // Dependencies
 import Head from 'next/head'
 import { ReactElement } from 'react'
+import { useTranslation } from 'next-i18next'
 import { useUser } from 'infra/services/session'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -39,10 +40,11 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
 
 // Applying layout
 Home.getLayout = function getLayout(page: ReactElement) {
+  const { t } = useTranslation('home')
   return (
     <SecureLayout
-      pageTitle="Playliter"
-      pageSubtitle="App"
+      pageTitle={t('title')}
+      pageSubtitle={t('subtitle')}
     >
       {page}
     </SecureLayout>
