@@ -16,13 +16,15 @@ export const pdfPreviewStyles: string = `
     right: 0;
     width: 100%;
     height: 100%;
-    background-color: #8257E5;
-    border: 1px solid #8257E5;
-    color: #FFFFFF;
+    background: #8257E5!important;
+    border: 1px solid #8257E5!important;
+    color: #FFFFFF!important;
     margin: auto;
     margin-top: 0!important;
     overflow: hidden;
     z-index: 0;
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
   }
   .svg-container {
     position: absolute;
