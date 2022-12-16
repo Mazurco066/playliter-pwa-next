@@ -12,7 +12,9 @@ export const PDFPrintPreview: FC<{ show: ShowType }> = ({ show }) => {
   const { t } = useTranslation('songList')
 
   // Destruct show data
-  const { title, description, date } = show
+  const { title, description, date, band: { title: bandTitle }, observations } = show
+
+  const hasText = observations.find(obs => obs.title === 'Evangelho')
 
   // JSX
   return (
@@ -22,21 +24,28 @@ export const PDFPrintPreview: FC<{ show: ShowType }> = ({ show }) => {
       </div>
       <div id="pdf-preview">
         <div className="svg-container">
-          <img src="/img/pdf-prev.svg" alt="PDF Preview" />
-          <div className="show-info">
-            <h3 className="show-title">
-              { title }
-            </h3>
-            <p className="show-desc">
-              { description }
+          <img src="/img/playliter-bg.png" alt="PDF Preview" />
+        </div>
+        <div className="show-info">
+          <h3 className="show-title">
+            { title }
+          </h3>
+          <h4 className="band-info">
+            {formatDate(date)} - { bandTitle }
+          </h4>
+          <p className="show-desc">
+            { description }
+          </p>
+          {hasText ? (
+            <p className="show-add-text">
+              { hasText.data }
             </p>
-            <p className="show-date">
-              {t('presentation_date')}<strong>{ formatDate(date) }</strong>
-            </p>
-            <p className="credits">
-              {t('generated_by')}<strong>Playliter</strong>{t('generated_at')}<strong>{ formatDate(new Date().toISOString()) }</strong>
-            </p>
-          </div>
+          ) : null}
+        </div>
+        <div className="credits-container">
+          <p className="credits">
+            {t('generated_by')}<strong>Playliter</strong>{t('generated_at')}<strong>{ formatDate(new Date().toISOString()) }</strong>
+          </p>
         </div>
       </div>
     </>

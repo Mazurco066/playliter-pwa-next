@@ -2,6 +2,8 @@
 export const pdfPreviewStyles: string = `
   @page {
     size: A4;
+    margin: 0;
+    padding: 0;
   }
   #ghost-preview {
     page-break-after: always;
@@ -14,77 +16,91 @@ export const pdfPreviewStyles: string = `
     right: 0;
     width: 100%;
     height: 100%;
-    background-color: #1C1C1C;
-    border: 1px solid #1C1C1C;
+    background-color: #8257E5;
+    border: 1px solid #8257E5;
+    color: #FFFFFF;
     margin: auto;
     margin-top: 0!important;
     overflow: hidden;
-    border-radius: 8px;
     z-index: 0;
   }
   .svg-container {
-    position: relative;
-    height: 100%!important;
-    width: 100%!important;
+    position: absolute;
+    height: 809px!important;
+    width: 496px!important;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 1;
+    right: 0;
+    bottom: 0;
   }
   .svg-container img {
-    object-fit: contain;
+    object-fit: cover;
     height: 100%!important;
     width: 100%!important;
     position: absolute;
-    left: 0;
     right: 0;
     bottom: 0;
-    top: 0;
     z-index: 1;
   }
   .show-info {
     position: absolute;
-    top: 35%;
-    left: 0;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    width: 500px!important;
+    top: 16px;
+    left: 16px;
     min-height: 200px;
-    border-radius: 8px;
-    padding: 1rem 1.5rem;
-    background-color: rgba(0, 0, 0, 0.2)!important;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    padding-left: 16px;
     z-index: 3;
   }
+  .credits-container {
+    position: absolute;
+    bottom: 8px;
+    left: 16px;
+    padding-left: 16px;
+    z-index: 4;
+  }
   .show-title {
-    color: #F5F5F5;
+    width: 500px!important;
+    font-size: 72px!important;
+    margin-bottom: 32px;
+    color: #FFFFFF;
     text-transform: uppercase;
-    text-align: center;
+    text-align: left;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  }
+  .band-info {
+    color: #FFFFFF;
+    text-align: left;
+    text-transform: uppercase;
+    font-weight: bold;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   }
   .show-desc {
-    color: #F5F5F5;
-    text-align: center;
+    width: 300px!important;
+    color: #FFFFFF;
+    text-align: left;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  }
+  .show-add-text {
+    width: 450px!important;
+    color: #FFFFFF;
+    text-align: left;
+    white-space: break-spaces;
+    text-align: justify;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   }
   .credits {
-    color: #F5F5F5;
-    text-align: center;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-  }
-  .show-date {
-    color: #F5F5F5;
-    text-align: center;
-    font-weight: bold;
+    color: #FFFFFF;
+    text-align: left;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   }
   .show-date strong,
   .credits strong {
-    color: #4963f7;
+    color: #FFFFFF;
   }
 `
 
@@ -95,7 +111,8 @@ export const pdfPrintStyles: string = `
     -webkit-print-color-adjust:exact;
     -moz-print-color-adjust:exact;
     -ms-print-color-adjust:exact;
-    print-color-adjust:exact
+    print-color-adjust:exact;
+    padding: 16px;
   }
   .song-info{
     margin-bottom:1rem
