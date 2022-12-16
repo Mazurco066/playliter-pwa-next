@@ -23,6 +23,8 @@ export const pdfPreviewStyles: string = `
     margin-top: 0!important;
     overflow: hidden;
     z-index: 0;
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
   }
   .svg-container {
     position: absolute;
