@@ -6,6 +6,7 @@
   "no_songs": "Não há músicas adicionadas a essa apresentação!",
   "notes_drawer": "Anotações da apresentação",
   "reorder_drawer": "Reordenar músicas",
+  "add_drawer": "Adicionar músicas",
   "menu": {
     "edit": "Editar",
     "reorder": "Reordenar músicas",
@@ -28,6 +29,13 @@
   "note_options": {
     "edit": "Editar",
     "remove": "Remover"
+  },
+  "add_songs": {
+    "subtitle": "Adicione músicas presentes nessa banda a sua apresentação:",
+    "search_placeholder": "Buscar...",
+    "search_btn": "Buscar",
+    "songs_error": "Ocorreu um erro ao tentar recuperar a lista de músicas. Notifique um adiministrados do aplicativo assim que possível!",
+    "load_more": "Carregando mais músicas..."
   },
   "form": {
     "new_note": "Nova anotação",
@@ -82,6 +90,10 @@
     "create_show_msg_1": "Sua apresentação com título de ",
     "create_show_msg_2": " foi salva com sucesso!",
     "no_permissions_title": "Permissão insuficiente!",
-    "no_permissions_msg": "Você não tem permissão para criar/salvar apresentações desta banda!"
+    "no_permissions_msg": "Você não tem permissão para criar/salvar apresentações desta banda!",
+    "added_to_show_title": "Sucesso!",
+    "added_to_show_msg": "A música selecionada foi adicionada na apresentação!",
+    "song_present_title": "Ops.. Música já se encontra presente!",
+    "song_present_msg": "A música solicitada já se encontra presenta na apresentação escolhida!"
   }
 }

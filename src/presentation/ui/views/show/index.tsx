@@ -15,8 +15,8 @@ type ConfirmShowAction = {
 
 // Components
 import { ConfirmAction } from 'presentation/ui/components'
-import { NoteForm, Notes, OrderedSong, ReorderSongs, ShowDrawer } from './elements'
-import { FaBook, FaHandPointer } from 'react-icons/fa'
+import { AddSongs, NoteForm, Notes, OrderedSong, ReorderSongs, ShowDrawer } from './elements'
+import { FaBook, FaHandPointer, FaPlus } from 'react-icons/fa'
 import { DeleteIcon, EditIcon, Icon, SettingsIcon } from '@chakra-ui/icons'
 import {
   Badge,
@@ -75,6 +75,13 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     isOpen: isNoteFormOpen,
     onOpen: onNoteFormOpen,
     onClose: onNoteFormClose
+  } = useDisclosure()
+
+  // Add songs drawer state
+  const {
+    isOpen: isSongsFormOpen,
+    onOpen: onSongsFormOpen,
+    onClose: onSongsFormClose
   } = useDisclosure()
 
   // Color Hooks
@@ -355,7 +362,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                 <Flex gap="1rem" alignItems="center">
                   <IconButton
                     disabled={loadingStatus}
-                    aria-label='Anotações'
+                    aria-label="Anotações"
                     icon={<Icon as={FaBook} />}
                     flex="0 0 auto"
                     onClick={() => onNotesOpen()}
@@ -369,6 +376,13 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                   >
                     {t('btn_sequential')}
                   </Button>
+                  <IconButton
+                    disabled={loadingStatus}
+                    aria-label="Adicionar músicas"
+                    icon={<Icon as={FaPlus} />}
+                    flex="0 0 auto"
+                    onClick={() => onSongsFormOpen()}
+                  />
                 </Flex>
               </Box>
             </Box>
@@ -443,7 +457,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
         isOpen={isNotesOpen}
         title={t('notes_drawer')}
       >
-        { (show && !showLoading) && (
+        { (show && !showLoading) ? (
           <Notes
             show={show.data}
             isLoading={loadingStatus}
@@ -458,7 +472,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
               onConfirmOpen()
             }}
           />
-        )}
+        ) : null}
       </ShowDrawer>
       <ShowDrawer
         onClose={onReorderClose}
@@ -466,7 +480,7 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
         isOpen={isReorderOpen}
         title={t('reorder_drawer')}
       >
-        { (show && !showLoading && isReorderOpen) && (
+        { (show && !showLoading && isReorderOpen) ? (
           <ReorderSongs
             show={show.data}
             onCancel={onReorderClose}
@@ -475,7 +489,22 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
               refetch()
             }}
           />
-        )}
+        ) : null}
+      </ShowDrawer>
+      <ShowDrawer
+        onClose={onSongsFormClose}
+        onOpen={onSongsFormOpen}
+        isOpen={isSongsFormOpen}
+        title={t('add_drawer')}
+      >
+        {
+          (show && !showLoading && isSongsFormOpen) ? (
+            <AddSongs 
+              show={show.data}
+              onAddSuccess={() => refetch()}
+            />
+          ) : null
+        }
       </ShowDrawer>
       <NoteForm
         isOpen={isNoteFormOpen}
