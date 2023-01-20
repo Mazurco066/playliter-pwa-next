@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import type { SongType } from 'domain/models'
 
 // Components
-import { FaEllipsisV, FaHandRock } from 'react-icons/fa'
+import { FaEllipsisV, FaHandRock, FaPlus } from 'react-icons/fa'
 import { DeleteIcon, EditIcon, Icon, ViewIcon } from '@chakra-ui/icons'
 import { Draggable, DraggableProvided } from 'react-beautiful-dnd'
 import {
@@ -204,6 +204,72 @@ export const OrderedSong: FC<{
                </MenuItem>
             </MenuList>
           </Menu>
+        </Box>
+      </Flex>
+    </Box>
+  )
+}
+
+// Add Component
+export const AddSong: FC<{
+  song: SongType,
+  isLoading?: boolean,
+  onClick?: () => void,
+}> = ({
+  song: { title, writter },
+  isLoading = false,
+  onClick = () => {}
+}) => {
+  // JSX
+  return (
+    <Box
+      data-group
+      bgColor="blackAlpha.500"
+      width="full"
+      borderRadius="lg"
+      transition="all 0.3s"
+      _hover={{
+        cursor: 'pointer'
+      }}
+    >
+      <Flex
+        alignItems="center"
+        justifyContent="flex-start"
+        height="full"
+      >
+        <Box
+          flexGrow="1"
+          px="2"
+          py="3"
+        >
+          <Heading
+            as="h5"
+            size="sm"
+            _groupHover={{
+              color: 'secondary.400'
+            }}
+          >
+            {title}
+          </Heading>
+          <Text>
+            {writter}
+          </Text>
+        </Box>
+        <Box
+          flex="0 0 auto"
+          pr="3"
+        >
+          <IconButton
+            disabled={isLoading}
+            aria-label="Add song"
+            backgroundColor="whiteAlpha.200"
+            _hover={{
+              backgroundColor: "whiteAlpha.300"
+            }}
+            icon={<Icon as={FaPlus} />}
+            flex="0 0 auto"
+            onClick={isLoading ? () => {} : () => onClick()}
+          />
         </Box>
       </Flex>
     </Box>

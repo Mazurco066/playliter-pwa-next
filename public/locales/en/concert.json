@@ -6,6 +6,7 @@
   "no_songs": "There is no songs in this concert!",
   "notes_drawer": "Concert notes",
   "reorder_drawer": "Reorder songs",
+  "add_drawer": "Add songs",
   "menu": {
     "edit": "Edit",
     "reorder": "Reorder concert",
@@ -28,6 +29,13 @@
   "note_options": {
     "edit": "Edit",
     "remove": "Remove"
+  },
+  "add_songs": {
+    "subtitle": "Adicione músicas presentes nessa banda a sua apresentação:",
+    "search_placeholder": "Search...",
+    "search_btn": "Search",
+    "songs_error": "An error ocourred while fetching the songs list. Please try again later!",
+    "load_more": "Loading more songs..."
   },
   "form": {
     "new_note": "New note",
@@ -82,6 +90,10 @@
     "create_show_msg_1": "Your concert named as ",
     "create_show_msg_2": " was successfully saved!",
     "no_permissions_title": "Insufficient permissions!",
-    "no_permissions_msg": "You don't have permissions to edit concerts from a band that you are not associated!"
+    "no_permissions_msg": "You don't have permissions to edit concerts from a band that you are not associated!",
+    "added_to_show_title": "Success!",
+    "added_to_show_msg": "The selected song was successfuly added to concert!",
+    "song_present_title": "Ops.. Song already present!",
+    "song_present_msg": "This song is already present in the selected concert!"
   }
 }
