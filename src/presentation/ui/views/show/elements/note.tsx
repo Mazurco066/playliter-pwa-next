@@ -38,6 +38,7 @@ export const NoteItem: FC<{
 
   // Color Hooks
   const bgBox = useColorModeValue('blackAlpha.500', 'blackAlpha.500')
+  const colorMenu = useColorModeValue('gray.900', 'gray.100')
 
   // Destruct song data
   const { title, data } = observation
@@ -78,6 +79,7 @@ export const NoteItem: FC<{
                 <MenuItem
                   disabled={isLoading}
                   icon={<EditIcon />}
+                  color={colorMenu}
                   onClick={isLoading ? () => {} : () => onEdit(observation)}
                 >
                   {t('note_options.edit')}
@@ -85,6 +87,7 @@ export const NoteItem: FC<{
                 <MenuItem
                   disabled={isLoading}
                   icon={<DeleteIcon />}
+                  color={colorMenu}
                   onClick={isLoading ? () => {} : () => onRemove(observation)}
                 >
                   {t('note_options.remove')}

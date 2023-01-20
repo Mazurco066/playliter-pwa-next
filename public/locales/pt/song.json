@@ -45,7 +45,7 @@
   "messages": {
     "song_not_found_title": "Música não encontrada.",
     "song_not_found_msg": "A Música informada não foi encontrada em sua conta!",
-    "added_to_show_title": "Sucesso!'",
+    "added_to_show_title": "Sucesso!",
     "added_to_show_msg": "A música selecionada foi adicionada na apresentação!",
     "song_present_title": "Ops.. Música já se encontra presente!",
     "song_present_msg": "A música solicitada já se encontra presenta na apresentação escolhida!",

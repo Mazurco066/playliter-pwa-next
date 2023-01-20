@@ -31,7 +31,6 @@ export const Notes: FC<{
   onAddNote?: () => void,
   onImportSuccess?: () => void,
   show: ShowType
-
 }> = ({
   isLoading = false,
   onDeleteNote = () => {},
@@ -175,6 +174,10 @@ export const Notes: FC<{
           <IconButton
             aria-label='Adicionar Anotação'
             icon={<Icon as={FaPlus} />}
+            backgroundColor="whiteAlpha.200"
+            _hover={{
+              backgroundColor: "whiteAlpha.300"
+            }}
             flex="0 0 auto"
             disabled={isLoading}
             onClick={loadingStatus ? () => {} : () => onAddNote()}
