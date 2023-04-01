@@ -5,6 +5,7 @@ export type SongType = {
   title: string,
   tone: string,
   writter: string,
+  embeddedUrl?: string
   body: string,
   isPublic: boolean,
   category: {
