@@ -26,7 +26,8 @@
     "update_base_tone": "Atualizar tom base",
     "capo": "Capo: ",
     "tone": "Tom: ",
-    "by": "Por "
+    "by": "Por ",
+    "listen": "Ouvir música"
   },
   "bottom_navigation": {
     "bands": "Bandas",

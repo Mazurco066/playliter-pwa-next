@@ -17,6 +17,7 @@ export type ShowType = {
     createdAt: string,
     updatedAt: string,
     title: string,
+    embeddedUrl?: string
     writter: string,
     tone: string,
     body: string,
