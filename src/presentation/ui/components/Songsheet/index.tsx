@@ -14,6 +14,11 @@ import type { SongType } from 'domain/models'
 import { ChordLyricsPair } from 'presentation/ui/components'
 import { MdArrowDropDown } from 'react-icons/md'
 import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
   Box,
   Button,
   Flex,
@@ -29,11 +34,13 @@ import {
 export const Songsheet: FC<{
   displayPdfHeaders?: boolean,
   displayToneControl?: boolean,
+  displayMusicVideo?: boolean,
   onToneUpdateSuccess?: () => void,
   song: SongType,
 }> = ({
   displayPdfHeaders = false,
   displayToneControl = false,
+  displayMusicVideo = false,
   onToneUpdateSuccess = () => {},
   song
 }) => {
@@ -155,6 +162,40 @@ export const Songsheet: FC<{
     }
   }
 
+  // Render actions
+  const renderEmbeddedMusicVideo = (url: string) => {
+    // Validate if embedded url is supported
+    const isValidEmbedded = url.match(/youtube|spotify/) !== null
+    if (!isValidEmbedded) return null
+
+    // Youtube embedded video
+    if (url.includes('youtube')) {
+      return (
+        <iframe
+          width="100%"
+          height="315"
+          src={url}
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        />
+      )
+    }
+
+    // Spotify embedded card
+    if (url.includes('spotify')) {
+      return (
+        <iframe
+          style={{ borderRadius: '16px' }}
+          src={url}
+          width="100%"
+          height="352"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+        />
+      )
+    }
+  }
+
   // JSX
   return (
     <Box style={{ printColorAdjust: 'exact' }}>
@@ -203,7 +244,7 @@ export const Songsheet: FC<{
                     {chordsheet.artist}
                   </Text>
                   {
-                    !displayToneControl && (
+                    !displayToneControl ? (
                       <Text
                         mt="1"
                         fontSize="sm"
@@ -214,17 +255,17 @@ export const Songsheet: FC<{
                           color="secondary.500"
                         >{song.tone}</Text>
                       </Text>
-                    )
+                    ) : null
                   }
                   {
-                    chordsheet.capo && (
+                    chordsheet.capo ? (
                       <Text mt="1" fontSize="sm">
                         {common('songsheet.capo')}{chordsheet.capo}
                       </Text>
-                    )
+                    ) : null
                   }
                   {
-                    displayToneControl && (
+                    displayToneControl ? (
                       <Flex mt="2" gap="0.5rem" alignItems="center">
                         <Select
                           icon={<MdArrowDropDown />}
@@ -256,7 +297,26 @@ export const Songsheet: FC<{
                           )
                         }
                       </Flex>
-                    )
+                    ) : null
+                  }
+                  {
+                    displayMusicVideo && song.embeddedUrl ? (
+                      <Accordion mt="5" allowToggle>
+                        <AccordionItem>
+                          <h2>
+                            <AccordionButton>
+                              <Box as="span" flex='1' textAlign='left'>
+                                {common('songsheet.listen')}
+                              </Box>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel pb={4}>
+                            { renderEmbeddedMusicVideo(song.embeddedUrl) }
+                          </AccordionPanel>
+                        </AccordionItem>
+                      </Accordion>
+                    ) : null
                   }
                 </Box>
               )

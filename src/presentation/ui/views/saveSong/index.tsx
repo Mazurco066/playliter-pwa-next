@@ -15,7 +15,7 @@ import type { CategoryType } from 'domain/models'
 // Layout and Components
 import { LoadingAlert } from 'presentation/ui/components'
 import { Icon } from '@chakra-ui/icons'
-import { FaMicrophone, FaMusic } from 'react-icons/fa'
+import { FaMicrophone, FaMusic, FaPhotoVideo } from 'react-icons/fa'
 import {
   Box,
   Button,
@@ -98,6 +98,7 @@ const SaveSongView: FC<{
       setValue('title', song.data?.title, options)
       setValue('writter', song.data?.writter, options)
       setValue('tone', song.data?.tone, options)
+      setValue('embeddedUrl', song.data?.embeddedUrl, options)
       setPublicState(song.data?.isPublic)
 
       // Replace all metadata and set song body
@@ -133,6 +134,7 @@ const SaveSongView: FC<{
     setValue('title', '', options)
     setValue('writter', '', options)
     setValue('tone', '', options)
+    setValue('embeddedUrl', '', options)
     setValue('category', '', options)
     setValue('body', '', options)
 
@@ -531,6 +533,27 @@ const SaveSongView: FC<{
               ) : (
                 <FormHelperText>{t('save.category_hint')}</FormHelperText>
               )}
+            </FormControl>
+            <FormControl
+              isDisabled={isLoading || (id != '' && songLoading)}
+              mb="5"
+            >
+              <FormLabel>{t('save.url_label')}</FormLabel>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<Icon as={FaPhotoVideo} />}
+                />
+                <Input
+                  disabled={isLoading || (id != '' && songLoading)}
+                  variant="filled"
+                  type="text"
+                  placeholder={t('save.url_placeholder')}
+                  minLength={2}
+                  {...register('embeddedUrl', { required: true })}
+                />
+              </InputGroup>
+              <FormHelperText>{t('save.url_hint')}</FormHelperText>
             </FormControl>
             <FormControl
               isDisabled={isLoading || (id != '' && songLoading)}

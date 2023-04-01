@@ -26,7 +26,8 @@
     "update_base_tone": "Update base tone",
     "capo": "Capo: ",
     "tone": "Tone: ",
-    "by": "By "
+    "by": "By ",
+    "listen": "Listen"
   },
   "bottom_navigation": {
     "bands": "Bands",

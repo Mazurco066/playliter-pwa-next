@@ -3,9 +3,6 @@ import Router from 'next/router'
 import useSWR from 'swr'
 import { AxiosResponse } from 'axios'
 
-import type { User } from 'domain/types'
-
-
 export default function useUser({
   redirectTo = '',
   redirectIfFound = false,

@@ -343,6 +343,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
           song && !songLoading ? (
             <>
               <Songsheet 
+                displayMusicVideo
                 displayToneControl
                 song={song.data as SongType}
                 onToneUpdateSuccess={() => refetch()}
@@ -353,7 +354,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                 right="5"
               >
                 <Menu>
-                  <MenuButton
+                  <MenuButton 
                     as={IconButton}
                     aria-label='Options'
                     icon={<SettingsIcon />}
