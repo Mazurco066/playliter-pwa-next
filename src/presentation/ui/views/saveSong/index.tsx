@@ -98,7 +98,10 @@ const SaveSongView: FC<{
       setValue('title', song.data?.title, options)
       setValue('writter', song.data?.writter, options)
       setValue('tone', song.data?.tone, options)
-      setValue('embeddedUrl', song.data?.embeddedUrl, options)
+      setValue('embeddedUrl', song.data?.embeddedUrl, {
+        shouldValidate: false,
+        shouldDirty: true
+      })
       setPublicState(song.data?.isPublic)
 
       // Replace all metadata and set song body
@@ -550,7 +553,7 @@ const SaveSongView: FC<{
                   type="text"
                   placeholder={t('save.url_placeholder')}
                   minLength={2}
-                  {...register('embeddedUrl', { required: true })}
+                  {...register('embeddedUrl', { required: false })}
                 />
               </InputGroup>
               <FormHelperText>{t('save.url_hint')}</FormHelperText>

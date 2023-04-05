@@ -3,7 +3,7 @@ import { FC, ReactNode }from 'react'
 
 // Components
 import { Grid, GridItem } from '@chakra-ui/react'
-import { Header, Footer } from 'presentation/ui/components'
+import { Header, Footer, PageTransition } from 'presentation/ui/components'
 
 // Layout component
 export const AccountLayout: FC<{ children: ReactNode }> = ({ children }) => {
@@ -20,7 +20,9 @@ export const AccountLayout: FC<{ children: ReactNode }> = ({ children }) => {
         <Header />
       </GridItem>
       <GridItem py="5">
-        {children}
+        <PageTransition>
+          {children}
+        </PageTransition>
       </GridItem>
       <GridItem>
         <Footer />

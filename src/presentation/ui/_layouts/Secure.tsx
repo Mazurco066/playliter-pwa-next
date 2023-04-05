@@ -8,7 +8,7 @@ import type { BottomNav } from 'domain/types'
 
 // Components
 import { Grid, GridItem, useMediaQuery } from '@chakra-ui/react'
-import { TopBar, TopNavigation, BottomNavigation } from 'presentation/ui/components'
+import { TopBar, TopNavigation, BottomNavigation, PageTransition } from 'presentation/ui/components'
 import { FaCompactDisc, FaHome, FaUsers } from 'react-icons/fa'
 
 // Layout component
@@ -96,7 +96,9 @@ export const SecureLayout: FC<{
         position="relative"
         sx={{ '@media print': { padding: 0 } }}
       >
-        {children}
+        <PageTransition>
+          {children}
+        </PageTransition>
       </GridItem>
       <GridItem>
         <BottomNavigation
