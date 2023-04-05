@@ -28,7 +28,13 @@ async function saveSongRoute(req: NextApiRequest, res: NextApiResponse) {
 
     // Verify if is a save or update request
     const response = await requestApi(url, id ? 'put' : 'post', {
-      title, writter, tone, body, category, embeddedUrl, isPublic
+      title,
+      writter,
+      tone,
+      body,
+      category,
+      embeddedUrl : embeddedUrl || null,
+      isPublic
     }, {
       headers: {
         'Content-Type': 'application/json',

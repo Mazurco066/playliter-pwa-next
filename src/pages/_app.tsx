@@ -15,6 +15,8 @@ import { appWithTranslation } from 'next-i18next'
 import theme from 'presentation/theme'
 import NextNProgress from 'nextjs-progressbar'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
+import { AnimatePresence } from 'framer-motion'
+
 
 // Create a client for tanstack client
 const queryClient: QueryClient = new QueryClient()
@@ -48,7 +50,13 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             stopDelayMs={200}
             height={3}
           />
-          { getLayout(<Component {...pageProps} />) }
+            <AnimatePresence
+              exitBeforeEnter
+              initial={false}
+              onExitComplete={() => window.scrollTo(0, 0)}
+            >
+              { getLayout(<Component {...pageProps} />) }
+            </AnimatePresence>
           <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         </ChakraProvider>
       </SWRConfig>
