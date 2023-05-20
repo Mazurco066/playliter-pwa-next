@@ -30,7 +30,7 @@ export const SongItem: FC<{
   const bgBox = useColorModeValue('gray.50', 'gray.800')
 
   // Destruct song data
-  const { title, writter, band: { title: publisher } } = song
+  const { title, writter, band: { title: publisher, logo } } = song
 
   // JSX
   return (
@@ -47,56 +47,62 @@ export const SongItem: FC<{
       }}
     >
       <Box
-        height="32px"
-        bgGradient="linear(to-b, secondary.600, primary.600)"
-        borderTopRadius="lg"
-        position="relative"
+        height='full'
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        borderRadius="lg"
         mb="3"
       >
         <Box
-          w="48px"
-          h="48px"
-          borderRadius="full"
-          overflow="hidden"
-          cursor="pointer"
-          transition="all 0.3s"
-          position="absolute"
-          top="8px"
-          left="0"
-          right="0"
-          margin="0 auto"
-          onClick={onClick}
-          _hover={{
-            opacity: "0.8"
-          }}
+          width="48px"
+          height="full"
+          bgGradient="linear(to-b, secondary.600, primary.600)"
+          flex="0 0 auto"
+          position="relative"
+          display="flex"
+          alignItems="center"
+          mr="8"
         >
           <Image
-            src="/img/arts/white/radio-waves.svg"
+            src={logo}
             alt="img"
-            h="full"
-            w="full"
+            borderRadius="full"
+            h="48px"
+            w="48px"
+            position="absolute"
+            right="-24px"
           />
         </Box>
-      </Box>
-      <Tooltip label={`${t('published')}${publisher}`}>
         <Box
-          px="3"
-          py="4"
-          borderBottomRadius="lg"
+          height="full"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="flex-start"
+          flexGrow="1"
+          pr="2"
         >
           <Text
             fontWeight="bold"
-            textAlign="center"
+            fontSize="md"
           >
             {title}
           </Text>
           <Text
-            textAlign="center"
+            fontSize="sm"
+            fontWeight="bold"
+            color="secondary.500"
           >
             {writter}
           </Text>
+          <Text
+            fontSize="xs"
+          >
+            {`${t('published')}${publisher}`}
+          </Text>
         </Box>
-      </Tooltip>
+      </Box>
     </GridItem>
   )
 }
