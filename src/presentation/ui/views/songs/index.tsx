@@ -54,7 +54,7 @@ const SongsView: FC = () => {
   } = useInfiniteQuery(
     ['public_songs'],
     async ({ pageParam = 0 }) => {
-      const response = await requestClient(`/api/songs/public?limit=${PAGE_SIZE}&offset=${pageParam}&filter=${filterSearch}`, 'get')
+      const response = await requestClient(`/api/songs/public?limit=${PAGE_SIZE}&offset=${pageParam}&filter=${encodeURI(filterSearch)}`, 'get')
       return response.data
     }, {
       getPreviousPageParam: (firstPage) => firstPage.previousId ?? undefined,
@@ -136,7 +136,7 @@ const SongsView: FC = () => {
           (status === 'loading') ? (
             <>
               <Grid
-                templateColumns="repeat(2, 1fr)"
+                templateColumns="1fr"
                 gap="1rem"
                 mb="5"
               >
@@ -144,7 +144,7 @@ const SongsView: FC = () => {
                   <Skeleton
                     key={key}
                     width="full"
-                    height="128px"
+                    height="75px"
                     borderRadius="lg"
                   />
                 ))}
@@ -156,7 +156,7 @@ const SongsView: FC = () => {
             </Text>
           ) : (
             <Grid
-              templateColumns="repeat(2, 1fr)"
+              templateColumns="1fr"
               gap="1rem"
               mb="5"
             >
