@@ -11,6 +11,7 @@ export type ShowType = {
     updatedAt: string,
     title: string,
     description: string
+    logo: string
   }
   songs: {
     id: string,
