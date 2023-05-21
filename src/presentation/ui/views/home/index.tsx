@@ -83,6 +83,7 @@ const HomeView: FC = () => {
                   title={show.title}
                   band={show.band.title}
                   date={show.date}
+                  logo={show.band.logo}
                   onClick={() => router.push(`/shows/${show.id}`)}
                 /> 
               ))}

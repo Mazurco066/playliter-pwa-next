@@ -17,11 +17,13 @@ export const ShowItem: FC<{
   title: string,
   band: string,
   date: string,
+  logo: string,
   onClick?: () => void
 }> = ({
   title,
   band,
   date,
+  logo,
   onClick = () => {}
 }) => {
   // Color Hooks
@@ -43,33 +45,36 @@ export const ShowItem: FC<{
         opacity: "0.8"
       }}
     >
-      <Badge
-        variant="outline"
-        colorScheme="gray"
-        color="white"
-        transition="all 0.3s"
-        position="absolute"
-        top="1.5"
-        right="1.5"
-      >
-        { date.split('T')[0].split('-').reverse().join('/') }
-      </Badge>
       <Box
-        minHeight="128px"
+        minHeight="64px"
         bgGradient="linear(to-b, secondary.600, primary.600)"
         borderTopRadius="lg"
+        mb="6"
       >
+        
         <Flex
           justifyContent="center"
           alignItems="center"
-          pt="6"
+          pt="2"
         >
+          <Badge
+            variant="outline"
+            colorScheme="gray"
+            color="white"
+            transition="all 0.3s"
+            rounded="md"
+          >
+            { date.split('T')[0].split('-').reverse().join('/') }
+          </Badge>
           <Image 
-            src="/img/arts/white/concert.svg"
+            src={logo}
             alt="Concert image"
-            width="96px"
-            height="96px"
+            width="56px"
+            height="56px"
+            rounded="full"
             objectFit="cover"
+            position="absolute"
+            top="36px"
           />
         </Flex>
       </Box>
