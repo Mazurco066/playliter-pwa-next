@@ -12,6 +12,10 @@
     "reorder": "Reorder concert",
     "remove": "Remove concert"
   },
+  "add_menu": {
+    "public": "Public app songs",
+    "private": "Band published songs"
+  },
   "options": {
     "see": "Go to song",
     "edit": "Edit song",
@@ -31,7 +35,10 @@
     "remove": "Remove"
   },
   "add_songs": {
-    "subtitle": "Adicione músicas presentes nessa banda a sua apresentação:",
+    "title": "Add songs",
+    "title_public": "Add public songs",
+    "subtitle": "Add current band songs to your concert:",
+    "subtitle_public": "Add public songs to your concert:",
     "search_placeholder": "Search...",
     "search_btn": "Search",
     "songs_error": "An error ocourred while fetching the songs list. Please try again later!",
