@@ -29,11 +29,16 @@ import {
 // Paging default values
 const PAGE_SIZE = 30
 
-// Component
-export const AddSongs: FC<{
+// Component params
+interface IAddSongs {
+  isPublic?: boolean,
   onAddSuccess?: () => void,
   show: ShowType
-}> = ({
+}
+
+// Component
+export const AddSongs: FC<IAddSongs> = ({
+  isPublic,
   onAddSuccess = () => {},
   show
 }) => {
@@ -66,9 +71,16 @@ export const AddSongs: FC<{
     hasNextPage,
     refetch
   } = useInfiniteQuery(
-    [`add-band-songs-${bandId}`],
+    [`add-band${isPublic ? '-public' : ''}-songs-${bandId}`],
     async ({ pageParam = 0 }) => {
-      const response = await requestClient(`/api/songs/band?band=${bandId}&limit=${PAGE_SIZE}&offset=${pageParam}&filter=${filterSearch}`, 'get')
+      console.log('is here on request ' + isPublic)
+      // If songs flag are set to public request the public endpoint
+      if (isPublic) {
+        console.log('is here motherfucker')
+        const response = await requestClient(`/api/songs/public?limit=${PAGE_SIZE}&offset=${pageParam}&filter=${encodeURI(filterSearch)}`, 'get')
+        return response.data
+      }
+      const response = await requestClient(`/api/songs/band?band=${bandId}&limit=${PAGE_SIZE}&offset=${pageParam}&filter=${encodeURI(filterSearch)}`, 'get')
       return response.data
     }, {
       getPreviousPageParam: (firstPage) => firstPage.previousId ?? undefined,
@@ -137,7 +149,7 @@ export const AddSongs: FC<{
     <Box pt="2">
       <Box mb="2">
         <Text color="gray.100">
-          {t('add_songs.subtitle')}
+          {isPublic ? t('add_songs.subtitle_public') : t('add_songs.subtitle')}
         </Text>
       </Box>
       <Box>
