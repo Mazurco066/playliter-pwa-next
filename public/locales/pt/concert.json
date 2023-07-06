@@ -12,6 +12,10 @@
     "reorder": "Reordenar músicas",
     "remove": "Remover apresentação"
   },
+  "add_menu": {
+    "public": "Músicas publicadas no app",
+    "private": "Músicas publicadas na banda"
+  },
   "options": {
     "see": "Ver música",
     "edit": "Editar música",
@@ -31,7 +35,10 @@
     "remove": "Remover"
   },
   "add_songs": {
+    "title": "Adicionar Músicas",
+    "title_public": "Adicionar Músicas Públicas",
     "subtitle": "Adicione músicas presentes nessa banda a sua apresentação:",
+    "subtitle_public": "Adicione músicas presentes nessa aplicativo seja por sua ou por outras bandas:",
     "search_placeholder": "Buscar...",
     "search_btn": "Buscar",
     "songs_error": "Ocorreu um erro ao tentar recuperar a lista de músicas. Notifique um adiministrados do aplicativo assim que possível!",

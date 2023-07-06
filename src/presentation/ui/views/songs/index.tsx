@@ -19,10 +19,10 @@ import {
   FormLabel,
   Grid,
   Heading,
+  IconButton,
   Input,
   InputGroup,
-  InputLeftElement,
-  InputRightAddon,
+  InputRightElement,
   Skeleton,
   Text,
   useColorModeValue
@@ -88,10 +88,6 @@ const SongsView: FC = () => {
               {t('input_label')}
             </FormLabel>
             <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                children={<SearchIcon />}
-              />
               <Input
                 disabled={(status === 'loading' || isFetchingNextPage)}
                 type="text"
@@ -115,20 +111,25 @@ const SongsView: FC = () => {
                   }
                 }}
               />
-              <InputRightAddon
-                cursor="pointer"
-                children={t('input_hint')}
-                _hover={{
-                  opacity: '0.7'
-                }}
-                onClick={(status === 'loading' || isFetchingNextPage)
+              <InputRightElement>
+                <IconButton
+                  icon={<SearchIcon />}
+                  aria-label="Search songs"
+                  backgroundColor="primary.500"
+                  color="gray.100"
+                  borderLeftRadius="none"
+                  _hover={{
+                    backgroundColor: 'primary.600'
+                  }}
+                  onClick={(status === 'loading' || isFetchingNextPage)
                   ? () => {}
                   : () => {
                     setSearchedState(true)
                     refetch()
                   }
                 }
-              />
+                />
+              </InputRightElement>
             </InputGroup>
           </FormControl>
         </Box>

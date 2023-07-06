@@ -16,7 +16,9 @@ type ConfirmShowAction = {
 // Components
 import { ConfirmAction } from 'presentation/ui/components'
 import { AddSongs, NoteForm, Notes, OrderedSong, ReorderSongs, ShowDrawer } from './elements'
-import { FaBook, FaHandPointer, FaPlus } from 'react-icons/fa'
+import { FaBook, FaHandPointer, FaLock } from 'react-icons/fa'
+import { CgPlayListAdd } from 'react-icons/cg'
+import { IoMusicalNote } from 'react-icons/io5'
 import { DeleteIcon, EditIcon, Icon, SettingsIcon } from '@chakra-ui/icons'
 import {
   Badge,
@@ -77,7 +79,14 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     onClose: onNoteFormClose
   } = useDisclosure()
 
-  // Add songs drawer state
+  // Add public songs drawer state
+  const {
+    isOpen: isPublicSongsFormOpen,
+    onOpen: onPublicSongsFormOpen,
+    onClose: onPublicSongsFormClose
+  } = useDisclosure()
+
+  // Add private songs drawer state
   const {
     isOpen: isSongsFormOpen,
     onOpen: onSongsFormOpen,
@@ -376,13 +385,30 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                   >
                     {t('btn_sequential')}
                   </Button>
-                  <IconButton
-                    disabled={loadingStatus}
-                    aria-label="Adicionar músicas"
-                    icon={<Icon as={FaPlus} />}
-                    flex="0 0 auto"
-                    onClick={() => onSongsFormOpen()}
-                  />
+                  <Menu>
+                    <MenuButton
+                      as={IconButton}
+                      aria-label='Options'
+                      icon={<CgPlayListAdd />}
+                      color="gray.100"
+                    />
+                    <MenuList>
+                      <MenuItem
+                        disabled={loadingStatus}
+                        icon={<IoMusicalNote />}
+                        onClick={() => onPublicSongsFormOpen()}
+                      >
+                        {t('add_menu.public')}
+                      </MenuItem>
+                      <MenuItem
+                        disabled={loadingStatus}
+                        icon={<FaLock />}
+                        onClick={() => onSongsFormOpen()}
+                      >
+                        {t('add_menu.private')}
+                      </MenuItem>
+                    </MenuList>
+                  </Menu>
                 </Flex>
               </Box>
             </Box>
@@ -491,11 +517,29 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
           />
         ) : null}
       </ShowDrawer>
+      {/* Add public songs button */}
+      <ShowDrawer
+        onClose={onPublicSongsFormClose}
+        onOpen={onPublicSongsFormOpen}
+        isOpen={isPublicSongsFormOpen}
+        title={t('add_songs.title_public')}
+      >
+        {
+          (show && !showLoading && isPublicSongsFormOpen) ? (
+            <AddSongs 
+              show={show.data}
+              onAddSuccess={() => refetch()}
+              isPublic={true}
+            />
+          ) : null
+        }
+      </ShowDrawer>
+      {/* Add private band songs button */}
       <ShowDrawer
         onClose={onSongsFormClose}
         onOpen={onSongsFormOpen}
         isOpen={isSongsFormOpen}
-        title={t('add_drawer')}
+        title={t('add_songs.title')}
       >
         {
           (show && !showLoading && isSongsFormOpen) ? (
