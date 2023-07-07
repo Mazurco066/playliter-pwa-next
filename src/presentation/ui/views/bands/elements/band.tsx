@@ -31,6 +31,7 @@ export const BandItem: FC<{
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
   const colorBorder = useColorModeValue('gray.50', 'gray.800')
+  const badgeColor = useColorModeValue('gray.900', 'secondary.500')
 
   // Destruct band data
   const { admins, title, logo, owner } = band
@@ -106,8 +107,7 @@ export const BandItem: FC<{
           </Text>
           <Badge
             variant="outline"
-            colorScheme="gray"
-            color="white"
+            colorScheme="secondary"
             transition="all 0.3s"
           >
             { role }

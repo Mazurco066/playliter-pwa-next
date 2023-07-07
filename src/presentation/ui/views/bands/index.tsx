@@ -111,6 +111,7 @@ const BandsView: FC = () => {
                 aria-label="create-band"
                 rounded='full'
                 backgroundColor="secondary.500"
+                color="gray.100"
                 size="lg"
                 onClick={() => router.push('/bands/save')}
                 _hover={{
