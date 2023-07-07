@@ -258,19 +258,12 @@ const SongView: FC<{ id: string }> = ({ id }) => {
               />
               <Container
                 maxWidth="6xl"
-                pr="8"
                 position="fixed"
                 bottom="24"
                 display="flex"
                 justifyContent="flex-end"
               >
-
-              
-                <Box
-                  //position="fixed"
-                  //bottom="24"
-                  //right="5"
-                >
+                <Box pr="8">
                   <Menu>
                     <MenuButton 
                       as={IconButton}
