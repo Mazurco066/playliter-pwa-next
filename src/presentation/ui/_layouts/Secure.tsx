@@ -72,7 +72,7 @@ export const SecureLayout: FC<{
       templateRows="80px 1fr 80px"
       templateColumns="100%"
       height="full"
-      sx={{ '@media print': { display: 'block' } }}    
+      sx={{ '@media print': { display: 'block' } }}
     >
       <GridItem>
         {
