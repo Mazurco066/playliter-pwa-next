@@ -259,7 +259,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
               <Container
                 maxWidth="6xl"
                 position="fixed"
-                bottom="24"
+                bottom="28"
                 display="flex"
                 justifyContent="flex-end"
               >
@@ -300,8 +300,6 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                     </MenuList>
                   </Menu>
                 </Box>
-
-              
               </Container>
             </>
           ) : (
