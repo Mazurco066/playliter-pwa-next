@@ -45,7 +45,9 @@ export const SecureLayout: FC<{
       path: '/bands',
       activePaths: [
         '/bands',
-        '/bands/save'
+        '/bands/save',
+        '/shows',
+        '/songlist'
       ]
     },
     {
