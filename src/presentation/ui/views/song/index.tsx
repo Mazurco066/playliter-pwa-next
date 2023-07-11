@@ -8,29 +8,23 @@ import { requestClient } from 'infra/services/http'
 // Types
 import type { CategoryType, SongType, ShowType, BandType } from 'domain/models'
 type ConfirmShowAction = {
-  type: 'add' | 'delete' | 'clone'
+  type: 'delete' | 'clone'
   id: string
 }
 
 // Components
-import { BandItem, SongDrawer, ShowItem } from './elements'
+import { BandItem, SongDrawer } from './elements'
 import { ConfirmAction, Songsheet } from 'presentation/ui/components'
 import {
-  AddIcon,
   CopyIcon,
   DeleteIcon,
   EditIcon,
-  SearchIcon,
   SettingsIcon
 } from '@chakra-ui/icons'
 import {
   Box,
   Container,
   IconButton,
-  FormControl,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -48,8 +42,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
   // Hooks
   const toast = useToast()
   const router = useRouter()
-  const [ filterSearch, setFilterSearch ] = useState<string>('')
-  const [ action, setAction ] = useState<ConfirmShowAction>({ type: 'add', id: '' })
+  const [ action, setAction ] = useState<ConfirmShowAction>({ type: 'clone', id: '' })
   const { t: common } = useTranslation('common')
   const { t } = useTranslation('song')
 
@@ -58,13 +51,6 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     isOpen: isConfirmOpen,
     onOpen: onConfirmOpen,
     onClose: onConfirmClose
-  } = useDisclosure()
-
-  // Add to show drawer state
-  const {
-    isOpen: isAddingOpen,
-    onOpen: onAddingOpen,
-    onClose: onAddingClose
   } = useDisclosure()
 
   // Clone song drawer state
@@ -85,16 +71,6 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     { enabled: id !== '' }
   )
 
-  // Account shows request
-  const {
-    data: accountShows,
-    isLoading: accountShowsLoading
-  } = useQuery(
-    [`get-account-shows`],
-    () => requestClient(`/api/shows/account`, 'get'),
-    { enabled: id !== '' }
-  )
-
   const {
     data: bands,
     isLoading: bandsLoading
@@ -102,14 +78,6 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     ['bands'],
     () => requestClient('/api/bands/list', 'get')
   )
-
-  // Add to show mutation
-  const {
-    isLoading: addToShowLoading,
-    mutateAsync: addToShowMutation
-  } = useMutation((data: any) => {
-    return requestClient('/api/songs/add_to_show', 'post', { ...data })
-  })
 
   // Clone song request
   const {
@@ -165,9 +133,6 @@ const SongView: FC<{ id: string }> = ({ id }) => {
   // Actions
   const handleConfirmShowAction = () => {
     switch (action.type) {
-      case 'add':
-        onAddSongToList(song?.data.id, action.id)
-        break
       case 'clone':
         onCloneSong(song?.data.id, action.id)
         break
@@ -177,46 +142,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     }
   }
 
-  const onAddSongToList = async (songid: string, showId: string) => {
-    const response = await addToShowMutation({ id: songid, showId })
-
-    // Verify if request was successfull
-    if ([200, 201].includes(response.status)) {
-      
-      // Notify user about response success
-      toast({
-        title: t('messages.added_to_show_title'),
-        description: t('messages.added_to_show_msg'),
-        status: 'success',
-        duration: 2000,
-        isClosable: true
-      })
-      onAddingClose()
-
-    } else {
-      if ([400].includes(response.status)) {
-        toast({
-          title: t('messages.song_present_title'),
-          description: t('messages.song_present_msg'),     
-          status: 'info',
-          duration: 3500,
-          isClosable: true
-        })
-      } else if ([404].includes(response.status)) {
-        toast({
-          title: t('messages.show_not_found_title'),
-          description: t('messages.show_not_found_msg'),     
-          status: 'info',
-          duration: 3500,
-          isClosable: true
-        })
-      } else {
-        toast(genericMsg)
-      }
-    }
-  }
-
-  const onCloneSong = async (songId: string, bandId: string) => {
+  const onCloneSong = async (_: string, bandId: string) => {
     
     // Retrieve selected band categories
     const bandCategories = await bandCategoriesRequest(bandId)
@@ -314,24 +240,6 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     }
   }
 
-  // Unify loading status
-  const loadingStatus = (
-    songLoading ||
-    accountShowsLoading ||
-    removeSongLoading ||
-    addToShowLoading ||
-    isCloneLoading ||
-    categoriesLoading
-  )
-
-  // Computed props
-  const filteredShows = (accountShows && accountShows.data)
-    ? accountShows.data.filter(({ title, description }: ShowType) => 
-        title.toLowerCase().includes(filterSearch.toLowerCase()) ||
-        description.toLowerCase().includes(filterSearch.toLowerCase())
-      )
-    : []
-
   // JSX
   return (
     <div>
@@ -348,57 +256,51 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                 song={song.data as SongType}
                 onToneUpdateSuccess={() => refetch()}
               />
-              <Box
+              <Container
+                maxWidth="6xl"
                 position="fixed"
-                bottom="24"
-                right="5"
+                bottom="28"
+                display="flex"
+                justifyContent="flex-end"
               >
-                <Menu>
-                  <MenuButton 
-                    as={IconButton}
-                    aria-label='Options'
-                    icon={<SettingsIcon />}
-                    variant='fade'
-                    color="gray.100"
-                  />
-                  <MenuList>
-                    <MenuItem
-                      icon={<AddIcon />}
-                      disabled={loadingStatus}
-                      onClick={loadingStatus ? () => {} : () => {
-                        setFilterSearch('')
-                        onAddingOpen()
-                      }}
-                    >
-                      {t('menu.add')}
-                    </MenuItem> 
-                    <MenuItem
-                      icon={<EditIcon />}
-                      disabled={songLoading || removeSongLoading}
-                      onClick={() => router.push(`../songs/save/${song.data.id}`)}
-                    >
-                      {t('menu.edit')}
-                    </MenuItem>
-                    <MenuItem
-                      icon={<CopyIcon />}
-                      disabled={bandsLoading || songLoading || isCloneLoading}
-                      onClick={(bandsLoading || songLoading || isCloneLoading) ? () => {} : () => onCloningOpen()}
-                    >
-                      {t('menu.clone')}
-                    </MenuItem>  
-                    <MenuItem
-                      icon={<DeleteIcon />}
-                      disabled={songLoading || removeSongLoading}
-                      onClick={(songLoading || removeSongLoading) ? () => {} : () => {
-                        setAction({ type: 'delete', id: song.data.id })
-                        onConfirmOpen()
-                      }}
-                    >
-                      {t('menu.remove')}
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-              </Box>
+                <Box pr="8">
+                  <Menu>
+                    <MenuButton 
+                      as={IconButton}
+                      aria-label='Options'
+                      icon={<SettingsIcon />}
+                      variant='fade'
+                      color="gray.100"
+                    />
+                    <MenuList>
+                      <MenuItem
+                        icon={<EditIcon />}
+                        disabled={songLoading || removeSongLoading}
+                        onClick={() => router.push(`../songs/save/${song.data.id}`)}
+                      >
+                        {t('menu.edit')}
+                      </MenuItem>
+                      <MenuItem
+                        icon={<CopyIcon />}
+                        disabled={bandsLoading || songLoading || isCloneLoading}
+                        onClick={(bandsLoading || songLoading || isCloneLoading) ? () => {} : () => onCloningOpen()}
+                      >
+                        {t('menu.clone')}
+                      </MenuItem>  
+                      <MenuItem
+                        icon={<DeleteIcon />}
+                        disabled={songLoading || removeSongLoading}
+                        onClick={(songLoading || removeSongLoading) ? () => {} : () => {
+                          setAction({ type: 'delete', id: song.data.id })
+                          onConfirmOpen()
+                        }}
+                      >
+                        {t('menu.remove')}
+                      </MenuItem>
+                    </MenuList>
+                  </Menu>
+                </Box>
+              </Container>
             </>
           ) : (
             <>
@@ -421,79 +323,6 @@ const SongView: FC<{ id: string }> = ({ id }) => {
           )
         }
       </Container>
-      <SongDrawer
-        onClose={onAddingClose}
-        onOpen={onAddingOpen}
-        isOpen={isAddingOpen}
-        title={t('add_to_concert_drawer')}
-      >
-        <Box py="3">
-          <FormControl mb="5">
-            <InputGroup borderColor="primary.600">
-              <InputLeftElement
-                pointerEvents="none"
-                children={<SearchIcon />}
-              />
-              <Input
-                type="text"
-                placeholder={t('search_placeholder')}
-                minLength={2}
-                value={filterSearch}
-                color="gray.50"
-                _placeholder={{
-                  color: 'gray.300'
-                }}
-                onChange={e => {
-                  const inputValue = e.target.value
-                  setFilterSearch(inputValue)
-                }}
-              />
-            </InputGroup>
-          </FormControl>
-          {
-            accountShows && !accountShowsLoading && (
-              <>
-                {
-                  accountShows.data.length > 0 ? (
-                    <>
-                      {
-                        filteredShows.length > 0 ? (
-                          <VStack
-                            gap="1rem"
-                          >
-                            {
-                              filteredShows.map((show: ShowType) => (
-                                <ShowItem
-                                  key={show.id}
-                                  show={show}
-                                  onClick={(_id: string) => {
-                                    if (!loadingStatus) {
-                                      setAction({ type: 'add', id: _id })
-                                      onConfirmOpen()
-                                    }
-                                  }}
-                                />
-                              ))
-                            }
-                          </VStack>
-                        ) : (
-                          <Text>
-                            {t('no_concerts_filtered')}
-                          </Text>
-                        )
-                      }
-                    </>
-                  ) : (
-                    <Text>
-                      {t('no_concerts')}
-                    </Text>
-                  )
-                }
-              </>
-            )
-          }
-        </Box>
-      </SongDrawer>
       <SongDrawer
         onClose={onCloningClose}
         onOpen={onCloningOpen}
@@ -543,9 +372,8 @@ const SongView: FC<{ id: string }> = ({ id }) => {
         onOpen={onConfirmOpen}
         isOpen={isConfirmOpen}
         onConfirm={handleConfirmShowAction}
-        message={action.type === 'add'
-          ? t('add_confirmation')
-          : action.type === 'clone'
+        message={
+          action.type === 'clone'
             ? t('clone_confirmation')
             : t('remove_confirmation')
         }

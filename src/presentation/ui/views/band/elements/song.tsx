@@ -5,9 +5,11 @@ import { FC } from 'react'
 import type { SongType } from 'domain/models'
 
 // Components
+import { FaCompactDisc } from 'react-icons/fa'
 import {
   Badge,
   Box,
+  Divider,
   Flex,
   Image,
   useColorModeValue,
@@ -104,69 +106,50 @@ export const SongItemMinified: FC<{
       overflow="hidden"
       cursor="pointer"
       transition="all 0.3s"
+      flexDirection="column"
+      position="relative"
       bg={bgBox}
       onClick={onClick}
       _hover={{
         opacity: "0.8"
       }}
+      p="2"
     >
-      <Box
-        height="32px"
-        bgGradient="linear(to-b, secondary.600, primary.600)"
-        borderTopRadius="lg"
-        position="relative"
-        mb="3"
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
       >
         <Box
-          w="48px"
-          h="48px"
-          borderRadius="full"
-          overflow="hidden"
-          cursor="pointer"
-          transition="all 0.3s"
-          position="absolute"
-          top="8px"
-          left="0"
-          right="0"
-          margin="0 auto"
-          onClick={onClick}
-          _hover={{
-            opacity: "0.8"
-          }}
-        >
-          <Image
-            src="/img/arts/white/radio-waves.svg"
-            alt="img"
-            h="full"
-            w="full"
-          />
-        </Box>
-      </Box>
-      <Box
-        px="3"
-        py="4"
-        borderBottomRadius="lg"
-      >
-        <Flex
-          direction="column"
-          alignItems="center"
+          bgGradient="linear(to-b, secondary.600, primary.600)"
+          w="32px"
+          h="32px"
+          display="flex"
           justifyContent="center"
+          alignItems="center"
+          rounded="full"
+          color="gray.100"
         >
-          <Text
-            fontWeight="bold"
-            textAlign="center"
-            mb="3"
-          >
-            {title}
-          </Text>
-          <Badge
-            colorScheme="secondary"
-            textAlign="center"
-          >
-            {categoryName}
-          </Badge>
-        </Flex>
-      </Box>
+          <FaCompactDisc />
+        </Box>
+        <Badge
+          colorScheme="secondary"
+          textAlign="center"
+          pt="1"
+          rounded="md"
+        >
+          {categoryName}
+        </Badge>
+      </Flex>
+      <Divider
+        mt="3"
+        mb="4"
+      />
+      <Text
+        fontWeight="bold"
+        textAlign="center"
+      >
+        {title}
+      </Text>
     </Box>
   )
 }
