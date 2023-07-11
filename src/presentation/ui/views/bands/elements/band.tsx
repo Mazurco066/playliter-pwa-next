@@ -11,8 +11,8 @@ import {
   Badge,
   Box,
   GridItem,
-  Heading,
   Image,
+  Text,
   useColorModeValue
 } from '@chakra-ui/react'
 
@@ -31,6 +31,7 @@ export const BandItem: FC<{
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
   const colorBorder = useColorModeValue('gray.50', 'gray.800')
+  const badgeColor = useColorModeValue('gray.900', 'secondary.500')
 
   // Destruct band data
   const { admins, title, logo, owner } = band
@@ -57,60 +58,61 @@ export const BandItem: FC<{
       }}
     >
       <Box
-        height="64px"
-        bgGradient="linear(to-b, secondary.600, primary.600)"
-        borderTopRadius="lg"
-        position="relative"
-        mb="5"
+        height='full'
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        borderRadius="lg"
+        mb="3"
+        minHeight="12"
       >
-        <Badge
-          variant="outline"
-          colorScheme="gray"
-          color="white"
-          transition="all 0.3s"
-          position="absolute"
-          top="1.5"
-          right="1.5"
-        >
-          { role }
-        </Badge>
         <Box
-          w="64px"
-          h="64px"
-          borderRadius="full"
-          overflow="hidden"
-          cursor="pointer"
-          transition="all 0.3s"
-          position="absolute"
-          top="32px"
-          left="0"
-          right="0"
-          margin="0 auto"
-          border="2px solid"
-          borderColor={colorBorder}
-          bg={bgBox}
-          onClick={onClick}
-          _hover={{
-            opacity: "0.8"
-          }}
+          width="48px"
+          height="full"
+          bgGradient="linear(to-b, secondary.600, primary.600)"
+          flex="0 0 auto"
+          position="relative"
+          display="flex"
+          alignItems="center"
+          mr="8"
         >
           <Image
             src={logo}
             alt={title}
-            h="full"
-            w="full"
+            borderRadius="full"
+            h="48px"
+            w="48px"
+            position="absolute"
+            right="-24px"
+            borderColor={colorBorder}
           />
         </Box>
-      </Box>
-      <Box py="5" px="3">
-        <Heading
-          mb="1"
-          as="h4"
-          size="sm"
-          transition="all 0.3s"
+        <Box
+          height="full"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="flex-start"
+          flexGrow="1"
+          pr="2"
+          pt="2"
+          pb="2"
         >
-          {title}
-        </Heading>
+          <Text
+            fontWeight="bold"
+            fontSize="md"
+            mb="1"
+          >
+            {title}
+          </Text>
+          <Badge
+            variant="outline"
+            colorScheme="secondary"
+            transition="all 0.3s"
+          >
+            { role }
+          </Badge>
+        </Box>
       </Box>
     </GridItem>
   )

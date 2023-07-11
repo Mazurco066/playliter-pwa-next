@@ -6,8 +6,10 @@ import { truncateSrt } from 'presentation/utils'
 import type { CategoryType } from 'domain/models'
 
 // Components
+import { FaPaperclip } from 'react-icons/fa'
 import {
   Box,
+  Divider,
   Flex,
   Image,
   Text,
@@ -91,56 +93,42 @@ export const CategoryItemMinified: FC<{
       overflow="hidden"
       cursor="pointer"
       transition="all 0.3s"
+      flexDirection="column"
+      position="relative"
       bg={bgBox}
       onClick={() => onClick(category)}
       _hover={{
         opacity: "0.8"
       }}
+      p="2"
     >
-      <Box
-        height="32px"
-        bgGradient="linear(to-b, secondary.600, primary.600)"
-        borderTopRadius="lg"
-        position="relative"
-        mb="3"
+      <Flex
+        alignItems="center"
+        justifyContent="center"
       >
         <Box
-          w="48px"
-          h="48px"
-          borderRadius="full"
-          overflow="hidden"
-          cursor="pointer"
-          transition="all 0.3s"
-          position="absolute"
-          top="8px"
-          left="0"
-          right="0"
-          margin="0 auto"
-          _hover={{
-            opacity: "0.8"
-          }}
+          bgGradient="linear(to-b, secondary.600, primary.600)"
+          w="32px"
+          h="32px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          rounded="full"
+          color="gray.100"
         >
-          <Image
-            src="/img/arts/white/swing.svg"
-            alt="img"
-            h="full"
-            w="full"
-          />
+          <FaPaperclip />
         </Box>
-      </Box>
-      <Box
-        px="3"
-        py="4"
-        borderBottomRadius="lg"
+      </Flex>
+      <Divider
+        mt="3"
+        mb="4"
+      />
+      <Text
+        fontWeight="bold"
+        textAlign="center"
       >
-        <Text
-          fontWeight="bold"
-          textAlign="center"
-          mb="3"
-        >
-          {category.title}
-        </Text>
-      </Box>
+        {category.title}
+      </Text>
     </Box>
   )
 }
