@@ -15,11 +15,11 @@ type ConfirmShowAction = {
 
 // Components
 import { ConfirmAction } from 'presentation/ui/components'
-import { AddSongs, NoteForm, Notes, OrderedSong, ReorderSongs, ShowDrawer } from './elements'
+import { AddSongs, CloneConcertModal, NoteForm, Notes, OrderedSong, ReorderSongs, ShowDrawer } from './elements'
 import { FaBook, FaHandPointer, FaLock } from 'react-icons/fa'
 import { CgPlayListAdd } from 'react-icons/cg'
 import { IoMusicalNote } from 'react-icons/io5'
-import { DeleteIcon, EditIcon, Icon, SettingsIcon } from '@chakra-ui/icons'
+import { CopyIcon, DeleteIcon, EditIcon, Icon, SettingsIcon } from '@chakra-ui/icons'
 import {
   Badge,
   Box,
@@ -93,6 +93,13 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     onClose: onSongsFormClose
   } = useDisclosure()
 
+  // Clone concert modal state
+  const {
+    isOpen: isCloneModalOpen,
+    onOpen: onCloneModalOpen,
+    onClose: onCloneModalClose
+  } = useDisclosure()
+
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
 
@@ -140,6 +147,15 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
   } = useMutation((data: any) => {
     return requestClient('/api/shows/remove_note', 'post', { ...data })
   })
+
+  // Remove show mutation
+  const {
+    isLoading: cloneConcertLoading,
+    mutateAsync: cloneConcertMutation
+  } = useMutation((data: any) => {
+    return requestClient('/api/shows/clone_concert', 'post', { ...data })
+  })
+  
 
   // Remove show mutation
   const {
@@ -278,6 +294,46 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
     onNoteFormOpen()
   }
 
+  const cloneConcert = async (date: string) => {
+    const response = await cloneConcertMutation({ id, date })
+
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
+
+      // Notify user about response success
+      onCloneModalClose()
+      toast({
+        title: t('messages.clone_concert_title'),
+        description: t('messages.clone_concert_msg'),
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+      router.push(`../shows/${response.data.id}`)
+
+    } else {
+      if ([400].includes(response.status)) {
+        toast({
+          title: t('messages.invalid_form_title'),
+          description: t('messages.invalid_form_msg'),     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+      } else if ([404].includes(response.status)) {
+        toast({
+          title: t('messages.show_not_found_title'),
+          description: t('messages.show_not_found_msg'),     
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
+
   // Destruct show data
   const { date, description, songs, title } = show?.data || {}
 
@@ -342,6 +398,13 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
                         onClick={() => router.push(`../shows/save/${show?.data.id}`)}
                       >
                         {t('menu.edit')}
+                      </MenuItem>
+                      <MenuItem
+                        disabled={removeSongLoading || showLoading || removeShowLoading}
+                        icon={<CopyIcon />}
+                        onClick={() => onCloneModalOpen()}
+                      >
+                        {t('menu.clone')}
                       </MenuItem>
                       <MenuItem
                         disabled={removeSongLoading || showLoading || removeShowLoading}
@@ -563,6 +626,13 @@ const ShowView: FC<{ id: string }> = ({ id }) => {
         onOpen={onConfirmOpen}
         isOpen={isConfirmOpen}
         onConfirm={handleConfirmShowAction}
+      />
+      <CloneConcertModal
+        onClose={onCloneModalClose}
+        onOpen={onCloneModalOpen}
+        isOpen={isCloneModalOpen}
+        onConfirmCallback={cloneConcert}
+        isLoading={cloneConcertLoading}
       />
     </div>
   )

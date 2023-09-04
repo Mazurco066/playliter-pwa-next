@@ -7,7 +7,13 @@
   "notes_drawer": "Concert notes",
   "reorder_drawer": "Reorder songs",
   "add_drawer": "Add songs",
+  "clone_modal": {
+    "title": "Clone concert",
+    "cancel_action": "Cancel",
+    "confirm_action": "Confirm"
+  },
   "menu": {
+    "clone": "Duplicate",
     "edit": "Edit",
     "reorder": "Reorder concert",
     "remove": "Remove concert"
@@ -101,6 +107,8 @@
     "added_to_show_title": "Success!",
     "added_to_show_msg": "The selected song was successfuly added to concert!",
     "song_present_title": "Ops.. Song already present!",
-    "song_present_msg": "This song is already present in the selected concert!"
+    "song_present_msg": "This song is already present in the selected concert!",
+    "clone_concert_title": "Success!",
+    "clone_concert_msg": "This concert was successfully duplicated to your desired date."
   }
 }
