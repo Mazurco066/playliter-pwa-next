@@ -16,8 +16,8 @@ export const pdfPreviewStyles: string = `
     right: 0;
     width: 100%;
     height: 100%;
-    background: #8257E5!important;
-    border: 1px solid #8257E5!important;
+    background: #633FC4!important;
+    border: 1px solid #633FC4!important;
     color: #FFFFFF!important;
     margin: auto;
     margin-top: 0!important;
