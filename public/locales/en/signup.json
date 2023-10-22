@@ -10,13 +10,17 @@
     "password_hint": "Password for your account.",
     "button": "Sign Up",
     "has_account": "Has an account? ",
-    "login": "Login!"
+    "login": "Login!",
+    "warning": "I read and agree to ",
+    "warning_link": "Policy Privacy"
   },
   "messages": {
     "welcome_title": "Welcome!",
     "welcome_msg": "Your account was successfully created",
     "in_use_title": "Ops.. Username already taken!",
     "in_use_msg": "Email or username is already in use by another user!",
-    "required_field_msg": "Required field."
+    "required_field_msg": "Required field.",
+    "privacy_required": "Read the privacy policy section",
+    "privacy_required_msg": "You must read and check that you agree to app's privacy policy."
   }
 }

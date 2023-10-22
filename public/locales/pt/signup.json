@@ -10,13 +10,17 @@
     "password_hint": "Senha utilizada para entrar no app.",
     "button": "Criar conta",
     "has_account": "Já possui conta? ",
-    "login": "Fazer login!"
+    "login": "Fazer login!",
+    "warning": "Li e concordo com a ",
+    "warning_link": "política de privacidade"
   },
   "messages": {
     "welcome_title": "Seja bem vindo!",
     "welcome_msg": "Sua conta foi criado com sucesso",
     "in_use_title": "Ops.. Há campos em uso!",
     "in_use_msg": "Usuário ou E-mail informados já estão em uso por outra pessoa!",
-    "required_field_msg": "Esse campo é requerido."
+    "required_field_msg": "Esse campo é requerido.",
+    "privacy_required": "Leia a política de privadidade",
+    "privacy_required_msg": "Você deve marcar que leu as políticas de privacidade do aplicativo."
   }
 }

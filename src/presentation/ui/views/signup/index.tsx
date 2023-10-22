@@ -1,5 +1,5 @@
 // Dependencies
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useUser } from 'infra/services/session'
 import { useRouter } from 'next/router'
@@ -13,6 +13,7 @@ import { FaEnvelope, FaUser, FaKey } from 'react-icons/fa'
 import {
   Box,
   Button,
+  Checkbox,
   Container,
   Flex,
   FormControl,
@@ -43,6 +44,9 @@ const SignUpView: FC = () => {
     formState: { errors },
   } = useForm()
 
+  // Privacy policy hooks
+  const [ agreedToPolicy, setPolicyAgreement ] = useState<boolean>(false)
+
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
   const logoImg =  useColorModeValue('/logo-black.svg', '/logo.svg')
@@ -68,6 +72,17 @@ const SignUpView: FC = () => {
 
   // Actions
   const onSubmit = async (data: any) => {
+    // Verify if user agreed to privacy policy
+    if (!agreedToPolicy) {
+      return toast({
+        title: t('messages.privacy_required'),
+        description: t('messages.privacy_required_msg'),
+        status: 'info',
+        duration: 2000,
+        isClosable: true
+      })
+    }
+
     // Request api via server side
     const response = await mutateAsync({ ...data })
 
@@ -203,6 +218,22 @@ const SignUpView: FC = () => {
                 <FormHelperText>{t('form.password_hint')}</FormHelperText>
               )}
             </FormControl>
+            <Checkbox
+              isDisabled={isLoading || isLogging}
+              isChecked={agreedToPolicy}
+              onChange={e => setPolicyAgreement(e.target.checked)}
+              mb="5"
+            >
+              {t('form.warning')}
+              <Link
+                fontWeight="bold"
+                color="secondary.500"
+                href='https://www.playliter.com.br/privacyPolicy'
+                target="_blank"
+              >
+                {t('form.warning_link')}
+              </Link>.
+            </Checkbox>
             <Button
               disabled={isLoading || isLogging}
               variant="fade"

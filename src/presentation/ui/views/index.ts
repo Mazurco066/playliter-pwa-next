@@ -4,6 +4,7 @@ import ForgotPasswordView from './forgotPassword'
 import HomeView from './home'
 import LandingView from './landing'
 import LoginInView from './login'
+import PrivacyPolicyView from './privacyPolicy'
 import ProfileView from './profile'
 import ResetPasswordView from './resetPassword'
 import SaveBandView from './saveBand'
@@ -23,6 +24,7 @@ export {
   HomeView,
   LandingView,
   LoginInView,
+  PrivacyPolicyView,
   ProfileView,
   ResetPasswordView,
   SaveBandView,

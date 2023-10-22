@@ -1,0 +1,36 @@
+{
+  "privacyPolicy": {
+    "title": "Playliter privacy policy",
+    "lastUpdated": "Last Updated: 2023-10-21",
+    "sections": [
+      {
+        "title": "1. Introduction",
+        "content": "This privacy policy describes how Playliter collects, uses, and protects user's personal information. By using our app, you agree to the terms of this policy."
+      },
+      {
+        "title": "2. Information Collected",
+        "content": " Playliter collects the following information from users:\n\n- Email Address: We collect your email address to create a user account in the app and to allow password recovery, as well as for contact and notifications purposes.\n- Username: You create a username within the app, which is used for identification. This username is visible to other app users.\n- Password: A password is created by the user to secure their account within the app."
+      },
+      {
+        "title": "3. Use of Information",
+        "content": "The information collected is used for the following purposes:\n\n- Authentication: The email address and password are used to authenticate access to your account in the app.\n- Communications: We may contact you via email to provide information about updates, new features, or issues with your account."
+      },
+      {
+        "title": "4. Sharing of Information",
+        "content": "Playliter does not share your personal information with third parties, except when required to comply with legal obligations."
+      },
+      {
+        "title": "5. Information Security",
+        "content": "We take appropriate security measures to protect user information and ensure its safe use."
+      },
+      {
+        "title": "6. Changes to Privacy Policy",
+        "content": "We reserve the right to make changes to this privacy policy at any time. Changes will be communicated to users through the app or via email."
+      },
+      {
+        "title": "7. Contact",
+        "content": "If you have any questions or concerns about this privacy policy, please contact us at mazurco066@gmail.com."
+      }
+    ]
+  }
+}

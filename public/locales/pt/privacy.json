@@ -1,0 +1,36 @@
+{
+  "privacyPolicy": {
+    "title": "Política de Privacidade do Playliter",
+    "lastUpdated": "Ultima atualização em: 21/10/2023",
+    "sections": [
+      {
+        "title": "1. Introdução",
+        "content": "Esta política de privacidade descreve como Playliter coleta, usa e protege as informações pessoais dos usuários. Ao usar o nosso aplicativo, você concorda com os termos desta política."
+      },
+      {
+        "title": "2. Informações Coletadas",
+        "content": "O Playliter coleta as seguintes informações dos usuários:\n\n- Endereço de e-mail: Nós coletamos o seu endereço de e-mail para criar uma conta de usuário no aplicativo e permitir a recuperação de senha, bem como para fins de contato e notificações.\n- Nome de usuário: Você cria um nome de usuário dentro do aplicativo que é usado para identificá-lo. Esse nome de usuário é visível para outros usuários do aplicativo.\n- Senha: Uma senha de acesso é criada pelo usuário para proteger a sua conta no aplicativo."
+      },
+      {
+        "title": "3. Uso das Informações",
+        "content": "As informações coletadas são usadas para os seguintes fins:\n\n- Autenticação: O endereço de e-mail e a senha são usados para autenticar o acesso à sua conta no aplicativo.\n- Comunicações: Podemos entrar em contato com você via e-mail para fornecer informações sobre atualizações, novos recursos ou problemas com a sua conta."
+      },
+      {
+        "title": "4. Compartilhamento de Informações",
+        "content": "O Playliter não compartilha suas informações pessoais com terceiros, exceto nos casos em que for necessário cumprir obrigações legais."
+      },
+      {
+        "title": "5. Segurança das Informações",
+        "content": "Tomamos medidas de segurança adequadas para proteger as informações dos usuários e garantir que elas sejam usadas de forma segura."
+      },
+      {
+        "title": "6. Alterações na Política de Privacidade",
+        "content": "Reservamo-nos o direito de fazer alterações nesta política de privacidade a qualquer momento. As alterações serão comunicadas aos usuários através do aplicativo ou por e-mail."
+      },
+      {
+        "title": "7. Contato",
+        "content": "Se você tiver alguma dúvida ou preocupação sobre esta política de privacidade, entre em contato conosco em mazurco066@gmail.com."
+      }
+    ]
+  }
+}
