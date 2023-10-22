@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { useTranslation } from 'next-i18next'
 
 // Components
-import { FaGithub, FaPortrait, FaEnvelope } from 'react-icons/fa'
+import { FaGithub, FaPortrait, FaEnvelope, FaHandshake } from 'react-icons/fa'
 import { Icon } from '@chakra-ui/icons'
 import {
   Box,
@@ -67,7 +67,7 @@ export const LandingFooter: FC = () => {
             >
               <Box maxWidth="2.5rem">
                 <Image 
-                  src="img/me.png"
+                  src="/img/me.png"
                   alt={t('footer.author')}
                 />
               </Box>
@@ -97,13 +97,13 @@ export const LandingFooter: FC = () => {
             >
               <Box maxWidth="2.5rem">
                 <Image 
-                  src="img/react-logo.png"
+                  src="/img/react-logo.png"
                   alt="ReactJs"
                 />
               </Box>
               <Box maxWidth="2.5rem">
                 <Image 
-                  src="img/next-logo.png"
+                  src="/img/next-logo.png"
                   alt="NextJs"
                 />
               </Box>
@@ -171,6 +171,16 @@ export const LandingFooter: FC = () => {
               target="_blank"
             >
               {t('footer.portfolio')}<Icon as={FaPortrait} ml="2"/>
+            </Link>
+            <Link
+              display="block"
+              fontSize="md"
+              fontWeight="medium"
+              color="gray.100"
+              href='https://www.playliter.com.br/privacyPolicy'
+              target="_blank"
+            >
+              {t('footer.privacy')}<Icon as={FaHandshake} ml="2"/>
             </Link>
           </Box>
         </Box>
