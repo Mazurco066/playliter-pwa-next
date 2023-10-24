@@ -44,6 +44,7 @@
     "invite": "Convidar",
     "edit": "Editar",
     "remove": "Remover Banda",
+    "transfer": "Transferir Liderança",
     "turn_member": "Tornar Membro",
     "turn_admin": "Tornar Admin",
     "remove_member": "Remover"
@@ -57,6 +58,8 @@
     "member_not_found_msg": "O integrante solicitado não foi encontrado na banda!",
     "admin_promote_title": "Sucesso!",
     "admin_promote_msg": "O membro selecionado foi definido como admin!",
+    "transfer_ownership_title": "Sucesso!",
+    "transfer_ownership_msg": "A liderança da banda foi alterada com sucesso!",
     "remove_member_title": "Sucesso!",
     "remove_member_msg": "O membro selecionado foi removido da banda!",
     "remove_band_title": "Sucesso!",
