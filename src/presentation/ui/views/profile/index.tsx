@@ -10,11 +10,12 @@ import { requestClient } from 'infra/services/http'
 import type { InviteType } from 'domain/models'
 
 // Layout and Components
-import { AvatarUpload } from 'presentation/ui/components'
+import { AvatarUpload, ConfirmAction } from 'presentation/ui/components'
 import { EditableControls, InviteItem } from './elements'
 import { EmailIcon } from '@chakra-ui/icons'
 import {
   Badge,
+  Button,
   Box,
   Container,
   Editable,
@@ -26,9 +27,11 @@ import {
   Skeleton,
   Text,
   useColorModeValue,
+  useDisclosure,
   useToast,
   UseToastOptions
 } from '@chakra-ui/react'
+import { WarningIcon } from '@chakra-ui/icons'
 
 // Bands list component
 const ProfileView: FC = () => {
@@ -49,6 +52,13 @@ const ProfileView: FC = () => {
   // Destruct user data
   const { id, avatar, email, isEmailconfirmed } = user || {}
 
+  // Confirm dialog state
+  const {
+    isOpen: isConfirmOpen,
+    onOpen: onConfirmOpen,
+    onClose: onConfirmClose
+  } = useDisclosure()
+
   // Pending Invites Requests
   const {
     data: pendingInvites,
@@ -58,6 +68,14 @@ const ProfileView: FC = () => {
     ['invites'], 
     () => requestClient('/api/bands/invites', 'get')
   )
+
+  // Save account request
+  const {
+    isLoading: deleteAccountLoading,
+    mutateAsync: deleteAccountAsync
+  } = useMutation(() => {
+    return requestClient('/api/accounts/delete_account', 'delete')
+  })
 
   // Save account request
   const {
@@ -303,6 +321,32 @@ const ProfileView: FC = () => {
     }
   }
 
+  const onWipeAccountData = async () => {
+    const response = await deleteAccountAsync()
+    if (response.status < 400) {
+      toast({
+        title: t('messages.deleteAccount_title'),
+        description: t('messages.deleteAccount_msg'),
+        status: 'success',
+        duration: 3000,
+        isClosable: true
+      })
+      mutateUser(
+        await requestClient('/api/logout', 'post'),
+        false
+      )
+      router.push('/login')
+    } else {
+      toast({
+        title: t('messages.deleteAccountError_title'),
+        description: t('messages.deleteAccountError_msg'),
+        status: 'error',
+        duration: 3000,
+        isClosable: true
+      })
+    }
+  }
+
   // View JSX
   return (
     <div>
@@ -363,6 +407,14 @@ const ProfileView: FC = () => {
               <Input as={EditableInput} />
               <EditableControls />
             </Editable>
+            <Button
+              mt="3"
+              colorScheme="red"
+              onClick={() => onConfirmOpen()}
+              isDisabled={accountLoading || deleteAccountLoading}
+            >
+              <WarningIcon mr="2" /> {t('delete')}
+            </Button>
           </Flex>
         </Box>
         <Flex 
@@ -443,7 +495,7 @@ const ProfileView: FC = () => {
                     />
                   ))}
                 </Grid>
-              ) : !isEmailconfirmed && (
+              ) : isEmailconfirmed && (
                 <Text>
                   {t('empty_notifications')}
                 </Text>
@@ -461,6 +513,14 @@ const ProfileView: FC = () => {
           )
         }
       </Container>
+      <ConfirmAction
+        enableTimer
+        onClose={onConfirmClose}
+        onOpen={onConfirmOpen}
+        isOpen={isConfirmOpen}
+        onConfirm={onWipeAccountData}
+        message={t('delete_warning')}
+      />
     </div>
   )
 }

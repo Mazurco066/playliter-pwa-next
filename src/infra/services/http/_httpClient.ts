@@ -28,6 +28,29 @@ export async function requestApi(
   return response
 }
 
+// Fetch method v2
+export async function requestApiV2(
+  url: string,
+  method: 'get' | 'post' | 'put' | 'patch' | 'delete', 
+  body?: {} | undefined,
+  config?: AxiosRequestConfig<{}> | undefined
+): Promise<AxiosResponse<any, APIResponse>> {
+
+  // Retrieve base url
+  const baseUrl: string = process.env.API_BASE_URL_V2 || '' as string
+  const requestUrl = `${baseUrl}${url}`
+
+  // Using axios to request async
+  const response = await asyncRequestHandler(
+    ['post', 'put', 'patch'].includes(method)
+      ? axios[method](requestUrl, body, config)
+      : axios[method](requestUrl, config)
+  )
+
+  // Return api response
+  return response
+}
+
 // Fetch external api method (ex: Cloudinary, Correios)
 export async function requestExternalApi(
   url: string,

@@ -57,7 +57,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
 
   // Page members action state
   const [ action, setAction ] = useState<{
-    type: 'promote' | 'demote' | 'remove' | 'delete',
+    type: 'promote' | 'demote' | 'remove' | 'delete' | 'transfer',
     id: string
   }>({
     type: 'remove',
@@ -160,6 +160,14 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     mutateAsync: promoteRequest
   } = useMutation((data: any) => {
     return requestClient('/api/bands/promote_member', 'post', data)
+  })
+
+  // Transfer ownership request
+  const {
+    isLoading: isTransferLoading,
+    mutateAsync: transferOwnership
+  } = useMutation((data: any) => {
+    return requestClient('/api/bands/transfer_ownership', 'post', data)
   })
 
   // Demote member requet
@@ -277,6 +285,40 @@ const BandView: FC<{ id: string }> = ({ id }) => {
       toast({
         title: t('messages.admin_promote_title'),
         description: t('messages.admin_promote_msg'),
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+
+      // Refetch band
+      refetchBand()
+
+    } else {
+      if ([400, 404].includes(response.status)) {
+        toast({
+          title: t('messages.member_not_fount_title'),
+          description: t('messages.member_not_found_msg'), 
+          status: 'warning',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
+
+  const onTransferOwnership = async (accountId: string, bandId: string) => {
+    // Request api
+    const response = await transferOwnership({ accountId, bandId })
+
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
+      
+      // Notify user about response success
+      toast({
+        title: t('messages.transfer_ownership_title'),
+        description: t('messages.transfer_ownership_msg'),
         status: 'success',
         duration: 2000,
         isClosable: true
@@ -767,6 +809,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                         isOwner={isUserOwner}
                         canManage={isUserAdmin || isUserOwner}
                         canRemove={isUserOwner}
+                        canTransfer={isUserOwner}
                         onRemove={(_id: string) => {
                           setAction({ type: 'remove', id: _id })
                           onConfirmOpen()
@@ -775,7 +818,11 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                           setAction({ type: action, id: _id })
                           onConfirmOpen()
                         }}
-                        isLoading={isPromoteLoading || isDemoteLoading || isRemoveLoading || bandLoading || isDeleteLoading}
+                        onTransfer={(_id: string) => {
+                          setAction({ type: 'transfer', id: _id })
+                          onConfirmOpen()
+                        }}
+                        isLoading={isPromoteLoading || isDemoteLoading || isRemoveLoading || bandLoading || isDeleteLoading || isTransferLoading}
                       />
                     )
                   })
@@ -815,6 +862,10 @@ const BandView: FC<{ id: string }> = ({ id }) => {
             // Delete band
             case 'delete':
               onDeleteBand(action.id)
+              break
+            // Transfer ownership
+            case 'transfer':
+              onTransferOwnership(action.id, band?.data?.id)
               break
           }
         }}

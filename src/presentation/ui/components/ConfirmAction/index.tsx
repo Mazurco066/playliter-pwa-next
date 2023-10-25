@@ -1,5 +1,5 @@
 // Dependencies
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 
 // Components
@@ -12,20 +12,23 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   Text
 } from '@chakra-ui/react'
 
 // Component
 export const ConfirmAction: FC<{
-  isOpen: boolean,
-  onOpen: () => void,
-  onClose: () => void,
-  title?: string,
-  message?: string,
-  confirmText?: string,
-  cancelText?: string,
+  enableTimer?: boolean
+  isOpen: boolean
+  onOpen: () => void
+  onClose: () => void
+  title?: string
+  message?: string
+  confirmText?: string
+  cancelText?: string
   onConfirm?: () => void
 }> = ({
+  enableTimer = false,
   isOpen,
   onClose,
   title = '',
@@ -34,6 +37,17 @@ export const ConfirmAction: FC<{
 }) => {
   // Hooks
   const { t } = useTranslation('common')
+  const [ canConfirm, setCanConfirm ] = useState<boolean>(true)
+
+  // Effects
+  useEffect(() => {
+    if (enableTimer) {
+      setCanConfirm(false)
+      setTimeout(() => setCanConfirm(true), 4000)
+    } else {
+      setCanConfirm(true)
+    }
+  }, [enableTimer, isOpen])
 
   // JSX
   return (
@@ -57,14 +71,17 @@ export const ConfirmAction: FC<{
         </ModalBody>
         <ModalFooter>
           <Button
+            isDisabled={!canConfirm}
             colorScheme="primary"
             mr={3}
             onClick={() => {
-              onConfirm()
-              onClose()
+              if (canConfirm) {
+                onConfirm()
+                onClose()
+              }
             }}
           >
-            {t('confirm_action.confirm')}
+            { !canConfirm ? <Spinner size="sm" mr="2" /> : null }{t('confirm_action.confirm')}
           </Button>
           <Button
             colorScheme="red"
