@@ -25,23 +25,27 @@ import {
 
 // Component
 export const MemberItem: FC<{
-  account: AccountType,
-  role: string,
-  canRemove?: boolean,
-  canManage?: boolean,
-  isOwner?: boolean,
-  isLoading?: boolean,
-  onManage?: (action: 'promote' | 'demote', id: string) => void,
+  account: AccountType
+  role: string
+  canRemove?: boolean
+  canTransfer?: boolean
+  canManage?: boolean
+  isOwner?: boolean
+  isLoading?: boolean
+  onManage?: (action: 'promote' | 'demote', id: string) => void
   onRemove?: (id: string) => void
+  onTransfer?: (id: string) => void
 }> = ({
   account,
   role,
   canRemove = false,
+  canTransfer = false,
   canManage = false,
   isOwner = false,
   isLoading = false,
   onManage = () => {},
-  onRemove = () => {}
+  onRemove = () => {},
+  onTransfer = () => {}
 }) => {
   // Hooks
   const { user } = useUser()
@@ -98,7 +102,7 @@ export const MemberItem: FC<{
                     {role}
                   </Badge>
                   {
-                    ((isOwner || canManage) && (id !== userId)) && (
+                    ((isOwner || canManage) && (id !== userId)) ? (
                       <>
                         {
                           [t('roles.member')].includes(role) ? (
@@ -148,7 +152,23 @@ export const MemberItem: FC<{
                           )
                         }
                       </>
-                    )
+                    ) : null
+                  }
+                  {
+                    (canTransfer && (id !== userId)) ? (
+                      <Button
+                        mt="3"
+                        colorScheme="secondary"
+                        size="sm"
+                        disabled={isLoading}
+                        onClick={() => {
+                          onTransfer(id)
+                          onClose()
+                        }}
+                      >
+                        {t('menu.transfer')}
+                      </Button>
+                    ) : null
                   }
                 </Flex>
               </PopoverBody>
