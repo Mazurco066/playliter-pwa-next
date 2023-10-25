@@ -10,6 +10,8 @@
   "respond_desc": "Do you wish to join the band named as ",
   "accept": "Accept",
   "deny": "Deny",
+  "delete": "Delete my account",
+  "delete_warning": "Make sure to check whether you are the owner of any band. If you are the owner, transfer ownership to another member because, otherwise, the band and the songs saved in it will be removed, and third parties may end up using the public songs of your band in their performances.",
   "messages": {
     "avatar_update_title": "Success!",
     "avatar_update_msg": "Your avatar image has been updated!",
@@ -31,6 +33,10 @@
     "upload_error_msg": "An error ocourred while upload your image. Please try again later.",
     "invite_response_title": "Success!",
     "invite_response_msg_1": "You ",
-    "invite_response_msg_2": " the band invitation."
+    "invite_response_msg_2": " the band invitation.",
+    "deleteAccount_title": "Account successfully deleted!",
+    "deleteAccount_msg": "Your account data was successfully removed from playliter servers!",
+    "deleteAccountError_title": "Opss...",
+    "deleteAccountError_msg": "An error ocourred while wiping your account data. Try again later."
   }
 }

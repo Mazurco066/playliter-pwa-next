@@ -10,6 +10,8 @@
   "respond_desc": "Deseja aceitar o convite e participar da banda ",
   "accept": "Aceitar",
   "deny": "Negar",
+  "delete": "Deletar minha conta",
+  "delete_warning": "Certifique-se de verificar se você não é o líder de alguma banda. Se for o líder, transfira a liderança para outro membro, pois, caso contrário, a banda e as músicas salvas nela serão removidas, e terceiros podem acabar usando as músicas públicas de sua banda em suas apresentações.",
   "messages": {
     "avatar_update_title": "Sucesso!",
     "avatar_update_msg": "O avatar de sua conta foi alterado!",
@@ -31,6 +33,10 @@
     "upload_error_msg": "Ocorreu um erro ao realizar o upload de sua imagem. Por favor tente novamente mais tarde.",
     "invite_response_title": "Sucesso!",
     "invite_response_msg_1": "Você ",
-    "invite_response_msg_2": " o convite para banda."
+    "invite_response_msg_2": " o convite para banda.",
+    "deleteAccount_title": "Conta removida com sucesso!",
+    "deleteAccount_msg": "Os dados da sua conta foram removidos dos servidores do aplicativo!",
+    "deleteAccountError_title": "Opss...",
+    "deleteAccountError_msg": "Ocorreu um erro ao remover os dados da sua conta, os servidores devem estar ocupados no momento. Tente novamente mais tarde.!"
   }
 }
