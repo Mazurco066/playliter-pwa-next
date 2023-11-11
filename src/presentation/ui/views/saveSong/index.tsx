@@ -358,8 +358,6 @@ const SaveSongView: FC<{
           borderRadius="lg"
           px="3"
           py="3"
-          // Feature disabled because of server hardware limitation
-          display="none"
         >
           <Text
             color="gray.100"
