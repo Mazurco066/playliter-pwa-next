@@ -24,7 +24,7 @@ export const Footer: FC = () => {
         justifyContent="space-between"
       >
         <Text>
-          Playliter <Text as="strong" color="secondary.500">v1.7.0</Text>
+          Playliter <Text as="strong" color="secondary.500">v1.7.1</Text>
         </Text>
         <Link
           href="https://github.com/Mazurco066/playliter-pwa-next"
