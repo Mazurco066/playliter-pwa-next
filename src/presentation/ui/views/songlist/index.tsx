@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
+import { getColorSchema } from 'presentation/utils'
  
 // Types
 import type { SongType } from 'domain/models'
@@ -27,7 +28,7 @@ import {
 } from '@chakra-ui/react'
 
 // Custom component styles
-import { pdfPreviewStyles, pdfPrintStyles } from './styles'
+import { pdfPreviewStyles, getPdfPrintStyles } from './styles'
 
 // Component
 const SonglistView: FC<{ id: string }> = ({ id }) => {
@@ -48,6 +49,16 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
   } = useQuery(
     [`get-show-${id}`],
     () => requestClient(`/api/shows/get?id=${id}`, 'get'),
+    { enabled: id !== '' }
+  )
+
+  // Liturgy color request
+  const {
+    data: colorData,
+    isLoading: isColorLoading
+  } = useQuery(
+    [`get-color-${id}`],
+    () => requestClient(`/api/shows/liturgy_color?id=${id}`, 'get'),
     { enabled: id !== '' }
   )
 
@@ -83,13 +94,16 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
 
   // Actions
   const printPdf = async () => {
+    // Define color schema
+    const color = colorData?.data.color
+    const colorSchema = getColorSchema(color)
     // Here i'm doing a Dynamic import, because the print component uses the Window functions
     // which must be loaded at runtime, learn more about it here https://nextjs.org/docs/advanced-features/dynamic-import
     const printPdf = (await import('print-js')).default
     printPdf({
       printable: 'printable-songs',
       type: 'html',
-      style: pdfPreviewStyles + pdfPrintStyles,
+      style: pdfPreviewStyles + getPdfPrintStyles(colorSchema.primary, colorSchema.secondary),
       font_size: '16px'
     })
   }
@@ -139,6 +153,7 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
                             aria-label="print-songlist"
                             variant="fade"
                             icon={<FaPrint />}
+                            isDisabled={isColorLoading || showLoading}
                             onClick={() => printPdf()}
                           />
                           <IconButton
@@ -166,6 +181,7 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
                     >
                       <PDFPrintPreview 
                         show={show.data}
+                        color={colorData?.data.color}
                       />
                       { // List of songs
                         songs.map((_song: SongType, i: number) => (

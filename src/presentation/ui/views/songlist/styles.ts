@@ -26,6 +26,31 @@ export const pdfPreviewStyles: string = `
     -webkit-print-color-adjust:exact !important;
     print-color-adjust:exact !important;
   }
+  #pdf-preview.green {
+    background: #5D9C59!important;
+    border: 1px solid #5D9C59!important;
+    color: #FFFFFF!important;
+  }
+  #pdf-preview.red {
+    background: #BE3144!important;
+    border: 1px solid #BE3144!important;
+    color: #FFFFFF!important;
+  }
+  #pdf-preview.white {
+    background: #E6E7E5!important;
+    border: 1px solid #E6E7E5!important;
+    color: #212121!important;
+  }
+  #pdf-preview.pink {
+    background: #EA97AD!important;
+    border: 1px solid #EA97AD!important;
+    color: #FFFFFF!important;
+  }
+  #pdf-preview.black {
+    background: #2A2A2A!important;
+    border: 1px solid #2A2A2A!important;
+    color: #FFFFFF!important;
+  }
   .svg-container {
     position: absolute;
     height: 809px!important;
@@ -69,13 +94,11 @@ export const pdfPreviewStyles: string = `
     width: 500px!important;
     font-size: 72px!important;
     margin-bottom: 32px;
-    color: #FFFFFF;
     text-transform: uppercase;
     text-align: left;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   }
   .band-info {
-    color: #FFFFFF;
     text-align: left;
     text-transform: uppercase;
     font-weight: bold;
@@ -83,31 +106,27 @@ export const pdfPreviewStyles: string = `
   }
   .show-desc {
     width: 300px!important;
-    color: #FFFFFF;
     text-align: left;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   }
   .show-add-text {
     width: 450px!important;
-    color: #FFFFFF;
     text-align: left;
     white-space: break-spaces;
     text-align: justify;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   }
   .credits {
-    color: #FFFFFF;
     text-align: left;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-  }
-  .show-date strong,
-  .credits strong {
-    color: #FFFFFF;
   }
 `
 
 // PDF song styles
-export const pdfPrintStyles: string = `
+export const getPdfPrintStyles = (
+  primary: string = '#8257e5',
+  secondary: string = '#4963f7'
+): string => `
   .printable-songsheet{
     page-break-after:always;
     -webkit-print-color-adjust:exact;
@@ -128,7 +147,7 @@ export const pdfPrintStyles: string = `
   .song-title{
     font-weight:700;
     text-transform:uppercase;
-    color:#8257e5
+    color:${primary};
   }
   .song-tone{
     display:block!important;
@@ -140,7 +159,7 @@ export const pdfPrintStyles: string = `
     display:flex!important
   }
   .song-tone strong{
-    color:#4963f7
+    color:${secondary};
   }
   .song-section{
     overflow:hidden;
@@ -181,11 +200,11 @@ export const pdfPrintStyles: string = `
     page-break-inside:avoid
   }
   .chord-sheet :not(.tab) .chord{
-    color:#4963f7;
+    color:${secondary};
     font-weight:700
   }
   .chorus{
-    border-left:4px solid #8257e5;
+    border-left:4px solid ${primary};
     padding-left:1.5em
   }
   .chorus::before{
