@@ -7,7 +7,10 @@ import { useTranslation } from 'next-i18next'
 import type { ShowType } from 'domain/models'
 
 // Component
-export const PDFPrintPreview: FC<{ show: ShowType }> = ({ show }) => {
+export const PDFPrintPreview: FC<{
+  show: ShowType,
+  color: string
+}> = ({ color, show }) => {
   // Hooks
   const { t } = useTranslation('songList')
 
@@ -22,9 +25,12 @@ export const PDFPrintPreview: FC<{ show: ShowType }> = ({ show }) => {
       <div id="ghost-preview">
         <span>{' '}</span>
       </div>
-      <div id="pdf-preview">
+      <div id="pdf-preview" className={`${color}`}>
         <div className="svg-container">
-          <img src="/img/playliter-bg.png" alt="PDF Preview" />
+          <img
+            src={`/img/playliter-bg-${color}.png`}
+            alt="PDF Preview"
+          />
         </div>
         <div className="show-info">
           <h3 className="show-title">
