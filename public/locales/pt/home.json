@@ -9,5 +9,7 @@
   "my_bands": "Minhas Bandas",
   "see": "Ver",
   "more": "mais",
-  "version": "Versão: "
+  "version": "Versão: ",
+  "android_download_label": "Há uma versão do aplicativo em android disponível para seu dispositivo.",
+  "android_download_button": "Baixar na Google Play Store"
 }
