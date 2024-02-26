@@ -9,5 +9,7 @@
   "my_bands": "My Bands",
   "see": "Load",
   "more": "more",
-  "version": "Version: "
+  "version": "Version: ",
+  "android_download_label": "There is an android version for playliter available.",
+  "android_download_button": "Download on Play Store"
 }

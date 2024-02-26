@@ -13,9 +13,11 @@ import type { BandType, ShowType } from 'domain/models'
 import { BandItem, ShowItem } from './elements'
 import {
   Box,
+  Button,
   Container,
   Flex,
   Heading,
+  Image,
   Skeleton,
   Stack,
   Text,
@@ -47,6 +49,13 @@ const HomeView: FC = () => {
   } = useQuery(
     ['bands_home'],
     () => requestClient('/api/bands/list?limit=3', 'get')
+  )
+  const {
+    data: currentDevice,
+    isLoading: isLoadingDevice
+  } = useQuery(
+    ['device_query'],
+    () => requestClient('/api/user_agent', 'get')
   )
 
   // View JSX
@@ -188,6 +197,52 @@ const HomeView: FC = () => {
             </Flex>
           </>
         )}
+        {/* App native version */}
+        {
+          (!isLoadingDevice && currentDevice?.data?.isAndroid) ? (
+            <Box
+              px="3"
+              py="3"
+              mb="5"
+              borderRadius="lg"
+              bgColor={bgBox}
+            >
+              <Flex
+                alignItems="center"
+                justifyContent="flex-start"
+                width="full"
+                gap="4"
+              >
+                <Image 
+                  src="/icon.png"
+                  alt="Playliter native icon"
+                  width={20}
+                  height={20}
+                  rounded="lg"
+                />
+                <Flex
+                  grow={1}
+                  direction="column"
+                  gap="2"
+                >
+                  <Text
+                    fontSize="sm"
+                    textAlign="center"
+                  >
+                    {t('android_download_label')}
+                  </Text>
+                  <Button
+                    size="sm"
+                    variant="fade"
+                    onClick={() => window.open('https://play.google.com/store/apps/details?id=io.mazurco066.playliter')}
+                  >
+                    {t('android_download_button')}
+                  </Button>
+                </Flex>
+              </Flex>
+            </Box>
+          ) : null
+        }
         {/* App version */}
         <Text
           textAlign="center"
