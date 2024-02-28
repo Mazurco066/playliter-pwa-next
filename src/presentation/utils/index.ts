@@ -6,6 +6,7 @@ export * from './chordTransposer'
 export * from './formatDate'
 export * from './getColorSchema'
 export * from './getUniques'
+export * from './songFormatters'
 export * from './tuncateStr'
 
 export { getUniques }
