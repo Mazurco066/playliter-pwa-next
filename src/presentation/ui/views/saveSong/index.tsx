@@ -7,7 +7,14 @@ import { useForm, Controller } from 'react-hook-form'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { useTranslation } from 'next-i18next'
 import { requestClient } from 'infra/services/http'
-import { detecteSongFormat, plaintextToChordProFormat } from 'presentation/utils'
+import {
+  detecteSongFormat,
+  plaintextToChordProFormat,
+  removeLeadingTrailingNewlines,
+  removeMusicalTabs,
+  removeTextPatternsFromSong,
+  removeToneText
+} from 'presentation/utils'
 
 // Types
 import type { CategoryType } from 'domain/models'
@@ -257,8 +264,14 @@ const SaveSongView: FC<{
       const { loot, title, tone, writter } = response.data
 
       // Format raw data
-      const obtainedBody = plaintextToChordProFormat(loot)
       const obtainedTone = transpositions.find(t => t.value === tone) ? tone : tone.substring(0, 1)
+
+      // Format song body to chordpro
+      const withoutLeadingTrails = removeLeadingTrailingNewlines(loot)
+      const withoutTabs = removeMusicalTabs(withoutLeadingTrails)
+      const withoutPrefixes = removeTextPatternsFromSong(withoutTabs)
+      const withoutTone = removeToneText(withoutPrefixes)
+      const obtainedBody = plaintextToChordProFormat(withoutTone)
 
       // Update form values
       const options = { shouldValidate: true, shouldDirty: true }
