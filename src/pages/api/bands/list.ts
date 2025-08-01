@@ -12,13 +12,15 @@ async function listBandsRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Retrieve parameters
     const limit = req.query?.limit || 0
-    const offset = req.query?.offset || 0
+    const page = req.query?.page || 1
 
     // Request bands list
-    const response = await requestApi(`/bands/get?limit=${limit}&offset=${offset}`, 'get', undefined, {
+    const response = await requestApi(`/bands?limit=${limit}&page=${page}`, 'get', undefined, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+        'access_token': req.session.user?.token,
+        'refresh_token': req.session.user?.refreshToken,
+        'uuid': req.session.user?.id,
       }
     })
 
@@ -26,9 +28,55 @@ async function listBandsRoute(req: NextApiRequest, res: NextApiResponse) {
     if (response.status < 400) {
       // Retrieve user data from response
       const { data } = response.data
+
+      // Adapt band object
+      const newData: BandType[] = data.map((band: any) => ({
+        id: band.uuid,
+        createdAt: "",
+        updatedAt: "",
+        title: band.title,
+        description: band.description,
+        logo: band.logo,
+        admins: band.members.filter((m: any) => m.role === 'MODERATOR').map((m: any) => ({
+          id: m.id,
+          userId: m.user.uuid,
+          createdAt: '',
+          updatedAt: '',
+          avatar: m.user.avatar,
+          email: m.user.email,
+          isEmailconfirmed: true,
+          name: m.user.name,
+          role: m.role,
+          username: m.user.email
+        })),
+        members: band.members.filter((m: any) => m.role === 'MEMBER').map((m: any) => ({
+          id: m.id,
+          userId: m.user.uuid,
+          createdAt: '',
+          updatedAt: '',
+          avatar: m.user.avatar,
+          email: m.user.email,
+          isEmailconfirmed: true,
+          name: m.user.name,
+          role: m.role,
+          username: m.user.email
+        })),
+        owner: {
+          id: band.members.filter((m: any) => m.role === 'FOUNDER')[0].id,
+          userId: band.members.filter((m: any) => m.role === 'FOUNDER')[0].user.uuid,
+          createdAt: '',
+          updatedAt: '',
+          avatar: band.owner.avatar,
+          email: band.owner.email,
+          isEmailconfirmed: true,
+          name: band.owner.name,
+          role: 'FOUNDER',
+          username: band.owner.email
+        }
+      }))
       
       // Returns bands list
-      res.status(200).json(data as BandType[])
+      res.status(200).json(newData)
 
     } else {
       res.status(response.status).json(response.data)

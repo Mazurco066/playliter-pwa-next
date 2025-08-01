@@ -62,6 +62,8 @@ const HomeView: FC = () => {
     () => requestClient('/api/user_agent', 'get')
   )
 
+  console.log('bands resp', bands)
+
   // View JSX
   return (
     <div>
