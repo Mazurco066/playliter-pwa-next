@@ -15,6 +15,8 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
     username: '',
     avatar: '',
     token: '',
+    refreshToken: '',
+    role: 'USER',
     email: '',
     id: ''
   }
@@ -23,10 +25,12 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
   if (req.session.user) {
 
     // Validate if user is still valid
-    const response = await requestApi('/accounts/me', 'get', undefined, {
+    const response = await requestApi(`/users/${req.session.user?.id}`, 'get', undefined, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+        'access_token': req.session.user?.token,
+        'refresh_token': req.session.user?.refreshToken,
+        'uuid': req.session.user?.id,
       }
     })
 
@@ -35,24 +39,25 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
 
       // Retrieve user data from response
       const { data: {
-        isEmailconfirmed,
-        name,
-        username: login,
-        avatar,
-        email,
-        id
-      }} = response.data
+      uuid,
+      avatar,
+      email,
+      name,
+      is_email_valid,
+      role,
+    }} = response.data
 
       // Update user on session
       const updatedUser: User = {
         ...req.session.user,
-        username: login,
-        isEmailconfirmed,
+        username: email,
+        isEmailconfirmed: is_email_valid,
         name,
         avatar,
         email,
-        id,
-        isLoggedIn: true
+        id: uuid,
+        isLoggedIn: true,
+        role,
       }
 
       // Saving to session and returning updated user

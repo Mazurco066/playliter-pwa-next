@@ -101,7 +101,7 @@ const LogInView: FC = () => {
                 children={<Icon as={FaUser} />}
               />
               <Input
-                type="text"
+                type="email"
                 placeholder={t('form.user_label')}
                 {...register('username', { required: true })}
               />
