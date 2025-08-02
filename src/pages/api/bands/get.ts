@@ -15,13 +15,15 @@ async function getBandRoute(req: NextApiRequest, res: NextApiResponse) {
 
     // Request band endpoint
     const response = await requestApi(
-      `/bands/get/${id}`,
+      `/bands/${id}`,
       'get',
       undefined,
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${req.session.user?.token}`
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
         }
       }
     )
@@ -29,15 +31,61 @@ async function getBandRoute(req: NextApiRequest, res: NextApiResponse) {
     // Verify if request was sucessfull
     if (response.status < 400) {
       // Retrieve user data from response
-       const { data } = response.data
+      const { data } = response.data
+
+      // Adapt band object
+      const newData: BandType = {
+        id: data.uuid,
+        createdAt: "",
+        updatedAt: "",
+        title: data.title,
+        description: data.description,
+        logo: data.logo,
+        admins: data.members.filter((m: any) => m.role === 'MODERATOR').map((m: any) => ({
+          id: m.id,
+          userId: m.user.uuid,
+          createdAt: '',
+          updatedAt: '',
+          avatar: m.user.avatar,
+          email: m.user.email,
+          isEmailconfirmed: true,
+          name: m.user.name,
+          role: m.role,
+          username: m.user.email
+        })),
+        members: data.members.filter((m: any) => m.role === 'MEMBER').map((m: any) => ({
+          id: m.id,
+          userId: m.user.uuid,
+          createdAt: '',
+          updatedAt: '',
+          avatar: m.user.avatar,
+          email: m.user.email,
+          isEmailconfirmed: true,
+          name: m.user.name,
+          role: m.role,
+          username: m.user.email
+        })),
+        owner: {
+          id: data.members.filter((m: any) => m.role === 'FOUNDER')[0].id,
+          userId: data.members.filter((m: any) => m.role === 'FOUNDER')[0].user.uuid,
+          createdAt: '',
+          updatedAt: '',
+          avatar: data.owner.avatar,
+          email: data.owner.email,
+          isEmailconfirmed: true,
+          name: data.owner.name,
+          role: 'FOUNDER',
+          username: data.owner.email
+        }
+      }
 
       // Returns found band
-      res.status(200).json(data as BandType)
+      res.status(200).json(newData)
 
     } else {
       res.status(response.status).json(response.data)
     }
- 
+
   } else {
     res.status(401).json({ message: 'Unauthorized' })
   }
