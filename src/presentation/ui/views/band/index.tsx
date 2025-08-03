@@ -198,6 +198,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     members = [],
     owner = {}
   } = band ? band.data : {}
+  const allMembers = [ ...admins, ...members, owner ];
 
   // Compute role
   const isUserOwner = userId === owner.id
@@ -462,14 +463,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                 >
                   {band?.data?.title}
                 </Heading>
-                <Text mb="3">
+                <Text>
                   {band?.data?.description}
-                </Text>
-                <Text fontSize="sm">
-                  {t('created_at')}
-                  <Text as="strong" color="secondary.500">
-                    {band?.data?.createdAt?.split('T')[0].split('-').reverse().join('/')}
-                  </Text>
                 </Text>
               </Box>
             </Box>
@@ -668,7 +663,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                 overflowX="auto"
               >
                 {
-                  members.map((acc: AccountType, i: number)=> {
+                  allMembers.map((acc: AccountType, i: number)=> {
                     // Compute role
                     const { id } = acc
                     const isOwner = id === owner.id

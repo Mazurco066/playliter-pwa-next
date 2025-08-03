@@ -13,14 +13,16 @@ async function bandShowsRoute(req: NextApiRequest, res: NextApiResponse) {
 
     // Retrieve parameters
     const band = req.query?.band?.toString() || ''
-    const limit = parseInt(req.query?.limit?.toString() || '0')
-    const offset = parseInt(req.query?.offset?.toString() || '0')
+    const limit = parseInt(req.query?.limit?.toString() || '999')
+    const page = parseInt(req.query?.page?.toString() || '1')
 
     // Request pending invites endpoint
-    const response = await requestApi(`/shows/list/${band}?limit=${limit}&offset=${offset}`, 'get', undefined, {
+    const response = await requestApi(`/concerts?limit=${limit}&page=${page}&band_id=${band}`, 'get', undefined, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+        'access_token': req.session.user?.token,
+        'refresh_token': req.session.user?.refreshToken,
+        'uuid': req.session.user?.id,
       }
     })
 
@@ -29,8 +31,25 @@ async function bandShowsRoute(req: NextApiRequest, res: NextApiResponse) {
       // Retrieve user data from response
       const { data } = response.data
 
+      const newData: ShowType[] = data.map((show: any) => ({
+        id: show.uuid,
+        createdAt: '',
+        updatedAt: '',
+        title: show.title,
+        description: show.description,
+        date: show.date,
+        band: {
+          id: show.band.uuid,
+          createdAt: '',
+          updatedAt: '',
+          title: show.band.title,
+          description: show.band.description,
+          logo: show.band.logo,
+        }
+      }))
+
       // Returns shows list
-      res.status(200).json(data as ShowType[])
+      res.status(200).json(newData)
 
     } else {
       res.status(response.status).json(response.data)

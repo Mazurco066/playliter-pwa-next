@@ -60,14 +60,18 @@ export const InviteMember: FC<{
   const [ checkedAccounts, setCheckedAccounts ] = useState<string[]>([])
 
   // Accounts request
-  const {
-    refetch,
-    data: accounts,
-    isLoading: isAccountsLoading
-  } = useQuery(
-    ['app-accounts'],
-    () => requestClient('/api/accounts/list', 'get')
-  )
+  // const {
+  //   refetch,
+  //   data: accounts,
+  //   isLoading: isAccountsLoading
+  // } = useQuery(
+  //   ['app-accounts'],
+  //   () => requestClient('/api/accounts/list', 'get')
+  // )
+
+  const refetch = () => {}
+  const accounts = { data: [] }
+  const isAccountsLoading = false
 
   // Add member category
   const { isLoading, mutateAsync } = useMutation((data: any) => {

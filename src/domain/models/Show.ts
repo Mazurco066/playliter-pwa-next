@@ -13,7 +13,7 @@ export type ShowType = {
     description: string
     logo: string
   }
-  songs: {
+  songs?: {
     id: string,
     createdAt: string,
     updatedAt: string,
@@ -24,7 +24,7 @@ export type ShowType = {
     body: string,
     isPublic: boolean
   }[],
-  observations: {
+  observations?: {
     id: string,
     title: string,
     data: string
