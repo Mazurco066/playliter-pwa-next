@@ -62,8 +62,6 @@ const HomeView: FC = () => {
     () => requestClient('/api/user_agent', 'get')
   )
 
-  console.log('bands resp', bands)
-
   // View JSX
   return (
     <div>
@@ -123,7 +121,7 @@ const HomeView: FC = () => {
         {bands?.data && !bandsLoading ? (
           <>
             {
-              bands?.data?.length > 0 && (
+              bands?.data?.total > 0 && (
                 <>
                   <Heading
                     as="h3"
@@ -146,7 +144,7 @@ const HomeView: FC = () => {
                       justifyContent="center"
                       alignItems="center"
                     >
-                      {bands?.data?.map((band: BandType) => (
+                      {bands?.data?.data?.map((band: BandType) => (
                         <BandItem
                           key={band.id}
                           band={band}

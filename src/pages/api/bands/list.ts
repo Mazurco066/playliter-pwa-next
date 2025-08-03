@@ -11,8 +11,8 @@ import type { BandType } from 'domain/models'
 async function listBandsRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Retrieve parameters
-    const limit = req.query?.limit || 0
-    const page = req.query?.page || 1
+    const limit = parseInt(req.query?.limit?.toString() || '0')
+    const page = parseInt(req.query?.page?.toString() || '1')
 
     // Request bands list
     const response = await requestApi(`/bands?limit=${limit}&page=${page}`, 'get', undefined, {
@@ -27,7 +27,13 @@ async function listBandsRoute(req: NextApiRequest, res: NextApiResponse) {
     // Verify if request was sucessfull
     if (response.status < 400) {
       // Retrieve user data from response
-      const { data } = response.data
+      const {
+        pagination: {
+          total_items,
+          total_pages,
+        },
+        data,
+      } = response.data
 
       // Adapt band object
       const newData: BandType[] = data.map((band: any) => ({
@@ -74,9 +80,17 @@ async function listBandsRoute(req: NextApiRequest, res: NextApiResponse) {
           username: band.owner.email
         }
       }))
+
+      const prevPage = page - 1 === 0 ? null : page -1;
+      const nextpage = (page + 1) <= total_pages ? page + 1 : null
       
       // Returns bands list
-      res.status(200).json(newData)
+      res.status(200).json({
+        previousId: prevPage,
+        data: newData,
+        nextId: nextpage,
+        total: total_items
+      })
 
     } else {
       res.status(response.status).json(response.data)
