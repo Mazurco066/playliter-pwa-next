@@ -14,18 +14,30 @@ async function reorderShowRoute(req: NextApiRequest, res: NextApiResponse) {
     const { id, songs } = req.body
 
     // Request delete band endpoint
-    const response = await requestApi(`/shows/${id}/reorder`, 'put', { songs }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+    const response = await requestApi(
+      `/concerts/${id}/songs`,
+      'put',
+      {
+        songs: songs.map((song: any, index: number) => ({
+          songUUID: song,
+          order: index + 1
+        }))
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
+        }
       }
-    })
+    )
 
     // Verify if request was sucessfull
     if (response.status < 400) {
       // Returns updated band
       const { data } = response.data
-      res.status(200).json(data as ShowType)
+      res.status(200).json(data)
 
     } else {
       return res.status(response.status).json(response.data)
