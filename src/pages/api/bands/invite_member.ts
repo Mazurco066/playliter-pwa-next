@@ -4,20 +4,19 @@ import { sessionOptions } from 'infra/services/session'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { requestApi } from 'infra/services/http'
 
-// Types
-import type { BandType } from 'domain/models'
-
 // Invite member endpoint
 async function inviteMemberRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Retrieve member parameters
-    const { accountId, bandId } = req.body
+    const { email, bandId } = req.body
 
     // Request promote member endpoint
-    const response = await requestApi(`/bands/add_member/${bandId}`, 'post', { accountId }, {
+    const response = await requestApi(`/bands/${bandId}/invite`, 'post', { email }, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+        'access_token': req.session.user?.token,
+        'refresh_token': req.session.user?.refreshToken,
+        'uuid': req.session.user?.id,
       }
     })
 
@@ -25,7 +24,7 @@ async function inviteMemberRoute(req: NextApiRequest, res: NextApiResponse) {
     if (response.status < 400) {
       // Returns updated band
       const { data } = response.data
-      res.status(200).json(data as BandType)
+      res.status(200).json(data)
 
     } else {
       return res.status(response.status).json(response.data)
