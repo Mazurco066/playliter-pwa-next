@@ -57,7 +57,7 @@ export const MemberItem: FC<{
 
   // Destruct data
   const { id: userId } = user || {}
-  const { id, avatar, name } = account
+  const { id, avatar, name, userId: accountUserId } = account
 
   // JSX
   return (
@@ -134,7 +134,7 @@ export const MemberItem: FC<{
                           )
                         }
                         {
-                          (canRemove && (id !== userId)) && (
+                          (canRemove && (accountUserId !== userId)) && (
                             <>
                               <Button
                                 mt="3"
@@ -155,7 +155,7 @@ export const MemberItem: FC<{
                     ) : null
                   }
                   {
-                    (canTransfer && (id !== userId)) ? (
+                    (canTransfer && (accountUserId !== userId)) ? (
                       <Button
                         mt="3"
                         colorScheme="secondary"

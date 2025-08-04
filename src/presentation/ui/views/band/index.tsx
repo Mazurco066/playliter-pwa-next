@@ -201,8 +201,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
   const allMembers = [ ...admins, ...members, owner ];
 
   // Compute role
-  const isUserOwner = userId === owner.id
-  const isUserAdmin = admins.find((a: AccountType) => a.id === userId) !== undefined
+  const isUserOwner = userId === owner.userId
+  const isUserAdmin = admins.find((a: AccountType) => a.userId === userId) !== undefined
 
   // Actions
   const onDemoteMember = async (accountId: string, bandId: string) => {
@@ -665,9 +665,9 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                 {
                   allMembers.map((acc: AccountType, i: number)=> {
                     // Compute role
-                    const { id } = acc
-                    const isOwner = id === owner.id
-                    const isAdmin = admins.find((a: AccountType) => a.id === id) !== undefined
+                    const { userId } = acc
+                    const isOwner = userId === owner.userId
+                    const isAdmin = admins.find((a: AccountType) => a.userId === userId) !== undefined
                     const role = isOwner ? t('roles.founder') : isAdmin ? t('roles.admin') : t('roles.member')
 
                     // JSX
