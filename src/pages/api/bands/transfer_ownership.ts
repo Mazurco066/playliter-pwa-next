@@ -4,9 +4,6 @@ import { sessionOptions } from 'infra/services/session'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { requestApi } from 'infra/services/http'
 
-// Types
-import type { BandType } from 'domain/models'
-
 // Promote member endpoint
 async function transferOwnershipRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
@@ -14,18 +11,25 @@ async function transferOwnershipRoute(req: NextApiRequest, res: NextApiResponse)
     const { accountId, bandId } = req.body
 
     // Request promote member endpoint
-    const response = await requestApi(`/bands/transfer_ownership/${bandId}`, 'post', { accountId }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+    const response = await requestApi(
+      `/bands/${bandId}/members/${accountId}/transfer_owner`,
+      'put',
+      undefined,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
+        }
       }
-    })
+    )
 
     // Verify if request was sucessfull
     if (response.status < 400) {
       // Returns updated band
       const { data } = response.data
-      res.status(200).json(data as BandType)
+      res.status(200).json(data)
 
     } else {
       return res.status(response.status).json(response.data)

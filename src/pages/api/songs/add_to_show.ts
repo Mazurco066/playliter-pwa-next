@@ -14,19 +14,44 @@ async function addToListRoute(req: NextApiRequest, res: NextApiResponse) {
     const { id, showId } = req.body
 
     // Request delete band endpoint
-    const response = await requestApi(`/shows/${showId}/link_song`, 'patch', { songId: id }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+    const response = await requestApi(
+      `/concerts/${showId}/songs`,
+      'post',
+      { songUUID: id },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
+        }
       }
-    })
+    )
 
     // Verify if request was sucessfull
     if (response.status < 400) {
-      
+
       // Returns updated band
       const { data } = response.data
-      res.status(200).json(data as ShowType)
+
+      const newData: ShowType = {
+        id: data.uuid,
+        createdAt: '',
+        updatedAt: '',
+        title: data.title,
+        description: data.description,
+        date: data.date,
+        band: {
+          id: data.band.uuid,
+          createdAt: '',
+          updatedAt: '',
+          title: data.band.title,
+          description: data.band.description,
+          logo: data.band.logo,
+        }
+      }
+
+      res.status(200).json(newData)
 
     } else {
       return res.status(response.status).json(response.data)

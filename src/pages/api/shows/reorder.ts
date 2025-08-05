@@ -4,9 +4,6 @@ import { sessionOptions } from 'infra/services/session'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { requestApi } from 'infra/services/http'
 
-// Types
-import type { ShowType } from 'domain/models'
-
 // Reorder show endpoint
 async function reorderShowRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {

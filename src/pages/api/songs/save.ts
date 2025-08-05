@@ -24,21 +24,24 @@ async function saveSongRoute(req: NextApiRequest, res: NextApiResponse) {
     } = req.body
 
     // Request login endpoint
-    const url = id ? `/songs/${id}` : `/songs/${bandId}`
+    const url = id ? `/songs/${id}` : `/songs`
 
     // Verify if is a save or update request
     const response = await requestApi(url, id ? 'put' : 'post', {
+      band_id: id ? undefined : bandId,
       title,
-      writter,
+      writer: writter,
       tone,
       body,
       category,
-      embeddedUrl : embeddedUrl || null,
-      isPublic
+      embedded_url : embeddedUrl || null,
+      is_public: isPublic
     }, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+        'access_token': req.session.user?.token,
+        'refresh_token': req.session.user?.refreshToken,
+        'uuid': req.session.user?.id,
       }
     })
 
@@ -47,7 +50,36 @@ async function saveSongRoute(req: NextApiRequest, res: NextApiResponse) {
       
       // Retrieve song data from response
       const { data } = response.data
-      res.status(200).json(data as SongType)
+
+      const song: SongType = {
+        id: data.uuid,
+        createdAt: '',
+        updatedAt: '',
+        title: data.title,
+        tone: data.tone,
+        writter: data.writer,
+        embeddedUrl: data.embedded_url,
+        body: data.body,
+        isPublic: data.is_public,
+        category: {
+          id: '',
+          createdAt: '',
+          updatedAt: '',
+          title: data.category,
+          description: ''
+        },
+        band: {
+          id: data.band.uuid,
+          createdAt: '',
+          updatedAt: '',
+          logo: data.band.logo,
+          owner: '',
+          description: data.band.description,
+          title: data.band.title
+        }
+      }
+
+      res.status(200).json(song)
 
     } else {
       return res.status(response.status).json(response.data)

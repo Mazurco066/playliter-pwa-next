@@ -18,14 +18,19 @@ async function listBandSongsRoute(req: NextApiRequest, res: NextApiResponse) {
     const filter = req.query?.filter?.toString() || ''
 
     // Request login endpoint
-    const response = await requestApi(`/songs?limit=${limit}&page=${page}&search=${filter}&band_id=${band}`, 'get', undefined, {
-      headers: {
-        'Content-Type': 'application/json',
-        'access_token': req.session.user?.token,
-        'refresh_token': req.session.user?.refreshToken,
-        'uuid': req.session.user?.id,
+    const response = await requestApi(
+      `/songs?limit=${limit}&page=${page}&search=${filter}&band_id=${band}`,
+      'get',
+      undefined,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
+        }
       }
-    })
+    )
 
     // Verify if request was sucessfull
     if (response.status < 400) {

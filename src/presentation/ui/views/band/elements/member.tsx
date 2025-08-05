@@ -102,7 +102,7 @@ export const MemberItem: FC<{
                     {role}
                   </Badge>
                   {
-                    ((isOwner || canManage) && (id !== userId)) ? (
+                    ((isOwner || canManage) && (accountUserId !== userId)) ? (
                       <>
                         {
                           [t('roles.member')].includes(role) ? (
