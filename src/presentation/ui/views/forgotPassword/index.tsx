@@ -39,7 +39,7 @@ const ForgotPasswordView: FC = () => {
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
-  const logoImg =  useColorModeValue('/logo-black.svg', '/logo.svg')
+  const logoImg = useColorModeValue('/logo-black.svg', '/logo.svg')
 
   // Forget password request
   const { isLoading, mutateAsync } = useMutation((data: any) => {
@@ -76,10 +76,10 @@ const ForgotPasswordView: FC = () => {
       router.push('/login')
 
     } else {
-      if ([404].includes(response.status)) {
+      if ([400].includes(response.status)) {
         toast({
           title: t('messages.account_not_exists_title'),
-          description: t('messages.account_not_exists_msg'),     
+          description: t('messages.account_not_exists_msg'),
           status: 'warning',
           duration: 3000,
           isClosable: true
@@ -114,8 +114,9 @@ const ForgotPasswordView: FC = () => {
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
-                  children={<Icon as={FaEnvelope} />}
-                />
+                >
+                  <Icon as={FaEnvelope} />
+                </InputLeftElement>
                 <Input
                   type="email"
                   placeholder={t('form.email_label')}

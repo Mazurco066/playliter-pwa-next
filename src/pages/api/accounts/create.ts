@@ -10,27 +10,44 @@ import type { AccountType } from 'domain/models'
 // Create account endpoint
 async function createAccountRoute(req: NextApiRequest, res: NextApiResponse) {
   // Retrieve login parameters
-  const { name, email, username, password } = req.body
+  const { name, email, password } = req.body
 
   // Request login endpoint
-  const response = await requestApi(`/accounts`, 'post', {
-    name,
-    email,
-    username,
-    password
-  }, {
-    headers: {
-      'Content-Type': 'application/json'
+  const response = await requestApi(
+    `/signup`,
+    'post',
+    {
+      name,
+      email,
+      password
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
     }
-  })
+  )
 
   // Verify if request was sucessfull
   if (response.status < 400) {
     // Retrieve user data from response
     const { data } = response.data
 
+    const createdAccount: AccountType = {
+      id: data.uuid,
+      userId: data.uuid,
+      createdAt: '',
+      updatedAt: '',
+      avatar: data.avatar,
+      email: data.email,
+      isEmailconfirmed: data.is_email_valid,
+      name: data.name,
+      role: data.role,
+      username: data.email,
+    }
+
     // Returns created account
-    res.status(201).json(data as AccountType)
+    res.status(201).json(createdAccount)
 
   } else {
     return res.status(response.status).json(response.data)

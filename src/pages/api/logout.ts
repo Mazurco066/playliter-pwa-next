@@ -15,7 +15,9 @@ function logoutRoute(req: NextApiRequest, res: NextApiResponse<User>) {
     avatar: '',
     token: '',
     email: '',
-    id: ''
+    id: '',
+    refreshToken: '',
+    role: '',
   })
 }
 
