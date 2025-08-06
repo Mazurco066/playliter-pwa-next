@@ -10,38 +10,58 @@ import type { AccountType } from 'domain/models'
 // Update account endpoint
 async function updateAccountRoute(req: NextApiRequest, res: NextApiResponse) {
   // Retrieve login parameters
-  const { id, avatar, name, email, password } = req.body
-
-  /*
-    All fields
-    "name": "Gabriel Mazurco",
-    "email": "mazurco066@gmail.com",
-    "avatar": "https://res.cloudinary.com/r4kta/image/upload/v1653783107/playliter_profile_pictures/jotaro_mi3hii.jpg",
-    "oldPassword": string,
-    "password": string,
-    "confirmPassword": string
-  */
-
-  // Request login endpoint
-  const response = await requestApi(`/accounts/${id}`, 'put', {
+  const {
+    id,
     avatar,
     name,
     email,
-    password
-  }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${req.session.user?.token}`
+    password,
+    oldPassword,
+    role,
+  } = req.body
+
+  // Request login endpoint
+  const response = await requestApi(
+    `/users/${id}`,
+    'put',
+    {
+      avatar,
+      name,
+      email,
+      password,
+      old_password: oldPassword,
+      role,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'access_token': req.session.user?.token || '',
+        'refresh_token': req.session.user?.refreshToken || '',
+        'uuid': req.session.user?.id || '',
+      }
     }
-  })
+  )
 
   // Verify if request was sucessfull
   if (response.status < 400) {
     // Retrieve user data from response
     const { data } = response.data
 
+    const accountData: AccountType = {
+      id: data.uuid,
+      userId: data.uuid,
+      createdAt: '',
+      updatedAt: '',
+      avatar: data.avatar,
+      email: data.email,
+      isEmailconfirmed: data.is_email_valid,
+      name: data.name,
+      role: data.role,
+      username: data.email,
+    }
+
     // Returns created account
-    res.status(200).json(data as AccountType)
+    res.status(200).json(accountData)
 
   } else {
     return res.status(response.status).json(response.data)

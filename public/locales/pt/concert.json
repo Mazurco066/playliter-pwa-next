@@ -28,7 +28,7 @@
     "remove": "Remover da apresentação"
   },
   "notes": {
-    "import_liturgy": "Importar Liturgia",
+    "import_liturgy": "Adicionar anotação",
     "import_loading": "Aguarde.. Estamos importando a liturgia diária correspondente a data dessa apresentação.",
     "no_registers": "Não há anotações registradas nessa apresentação."
   },

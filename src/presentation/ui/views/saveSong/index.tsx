@@ -213,13 +213,13 @@ const SaveSongView: FC<{
       if ([200, 201].includes(response.status)) {
 
         // Retrieve song data
-        const { loot, title, tone, writter } = response.data
+        const { body, title, tone, writer } = response.data
 
         // Format raw data
         const obtainedTone = transpositions.find(t => t.value === tone) ? tone : tone.substring(0, 1)
 
         // Format song body to chordpro
-        const withoutLeadingTrails = removeLeadingTrailingNewlines(loot)
+        const withoutLeadingTrails = removeLeadingTrailingNewlines(body)
         const withoutTabs = removeMusicalTabs(withoutLeadingTrails)
         const withoutPrefixes = removeTextPatternsFromSong(withoutTabs)
         const withoutTone = removeToneText(withoutPrefixes)
@@ -228,7 +228,7 @@ const SaveSongView: FC<{
         // Update form values
         const options = { shouldValidate: true, shouldDirty: true }
         setValue('title', title, options)
-        setValue('writter', writter, options)
+        setValue('writter', writer, options)
         setValue('body', obtainedBody, options)
         setValue('tone', obtainedTone, options)
 

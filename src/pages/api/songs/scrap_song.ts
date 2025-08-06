@@ -12,20 +12,22 @@ async function scrapSongRoute(req: NextApiRequest, res: NextApiResponse) {
 
     // Request delete band endpoint
     const response = await requestApi(
-      `/helpers/scrap_song`,
+      `/scrap/songs`,
       'post',
       { url },
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${req.session.user?.token}`
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
         }
       }
     )
 
     // Verify if request was sucessfull
     if (response.status < 400) {
-      
+
       // Returns scraped data
       const { data } = response.data
       res.status(200).json(data)

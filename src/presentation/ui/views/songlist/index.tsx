@@ -52,16 +52,6 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
     { enabled: id !== '' }
   )
 
-  // Liturgy color request
-  const {
-    data: colorData,
-    isLoading: isColorLoading
-  } = useQuery(
-    [`get-color-${id}`],
-    () => requestClient(`/api/shows/liturgy_color?id=${id}`, 'get'),
-    { enabled: id !== '' }
-  )
-
   // Generic error msg
   const genericMsg: UseToastOptions = {
     title: common('messages.internal_error_title'),
@@ -95,7 +85,7 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
   // Actions
   const printPdf = async () => {
     // Define color schema
-    const color = colorData?.data.color
+    const color = 'purple'
     const colorSchema = getColorSchema(color)
     // Here i'm doing a Dynamic import, because the print component uses the Window functions
     // which must be loaded at runtime, learn more about it here https://nextjs.org/docs/advanced-features/dynamic-import
@@ -153,7 +143,7 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
                             aria-label="print-songlist"
                             variant="fade"
                             icon={<FaPrint />}
-                            isDisabled={isColorLoading || showLoading}
+                            isDisabled={showLoading}
                             onClick={() => printPdf()}
                           />
                           <IconButton
@@ -181,7 +171,7 @@ const SonglistView: FC<{ id: string }> = ({ id }) => {
                     >
                       <PDFPrintPreview 
                         show={show.data}
-                        color={colorData?.data.color}
+                        color={'purple'}
                       />
                       { // List of songs
                         songs.map((_song: SongType, i: number) => (

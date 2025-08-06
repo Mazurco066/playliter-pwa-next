@@ -130,7 +130,8 @@ const ProfileView: FC = () => {
       id: id,
       avatar: newValue,
       name: user.name,
-      email: email
+      email: email,
+      role: user?.role?.toLowerCase(),
     })
 
     // Verify if it was successfull
@@ -187,7 +188,8 @@ const ProfileView: FC = () => {
       id: id,
       avatar: avatar,
       name: newValue,
-      email: email
+      email: email,
+      role: user?.role?.toLowerCase(),
     })
 
     // Verify if it was successfull
@@ -244,7 +246,8 @@ const ProfileView: FC = () => {
       id: id,
       avatar: avatar,
       name: user.name,
-      email: newValue
+      email: newValue,
+      role: user?.role?.toLowerCase(),
     })
 
     // Verify if it was successfull

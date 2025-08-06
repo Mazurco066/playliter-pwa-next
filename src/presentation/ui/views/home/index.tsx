@@ -36,16 +36,13 @@ const HomeView: FC = () => {
   const bgBox = useColorModeValue('gray.50', 'gray.800')
 
   // HTTP Requests
-  // const {
-  //   data: pendingShows,
-  //   isLoading: pendingShowsLoading
-  // } = useQuery(
-  //   ['shows_home'],
-  //   () => requestClient('/api/shows/pending', 'get'),
-  // )
-
-  const pendingShows = { data: [] };
-  const pendingShowsLoading = false;
+  const {
+    data: pendingShows,
+    isLoading: pendingShowsLoading
+  } = useQuery(
+    ['shows_home'],
+    () => requestClient('/api/shows/pending', 'get'),
+  )
 
   const {
     data: bands,
