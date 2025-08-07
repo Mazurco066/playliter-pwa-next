@@ -37,7 +37,7 @@ const BandsView: FC = () => {
     isLoading: bandsLoading
   } = useQuery(
     ['bands'],
-    () => requestClient('/api/bands/list', 'get')
+    () => requestClient('/api/bands/list?limit=30', 'get')
   )
 
   // View JSX
@@ -61,13 +61,13 @@ const BandsView: FC = () => {
         </Text>
         {bands && !bandsLoading ? (
           <>
-            {bands?.data?.length > 0 ? (
+            {bands?.data?.total > 0 ? (
               <Grid
                 templateColumns="repeat(1, 1fr)"
                 gap="1rem"
                 mb="12"
               >
-                {bands?.data?.map((band: BandType) => (
+                {bands?.data?.data?.map((band: BandType) => (
                   <BandItem
                     key={band.id}
                     band={band}

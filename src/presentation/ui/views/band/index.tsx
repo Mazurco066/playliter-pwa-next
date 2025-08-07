@@ -14,9 +14,6 @@ import { ConfirmAction } from 'presentation/ui/components'
 import { Icon, DeleteIcon, EditIcon, SettingsIcon } from '@chakra-ui/icons'
 import { FaUserPlus } from 'react-icons/fa'
 import {
-  CategoriesComponent,
-  CategoryForm,
-  CategoryItemMinified,
   BandDrawer,
   InviteMember,
   MemberItem,
@@ -64,9 +61,6 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     id: ''
   })
 
-  // Category form state
-  const [ currentCategory, setCurrentCategory ] = useState<CategoryType | null>(null)
-
   // Confirm dialog state
   const {
     isOpen: isConfirmOpen,
@@ -88,19 +82,6 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     onClose: onShowsClose
   } = useDisclosure()
 
-  // Categories drawer state
-  const {
-    isOpen: isCategoriesOpen,
-    onOpen: onCategoriesOpen,
-    onClose: onCategoriesClose
-  } = useDisclosure()
-
-  // Category form modal state
-  const {
-    isOpen: isCategoryFormOpen,
-    onOpen: onCategoryFormOpen,
-    onClose: onCategoryFormClose
-  } = useDisclosure()
 
   // Invite member modal state
   const {
@@ -140,17 +121,6 @@ const BandView: FC<{ id: string }> = ({ id }) => {
   } = useQuery(
     [`few-songs-${id}`],
     () => requestClient(`/api/songs/band?band=${id}&limit=15`, 'get'),
-    { enabled: id !== '' }
-  )
-
-  // All categories
-  const {
-    refetch: refetchCategories,
-    data: categories,
-    isLoading: categoriesLoading
-  } = useQuery(
-    [`band-categories-${id}`],
-    () => requestClient(`/api/bands/categories?band=${id}`, 'get'),
     { enabled: id !== '' }
   )
 
@@ -228,18 +198,13 @@ const BandView: FC<{ id: string }> = ({ id }) => {
     members = [],
     owner = {}
   } = band ? band.data : {}
+  const allMembers = [ ...admins, ...members, owner ];
 
   // Compute role
-  const isUserOwner = userId === owner.id
-  const isUserAdmin = admins.find((a: AccountType) => a.id === userId) !== undefined
-  const canAddSongs = categories?.data && !categoriesLoading && categories.data.length > 0
+  const isUserOwner = userId === owner.userId
+  const isUserAdmin = admins.find((a: AccountType) => a.userId === userId) !== undefined
 
   // Actions
-  const onCategoryClick = (_category: CategoryType) => {
-    setCurrentCategory(_category)
-    onCategoryFormOpen()
-  }
-
   const onDemoteMember = async (accountId: string, bandId: string) => {
     // Request api
     const response = await demoteRequest({ accountId, bandId })
@@ -498,14 +463,8 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                 >
                   {band?.data?.title}
                 </Heading>
-                <Text mb="3">
+                <Text>
                   {band?.data?.description}
-                </Text>
-                <Text fontSize="sm">
-                  {t('created_at')}
-                  <Text as="strong" color="secondary.500">
-                    {band?.data?.createdAt?.split('T')[0].split('-').reverse().join('/')}
-                  </Text>
                 </Text>
               </Box>
             </Box>
@@ -672,96 +631,7 @@ const BandView: FC<{ id: string }> = ({ id }) => {
           {
             isSongsOpen && <SongsComponent
               bandId={band?.data?.id}
-              canAddSongs={canAddSongs}
-            />
-          }
-        </BandDrawer>
-        {/** Band categories */}
-        <Flex
-          justifyContent="space-between"
-          alignItems="center"
-          mb="3"
-        >
-          <Heading
-            as="h4"
-            size="sm"
-            textAlign="left"
-            textTransform="uppercase"
-            mb="0"
-          >
-            {t('categories_label')}
-          </Heading>
-          <Button
-            variant="fade"
-            size="xs"
-            disabled={categoriesLoading}
-            onClick={() => onCategoriesOpen()}
-          >
-            {t('manage')}
-          </Button>
-        </Flex>
-        {
-          categories?.data && !categoriesLoading ? (
-            <>
-              {
-                categories.data.length > 0 ? (
-                  <Stack
-                    direction="row"
-                    spacing="3"
-                    maxWidth="full"
-                    overflowX="auto"
-                    mb="5"
-                  >
-                    {categories.data.map((category: CategoryType) => (
-                      <CategoryItemMinified
-                        key={category.id}
-                        category={category}
-                        onClick={onCategoryClick}
-                      /> 
-                    ))}
-                  </Stack>
-                ) : (
-                  <Text mb="5">
-                    {t('no_categories')}
-                  </Text>
-                )
-              }
-            </>
-          ) : (
-            <Stack
-              direction="row"
-              spacing="3"
-              maxWidth="full"
-              overflowX="auto"
-              mb="5"
-            >
-              <Skeleton
-                width="64px"
-                height="64px"
-                borderRadius="lg"
-              />
-              <Skeleton
-                width="64px"
-                height="64px"
-                borderRadius="lg"
-              />
-            </Stack>
-          )
-        }
-        <BandDrawer
-          onClose={onCategoriesClose}
-          onOpen={onCategoriesOpen}
-          isOpen={isCategoriesOpen}
-          title={t('categories_drawer')}
-        >
-          {
-            isCategoriesOpen && <CategoriesComponent
-              bandId={band?.data?.id}
-              onCategoryClick={onCategoryClick}
-              onNewCategoryClick={() => {
-                setCurrentCategory(null)
-                onCategoryFormOpen()
-              }}
+              canAddSongs={true}
             />
           }
         </BandDrawer>
@@ -793,11 +663,11 @@ const BandView: FC<{ id: string }> = ({ id }) => {
                 overflowX="auto"
               >
                 {
-                  members.map((acc: AccountType, i: number)=> {
+                  allMembers.map((acc: AccountType, i: number)=> {
                     // Compute role
-                    const { id } = acc
-                    const isOwner = id === owner.id
-                    const isAdmin = admins.find((a: AccountType) => a.id === id) !== undefined
+                    const { userId } = acc
+                    const isOwner = userId === owner.userId
+                    const isAdmin = admins.find((a: AccountType) => a.userId === userId) !== undefined
                     const role = isOwner ? t('roles.founder') : isAdmin ? t('roles.admin') : t('roles.member')
 
                     // JSX
@@ -869,16 +739,6 @@ const BandView: FC<{ id: string }> = ({ id }) => {
               break
           }
         }}
-      />
-      {/* Category save form */}
-      <CategoryForm
-        isOpen={isCategoryFormOpen}
-        onOpen={onCategoryFormOpen}
-        onClose={onCategoryFormClose}
-        category={currentCategory}
-        onSaveSuccess={() => refetchCategories()}
-        onRemoveSuccess={() => refetchCategories()}
-        bandId={band?.data?.id}
       />
       {/* Member add modal */}
       <InviteMember 

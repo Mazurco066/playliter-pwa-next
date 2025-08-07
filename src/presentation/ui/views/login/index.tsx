@@ -44,7 +44,7 @@ const LogInView: FC = () => {
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
-  const logoImg =  useColorModeValue('/logo-black.svg', '/logo.svg')
+  const logoImg = useColorModeValue('/logo-black.svg', '/logo.svg')
 
   // Login request
   const { isLoading, mutateAsync } = useMutation((data: any) => {
@@ -67,7 +67,7 @@ const LogInView: FC = () => {
     if ([200].includes(response.status)) {
       mutateUser(response.data)
     } else {
-      if ([401, 403, 404].includes(response.status)) {
+      if ([400, 401, 403, 404].includes(response.status)) {
         toast({
           title: t('messages.incorrect_login_title'),
           description: t('messages.incorrect_login_msg'),
@@ -80,7 +80,7 @@ const LogInView: FC = () => {
       }
     }
   }
-  
+
   // View JSX
   return (
     <Container maxWidth="6xl">
@@ -98,10 +98,11 @@ const LogInView: FC = () => {
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
-                children={<Icon as={FaUser} />}
-              />
+              >
+                <Icon as={FaUser} />
+              </InputLeftElement>
               <Input
-                type="text"
+                type="email"
                 placeholder={t('form.user_label')}
                 {...register('username', { required: true })}
               />
@@ -117,8 +118,9 @@ const LogInView: FC = () => {
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
-                children={<Icon as={FaKey} />}
-              />
+              >
+                <Icon as={FaKey} />
+              </InputLeftElement>
               <Input
                 type="password"
                 placeholder={t('form.password_label')}

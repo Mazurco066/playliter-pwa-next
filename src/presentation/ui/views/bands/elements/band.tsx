@@ -31,18 +31,17 @@ export const BandItem: FC<{
   // Color Hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
   const colorBorder = useColorModeValue('gray.50', 'gray.800')
-  const badgeColor = useColorModeValue('gray.900', 'secondary.500')
 
   // Destruct band data
   const { admins, title, logo, owner } = band
 
   // Utils
-  const role = owner.id === user?.id 
+  const role = owner.userId === user?.id 
     ? t('roles.founder')
-    : admins.find(a => a.id === user?.id) 
+    : admins.find(a => a.userId === user?.id) 
       ? t('roles.admin')
-      : t('roles.member') 
-
+      : t('roles.member')
+  
   // JSX
   return (
     <GridItem

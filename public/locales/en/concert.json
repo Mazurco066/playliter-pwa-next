@@ -28,7 +28,7 @@
     "remove": "Remove from concert"
   },
   "notes": {
-    "import_liturgy": "Import liturgy",
+    "import_liturgy": "Add observation",
     "import_loading": "Please wait... we are importing the daily liturgy for you.",
     "no_registers": "There is no notes registered on this concert."
   },

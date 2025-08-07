@@ -10,8 +10,20 @@
   "respond_desc": "Do you wish to join the band named as ",
   "accept": "Accept",
   "deny": "Deny",
+  "change_password": "Change password",
   "delete": "Delete my account",
   "delete_warning": "Make sure to check whether you are the owner of any band. If you are the owner, transfer ownership to another member because, otherwise, the band and the songs saved in it will be removed, and third parties may end up using the public songs of your band in their performances.",
+  "form": {
+    "title": "Password change",
+    "old_password_label": "Old password",
+    "old_password_placeholder": "Old password",
+    "old_password_hint": "Type Old password",
+    "new_password_label": "New password",
+    "new_password_placeholder": "New password",
+    "new_password_hint": "Type a new password",
+    "cancel_action": "Cancel",
+    "confirm_action": "Save"
+  },
   "messages": {
     "avatar_update_title": "Success!",
     "avatar_update_msg": "Your avatar image has been updated!",
@@ -37,6 +49,9 @@
     "deleteAccount_title": "Account successfully deleted!",
     "deleteAccount_msg": "Your account data was successfully removed from playliter servers!",
     "deleteAccountError_title": "Opss...",
-    "deleteAccountError_msg": "An error ocourred while wiping your account data. Try again later."
+    "deleteAccountError_msg": "An error ocourred while wiping your account data. Try again later.",
+    "min_length_msg": "Minimum 8 characters.",
+    "invalid_old_password_msg": "Invalid old password!",
+    "password_update_msg": "Password successfully updated!"
   }
 }

@@ -14,12 +14,18 @@ async function demoteMemberRoute(req: NextApiRequest, res: NextApiResponse) {
     const { accountId, bandId } = req.body
 
     // Request demote member endpoint
-    const response = await requestApi(`/bands/demote_member/${bandId}`, 'post', { accountId }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+    const response = await requestApi(
+      `/bands/${bandId}/members/${accountId}`, 'put',
+      { role: 'member' },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
+        }
       }
-    })
+    )
 
     // Verify if request was sucessfull
     if (response.status < 400) {

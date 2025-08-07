@@ -12,10 +12,10 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
 
   // Request login endpoint
   const response = await requestApi(
-    '/auth/authenticate',
+    '/signin',
     'post',
     {
-      username,
+      email: username,
       password
     },
     {
@@ -25,32 +25,48 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
     }
   )
 
-  // Verify if request was sucessfull
-  if (response.status < 400) {
+  const accessToken = response.headers['access_token'];
+  const refreshToken = response.headers['refresh_token'];
+  const userId = response.headers['uuid'];
 
+  const userResponse = await requestApi(
+    `/users/${userId}`,
+    'get',
+    undefined,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'access_token': accessToken,
+        'refresh_token': refreshToken,
+        'uuid': userId,
+      },
+    }
+  );
+
+  // Verify if request was sucessfull
+  if (response.status < 400 && userResponse.status < 400) {
     // Retrieve user data from response
     const { data: {
-      token,
-      account: {
-        isEmailconfirmed,
-        name,
-        username: login,
-        avatar,
-        email,
-        id
-      }
-    }} = response.data
+      uuid,
+      avatar,
+      email,
+      name,
+      is_email_valid,
+      role,
+    }} = userResponse.data
 
     // Define user  to save on session
     const user = {
       isLoggedIn: true,
-      isEmailconfirmed: isEmailconfirmed,
+      isEmailconfirmed: is_email_valid,
       name: name,
-      username: login,
+      username: email,
       avatar: avatar,
-      token: token,
+      token: accessToken,
+      refreshToken: refreshToken,
+      role: role,
       email: email,
-      id: id
+      id: uuid
     } as User
 
     // Saving user into session

@@ -11,8 +11,7 @@ import type { InviteType } from 'domain/models'
 
 // Layout and Components
 import { AvatarUpload, ConfirmAction } from 'presentation/ui/components'
-import { EditableControls, InviteItem } from './elements'
-import { EmailIcon } from '@chakra-ui/icons'
+import { EditableControls, InviteItem, PasswordModal } from './elements'
 import {
   Badge,
   Button,
@@ -32,6 +31,7 @@ import {
   UseToastOptions
 } from '@chakra-ui/react'
 import { WarningIcon } from '@chakra-ui/icons'
+import { FaKey } from 'react-icons/fa'
 
 // Bands list component
 const ProfileView: FC = () => {
@@ -50,13 +50,19 @@ const ProfileView: FC = () => {
   const bgBox = useColorModeValue('gray.50', 'gray.800')
 
   // Destruct user data
-  const { id, avatar, email, isEmailconfirmed } = user || {}
+  const { id, avatar, email } = user || {}
 
   // Confirm dialog state
   const {
     isOpen: isConfirmOpen,
     onOpen: onConfirmOpen,
     onClose: onConfirmClose
+  } = useDisclosure()
+
+  const {
+    isOpen: isPasswordModalOpen,
+    onOpen: onPasswordModalOpen,
+    onClose: onPasswordModalClose
   } = useDisclosure()
 
   // Pending Invites Requests
@@ -103,7 +109,7 @@ const ProfileView: FC = () => {
   }
 
   // Utils
-  const notificationsCount = (pendingInvites?.data?.length || 0) + (isEmailconfirmed ? 0 : 1)
+  const notificationsCount = (pendingInvites?.data?.length || 0) //+ (isEmailconfirmed ? 0 : 1)
 
   // Effects
   useEffect(() => {
@@ -130,7 +136,8 @@ const ProfileView: FC = () => {
       id: id,
       avatar: newValue,
       name: user.name,
-      email: email
+      email: email,
+      role: user?.role?.toLowerCase(),
     })
 
     // Verify if it was successfull
@@ -187,7 +194,8 @@ const ProfileView: FC = () => {
       id: id,
       avatar: avatar,
       name: newValue,
-      email: email
+      email: email,
+      role: user?.role?.toLowerCase(),
     })
 
     // Verify if it was successfull
@@ -244,7 +252,8 @@ const ProfileView: FC = () => {
       id: id,
       avatar: avatar,
       name: user.name,
-      email: newValue
+      email: newValue,
+      role: user?.role?.toLowerCase(),
     })
 
     // Verify if it was successfull
@@ -284,10 +293,54 @@ const ProfileView: FC = () => {
     }
   }
 
-  const onRespondInvite = async(id: string, response: string) => {
+  const onPasswordSubmit = async (data: { new_password: string; old_password: string; }) => {
+    // Request account update
+    const accountResponse = await mutateUserAsync({
+      id: id,
+      avatar: avatar,
+      name: name,
+      email: email,
+      role: user?.role?.toLowerCase(),
+      oldPassword: data.old_password,
+      password: data.new_password
+    })
+
+    // Verify if it was successfull
+    if ([200, 201].includes(accountResponse.status)) {
+      // Mutate session user
+      const updatedUser = { ...user }
+      mutateUser(updatedUser)
+
+      // Notify user about name update
+      toast({
+        title: t('messages.name_update_title'),
+        description: t('messages.password_update_msg'),
+        status: 'success',
+        duration: 2000,
+        isClosable: true
+      })
+      onPasswordModalClose()
+
+    } else {
+      if ([400].includes(accountResponse.status)) {
+        toast({
+          title: t('messages.no_info_title'),
+          description: t('messages.invalid_old_password_msg'), 
+          status: 'info',
+          duration: 3500,
+          isClosable: true
+        })
+      } else {
+        toast(genericMsg)
+      }
+    }
+  }
+
+  const onRespondInvite = async(id: string, band: string, response: string) => {
     // Respond invite request
     const inviteResponse = await mutateInvite({
       id: id,
+      band,
       user_response: response
     })
 
@@ -409,6 +462,14 @@ const ProfileView: FC = () => {
             </Editable>
             <Button
               mt="3"
+              mb="1"
+              onClick={() => onPasswordModalOpen()}
+              isDisabled={accountLoading || deleteAccountLoading}
+            >
+              <FaKey style={{ marginRight: 8 }} /> {t('change_password')}
+            </Button>
+            <Button
+              mt="1"
               colorScheme="red"
               onClick={() => onConfirmOpen()}
               isDisabled={accountLoading || deleteAccountLoading}
@@ -441,7 +502,7 @@ const ProfileView: FC = () => {
             )
           }
         </Flex>
-        {
+        {/* {
           (user && !isEmailconfirmed) && (
             <Box
               px="5"
@@ -476,7 +537,7 @@ const ProfileView: FC = () => {
               </Flex>
             </Box>
           )
-        }
+        } */}
         {
           (pendingInvites && !invitesLoading) ? (
             <>
@@ -490,12 +551,12 @@ const ProfileView: FC = () => {
                     <InviteItem
                       key={i}
                       invite={invite}
-                      onResponse={(resp: string) => onRespondInvite(invite.id, resp)}
+                      onResponse={(resp: string) => onRespondInvite(invite.id, invite.band.id, resp)}
                       isLoading={accountLoading || inviteLoading || invitesLoading}
                     />
                   ))}
                 </Grid>
-              ) : isEmailconfirmed && (
+              ) : (
                 <Text>
                   {t('empty_notifications')}
                 </Text>
@@ -520,6 +581,13 @@ const ProfileView: FC = () => {
         isOpen={isConfirmOpen}
         onConfirm={onWipeAccountData}
         message={t('delete_warning')}
+      />
+      <PasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={onPasswordModalClose}
+        onOpen={onPasswordModalOpen}
+        onConfirmCallback={onPasswordSubmit}
+        isLoading={false}
       />
     </div>
   )

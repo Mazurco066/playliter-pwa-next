@@ -1,21 +1,12 @@
 // Dependencies
-import { FC, useState, useEffect } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { FC, useEffect } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { requestClient } from 'infra/services/http'
 
-// Types
-import type { AccountType } from 'domain/models'
-
 // Components
-import { SearchIcon } from '@chakra-ui/icons'
 import {
-  Avatar,
-  Box,
   Button,
-  Checkbox,
   FormControl,
-  Flex,
-  Heading,
   Input,
   InputGroup,
   InputLeftElement,
@@ -25,21 +16,13 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
-  Skeleton,
   Text,
   useToast,
-  UseToastOptions,
-  VStack
+  Icon,
+  FormHelperText
 } from '@chakra-ui/react'
-
-// Generic msg
-const genericMsg: UseToastOptions = {
-  title: 'Erro interno.',
-  description: 'Um erro inesperado ocorreu! Entre em contato com algum administrador do App.',
-  status: 'error',
-  duration: 5000,
-  isClosable: true
-}
+import { FaEnvelope } from 'react-icons/fa'
+import { useForm } from 'react-hook-form'
 
 // Component
 export const InviteMember: FC<{
@@ -52,191 +35,111 @@ export const InviteMember: FC<{
   bandId,
   isOpen,
   onClose,
-  members
 }) => {
-  // Hooks
-  const toast = useToast()
-  const [ search, setSearch ] = useState<string>('')
-  const [ checkedAccounts, setCheckedAccounts ] = useState<string[]>([])
+    // Hooks
+    const toast = useToast()
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm()
 
-  // Accounts request
-  const {
-    refetch,
-    data: accounts,
-    isLoading: isAccountsLoading
-  } = useQuery(
-    ['app-accounts'],
-    () => requestClient('/api/accounts/list', 'get')
-  )
+    // Add member category
+    const { isLoading, mutateAsync } = useMutation((data: any) => {
+      return requestClient('/api/bands/invite_member', 'post', data)
+    })
 
-  // Add member category
-  const { isLoading, mutateAsync } = useMutation((data: any) => {
-    return requestClient('/api/bands/invite_member', 'post', data)
-  })
+    // Actions
+    const onSubmit = async (data: any) => {
+      const response = await mutateAsync({ bandId, email: data.email })
 
-  // Effects
-  useEffect(() => {
-    if (isOpen) {
-      refetch()
-      setCheckedAccounts([])
-    } 
-  }, [isOpen])
+      if (![200, 201].includes(response.status)) {
+        let msg = `Ocorreu um erro e um ou mais contas selecionadas podem não ter recebido o convite! Tente novamente mais tarde.`
 
-  // Computed data
-  const filteredAccounts = (accounts && accounts.data) 
-    ? accounts.data.filter(({ id, name }: AccountType) =>
-      name.toLowerCase().includes(search.toLowerCase()) && 
-      !members.includes(id)
-    )
-    : []
+        if (response.data.message === 'User not found') {
+          msg = 'Não há usuários válidos com esse E-mail para receber o convite!'
+        }
 
-  // Actions
-  const addMember = async (bandId: string, members: string[]) => {
-    // Send invites to selected accounts
-    const responses = await Promise.all(
-      members.map(async (id: string) => mutateAsync({ accountId: id, bandId }))
-    )
+        if (response.data.message === 'User is already a member of this band') {
+          msg = 'Esse usuário já é um membro ativo dessa banda!'
+        }
 
-    // Verify if any invite failed to send
-    const hasErrors = responses.filter(r => r.status > 400).length !== 0
-    if (hasErrors) {
-      // Notify users about error
-      toast({
-        title: 'Ops!',
-        description: `Ocorreu um erro e um ou mais contas selecionadas podem não ter recebido o convite! Tente novamente mais tarde.`,
-        status: 'warning',
-        duration: 2000,
-        isClosable: true
-      })
-      onClose()
-    } else {
-      // Notify user about invites sent
-      toast({
-        title: 'Novos integrantes convidados!',
-        description: `As contas selecionadas foram convidadas a se juntar a banda!`,
-        status: 'success',
-        duration: 2000,
-        isClosable: true
-      })
-      onClose()
+        // Notify users about error
+        toast({
+          title: 'Ops!',
+          description: msg,
+          status: 'warning',
+          duration: 2000,
+          isClosable: true
+        })
+        onClose()
+      } else {
+        // Notify user about invites sent
+        toast({
+          title: 'Integrante convidado!',
+          description: `A conta selecionada foi convidada a se juntar a banda!`,
+          status: 'success',
+          duration: 2000,
+          isClosable: true
+        })
+        onClose()
+      }
     }
-  }
 
-  //JSX
-  return (
-    <Modal
-      size="xs"
-      isOpen={isOpen}
-      onClose={onClose}
-      closeOnOverlayClick={false}
-      isCentered
-    >
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
-          Convidar integrante
-        </ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-        { accounts && !isAccountsLoading ? (
-          <>
-            { accounts.data?.length > 0 ? (
-              <>
-                <FormControl mb="5">
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<SearchIcon />}
-                    />
-                    <Input
-                      type="text"
-                      placeholder="Buscar..."
-                      minLength={2}
-                      value={search}
-                      onChange={e => {
-                        const inputValue = e.target.value
-                        setSearch(inputValue)
-                      }}
-                    />
-                  </InputGroup>
-                </FormControl>
-                <VStack
-                  maxHeight="256px"
-                  overflowY="auto"
-                  mb="3"
-                >
-                  { filteredAccounts.length > 0 ? (
-                    <>
-                      { filteredAccounts.map((acc: AccountType) => (
-                        <Checkbox
-                          width="full"
-                          key={acc.id}
-                          value={acc.id}
-                          isChecked={checkedAccounts.includes(acc.id)}
-                          onChange={() => {
-                            if (checkedAccounts.includes(acc.id)) {
-                              setCheckedAccounts(checkedAccounts.filter((_acc: string) => _acc !== acc.id))
-                            } else {
-                              setCheckedAccounts([ ...checkedAccounts, acc.id ])
-                            }
-                          }}
-                        >
-                          <Flex
-                            alignItems="center"
-                            width="full"
-                          >
-                            <Box pl="2">
-                              <Avatar 
-                                size="sm"
-                                src={acc.avatar}
-                                name={acc.name}
-                              />
-                            </Box>
-                            <Box pl="3">
-                              <Heading size="sm" as="h5">
-                                {acc.name}
-                              </Heading>
-                            </Box>
-                          </Flex>
-                        </Checkbox>
-                      )) }
-                    </>
-                  ) : (
-                    <Text>
-                      Não há contas correspondentes ao filtro informado.
-                    </Text>
-                  ) }
-                </VStack>
-                <Button
-                  disabled={isLoading || isAccountsLoading}
-                  variant="fade"
-                  width="full"
-                  onClick={(isLoading || isAccountsLoading) ? () => {} : () => addMember(bandId, checkedAccounts)}
-                >
-                  Convidar Selecionados
-                </Button>
-              </>
-            ) : (
-              <Text>
-                Não há outras contas cadastradas no aplicativo no momento. Convide seus amigos a se criar sua conta no Playliter.
+    // Effects
+    useEffect(() => {
+      if (isOpen) {
+        setValue('email', '')
+      }
+    }, [isOpen, setValue])
+
+    //JSX
+    return (
+      <Modal
+        size="xs"
+        isOpen={isOpen}
+        onClose={onClose}
+        closeOnOverlayClick={false}
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            Convidar integrante
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Text mb="3">
+                Insira o E-mail do usuário que você deseja convidar para banda
               </Text>
-            ) }
-          </>
-        ) : (
-          <>
-            <VStack
-              maxHeight="256px"
-              overflowY="auto"
-              mb="3"
-            >
-              <Skeleton height="32px" borderRadius="lg" mb="2" />
-              <Skeleton height="32px" borderRadius="lg" mb="2" />
-              <Skeleton height="32px" borderRadius="lg" mb="2" />
-            </VStack>
-          </>
-        ) }
-        </ModalBody>
-      </ModalContent>
-    </Modal>
-  )
-}
+              <FormControl isRequired mb="5" isDisabled={isLoading}>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                  >
+                    <Icon as={FaEnvelope} />
+                  </InputLeftElement>
+                  <Input
+                    type="email"
+                    placeholder={"johndoe@email.com"}
+                    {...register('email', { required: true })}
+                  />
+                </InputGroup>
+                {errors.email ? (
+                  <FormHelperText color="red.500">{"Campo requerido"}</FormHelperText>
+                ) : (
+                  <FormHelperText>E-mail do usuário</FormHelperText>
+                )}
+              </FormControl>
+              <Button
+                disabled={isLoading}
+                variant="fade"
+                type="submit"
+                width="full"
+                mb="3"
+              >
+                Convidar
+              </Button>
+            </form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    )
+  }

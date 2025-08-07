@@ -10,11 +10,16 @@ async function forgotPasswordRoute(req: NextApiRequest, res: NextApiResponse) {
   const { email } = req.body
 
   // Request login endpoint
-  const response = await requestApi('/auth/forgot_password', 'post', { email }, {
-    headers: {
-      'Content-Type': 'application/json'
+  const response = await requestApi(
+    '/reset-password',
+    'post',
+    { email },
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
     }
-  })
+  )
 
   // Verify if request was sucessfull
   if (response.status < 400) {

@@ -1,6 +1,3 @@
-export * from './categories'
-export * from './category-form'
-export * from './category'
 export * from './drawer'
 export * from './invite-member'
 export * from './member'

@@ -21,22 +21,53 @@ async function getSongsRoute(req: NextApiRequest, res: NextApiResponse) {
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${req.session.user?.token}`
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
         }
       }
     )
 
     // Verify if request was sucessfull
     if (response.status < 400) {
-      
+
       // Retrieve song data from response
       const { data } = response.data
-      res.status(200).json(data as SongType)
+
+      const song: SongType = {
+        id: data.uuid,
+        createdAt: '',
+        updatedAt: '',
+        title: data.title,
+        tone: data.tone,
+        writter: data.writer,
+        embeddedUrl: data.embedded_url,
+        body: data.body,
+        isPublic: data.is_public,
+        category: {
+          id: '',
+          createdAt: '',
+          updatedAt: '',
+          title: data.category,
+          description: ''
+        },
+        band: {
+          id: data.band.uuid,
+          createdAt: '',
+          updatedAt: '',
+          logo: data.band.logo,
+          owner: '',
+          description: data.band.description,
+          title: data.band.title
+        }
+      }
+
+      res.status(200).json(song)
 
     } else {
       res.status(response.status).json(response.data)
     }
- 
+
   } else {
     res.status(401).json({ message: 'Unauthorized' })
   }

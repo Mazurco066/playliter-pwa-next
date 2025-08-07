@@ -1,6 +1,6 @@
 {
   "form": {
-    "user_label": "Usuário",
+    "user_label": "E-mail",
     "user_hint": "Digite seu usuário dentro do app.",
     "password_label": "Senha",
     "password_hint": "Digite sua senha.",
@@ -11,7 +11,7 @@
   },
   "messages": {
     "incorrect_login_title": "Autenticação inválida.",
-    "incorrect_login_msg": "Usuário ou senha incorreto(s).",
+    "incorrect_login_msg": "E-mail ou senha incorreto(s).",
     "required_field_msg": "Esse campo é requerido."
   }
 }

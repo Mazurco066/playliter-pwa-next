@@ -45,11 +45,11 @@ const SignUpView: FC = () => {
   } = useForm()
 
   // Privacy policy hooks
-  const [ agreedToPolicy, setPolicyAgreement ] = useState<boolean>(false)
+  const [agreedToPolicy, setPolicyAgreement] = useState<boolean>(false)
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
-  const logoImg =  useColorModeValue('/logo-black.svg', '/logo.svg')
+  const logoImg = useColorModeValue('/logo-black.svg', '/logo.svg')
 
   // SignUp request
   const { isLoading, mutateAsync } = useMutation((data: any) => {
@@ -100,7 +100,7 @@ const SignUpView: FC = () => {
 
       // Authenticate user
       const loginResponse = await mutateUserAsync({
-        username: response.data?.username,
+        username: response.data?.email,
         password: data.password
       })
 
@@ -115,7 +115,7 @@ const SignUpView: FC = () => {
       if ([400].includes(response.status)) {
         toast({
           title: t('messages.in_use_title'),
-          description: t('messages.in_use_msg'),     
+          description: t('messages.in_use_msg'),
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -144,8 +144,9 @@ const SignUpView: FC = () => {
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
-                  children={<Icon as={FaUser} />}
-                />
+                >
+                  <Icon as={FaUser} />
+                </InputLeftElement>
                 <Input
                   type="text"
                   placeholder={t('form.name_label')}
@@ -160,32 +161,13 @@ const SignUpView: FC = () => {
               )}
             </FormControl>
             <FormControl isRequired mb="5" isDisabled={isLoading || isLogging}>
-              <FormLabel>{t('form.user_label')}</FormLabel>
-              <InputGroup>
-                <InputLeftElement
-                  pointerEvents="none"
-                  children={<Icon as={FaUser} />}
-                />
-                <Input
-                  type="text"
-                  placeholder={t('form.user_label')}
-                  minLength={3}
-                  {...register('username', { required: true })}
-                />
-              </InputGroup>
-              {errors.username ? (
-                <FormHelperText color="red.500">{t('messages.required_field_msg')}</FormHelperText>
-              ) : (
-                <FormHelperText>{t('form.user_hint')}</FormHelperText>
-              )}
-            </FormControl>
-            <FormControl isRequired mb="5" isDisabled={isLoading || isLogging}>
               <FormLabel>{t('form.email_label')}</FormLabel>
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
-                  children={<Icon as={FaEnvelope} />}
-                />
+                >
+                  <Icon as={FaEnvelope} />
+                </InputLeftElement>
                 <Input
                   type="email"
                   placeholder={t('form.email_label')}
@@ -203,8 +185,9 @@ const SignUpView: FC = () => {
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
-                  children={<Icon as={FaKey} />}
-                />
+                >
+                  <Icon as={FaKey} />
+                </InputLeftElement>
                 <Input
                   type="password"
                   placeholder={t('form.password_label')}

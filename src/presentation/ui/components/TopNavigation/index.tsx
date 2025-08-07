@@ -41,7 +41,7 @@ export const TopNavigation: FC<{
   )
 
   // Utils
-  const notificationsCount = pendingInvites?.data?.length + (user?.isEmailconfirmed ? 0 : 1)
+  const notificationsCount = pendingInvites?.data?.length //+ (user?.isEmailconfirmed ? 0 : 1)
 
   // JSX
   return (

@@ -34,7 +34,7 @@ export const CloneConcertModal: FC<{
   isOpen,
   onClose,
   isLoading = false,
-  onConfirmCallback = () => {}
+  onConfirmCallback = () => { }
 }) => {
     // Hooks
     const { t } = useTranslation('concert')
@@ -78,8 +78,9 @@ export const CloneConcertModal: FC<{
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
-                    children={<Icon as={FaCalendar} />}
-                  />
+                  >
+                    <Icon as={FaCalendar} />
+                  </InputLeftElement>
                   <Input
                     disabled={isLoading}
                     variant="filled"

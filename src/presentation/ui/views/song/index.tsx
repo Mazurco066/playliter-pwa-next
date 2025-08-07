@@ -42,7 +42,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
   // Hooks
   const toast = useToast()
   const router = useRouter()
-  const [ action, setAction ] = useState<ConfirmShowAction>({ type: 'clone', id: '' })
+  const [action, setAction] = useState<ConfirmShowAction>({ type: 'clone', id: '' })
   const { t: common } = useTranslation('common')
   const { t } = useTranslation('song')
 
@@ -85,14 +85,6 @@ const SongView: FC<{ id: string }> = ({ id }) => {
     mutateAsync: cloneRequest
   } = useMutation((data: any) => {
     return requestClient('/api/songs/save', 'post', { ...data })
-  })
-
-  // Band categories mutation
-  const {
-    isLoading: categoriesLoading,
-    mutateAsync: bandCategoriesRequest
-  } = useMutation((bandId: string) => {
-    return requestClient(`/api/bands/categories?band=${bandId}`, 'get')
   })
 
   // Remove song mutation
@@ -143,31 +135,11 @@ const SongView: FC<{ id: string }> = ({ id }) => {
   }
 
   const onCloneSong = async (_: string, bandId: string) => {
-    
-    // Retrieve selected band categories
-    const bandCategories = await bandCategoriesRequest(bandId)
-    if (![200, 201].includes(bandCategories.status)) {
-      toast(genericMsg)
-    }
-
-    // Validate if selected band has categories
-    const categoriesList: CategoryType[] = bandCategories.data
-    if (categoriesList.length <= 0) {
-      return toast({
-        title: t('messages.no_categories_title'),
-        description: t('messages.no_categories_msg'),     
-        status: 'info',
-        duration: 3500,
-        isClosable: true
-      })
-    }
-    const firstCategoryId = categoriesList[0].id
-
     // Clone song payload
     const payload = {
       title: `${song?.data.title} - Copy`,
       writter: song?.data.writter,
-      category: firstCategoryId,
+      category: song?.data.category.title || '',
       isPublic: false,
       tone: song?.data.tone,
       body: song?.data.body,
@@ -179,7 +151,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
 
     // Verify if request was successfull
     if ([200, 201].includes(response.status)) {
-      
+
       // Notify user about response success
       toast({
         title: t('messages.clone_title'),
@@ -201,9 +173,9 @@ const SongView: FC<{ id: string }> = ({ id }) => {
   const onRemoveSong = async (id: string) => {
     const response = await removeSongMutation({ songId: id })
 
-     // Verify if request was successfull
-     if ([200, 201].includes(response.status)) {
-      
+    // Verify if request was successfull
+    if ([200, 201].includes(response.status)) {
+
       // Notify user about response success
       toast({
         title: t('messages.removed_title'),
@@ -220,7 +192,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
       if ([400, 404].includes(response.status)) {
         toast({
           title: t('messages.song_not_found_title'),
-          description: t('messages.song_not_found_msg'),     
+          description: t('messages.song_not_found_msg'),
           status: 'warning',
           duration: 3500,
           isClosable: true
@@ -229,7 +201,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
       } else if ([401, 403].includes(response.status)) {
         toast({
           title: t('messages.no_permission_title'),
-          description: t('messages.no_permission_msg'),     
+          description: t('messages.no_permission_msg'),
           status: 'info',
           duration: 3500,
           isClosable: true
@@ -250,7 +222,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
         {
           song && !songLoading ? (
             <>
-              <Songsheet 
+              <Songsheet
                 displayMusicVideo
                 displayToneControl
                 song={song.data as SongType}
@@ -265,7 +237,7 @@ const SongView: FC<{ id: string }> = ({ id }) => {
               >
                 <Box pr="8">
                   <Menu>
-                    <MenuButton 
+                    <MenuButton
                       as={IconButton}
                       aria-label='Options'
                       icon={<SettingsIcon />}
@@ -283,14 +255,14 @@ const SongView: FC<{ id: string }> = ({ id }) => {
                       <MenuItem
                         icon={<CopyIcon />}
                         disabled={bandsLoading || songLoading || isCloneLoading}
-                        onClick={(bandsLoading || songLoading || isCloneLoading) ? () => {} : () => onCloningOpen()}
+                        onClick={(bandsLoading || songLoading || isCloneLoading) ? () => { } : () => onCloningOpen()}
                       >
                         {t('menu.clone')}
-                      </MenuItem>  
+                      </MenuItem>
                       <MenuItem
                         icon={<DeleteIcon />}
                         disabled={songLoading || removeSongLoading}
-                        onClick={(songLoading || removeSongLoading) ? () => {} : () => {
+                        onClick={(songLoading || removeSongLoading) ? () => { } : () => {
                           setAction({ type: 'delete', id: song.data.id })
                           onConfirmOpen()
                         }}
@@ -331,28 +303,29 @@ const SongView: FC<{ id: string }> = ({ id }) => {
       >
         <Box py="3">
           {
-            bands && !bandsLoading && (
+            bands && bands.data && !bandsLoading && (
               <>
                 {
-                  bands.data.length > 0 ? (
+                  bands.data?.data?.length > 0 ? (
                     <>
                       <Text mb="5">
                         {t('select_band')}
                       </Text>
                       <VStack gap="0.25rem">
                         {
-                          bands.data.map((band: BandType) => (
-                            <BandItem
-                              key={band.id}
-                              item={band}
-                              onClick={(_id: string) => {
-                                if (!bandsLoading && !isCloneLoading && !categoriesLoading) {
-                                  setAction({ type: 'clone', id: _id })
-                                  onConfirmOpen()
-                                }
-                              }}
-                            />
-                          ))
+                          bands.data?.data
+                            .map((band: BandType) => (
+                              <BandItem
+                                key={band.id}
+                                item={band}
+                                onClick={(_id: string) => {
+                                  if (!bandsLoading && !isCloneLoading) {
+                                    setAction({ type: 'clone', id: _id })
+                                    onConfirmOpen()
+                                  }
+                                }}
+                              />
+                            ))
                         }
                       </VStack>
                     </>

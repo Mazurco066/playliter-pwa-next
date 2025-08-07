@@ -41,8 +41,9 @@ const HomeView: FC = () => {
     isLoading: pendingShowsLoading
   } = useQuery(
     ['shows_home'],
-    () => requestClient('/api/shows/pending', 'get')
+    () => requestClient('/api/shows/pending', 'get'),
   )
+
   const {
     data: bands,
     isLoading: bandsLoading
@@ -117,7 +118,7 @@ const HomeView: FC = () => {
         {bands?.data && !bandsLoading ? (
           <>
             {
-              bands?.data?.length > 0 && (
+              bands?.data?.total > 0 && (
                 <>
                   <Heading
                     as="h3"
@@ -140,7 +141,7 @@ const HomeView: FC = () => {
                       justifyContent="center"
                       alignItems="center"
                     >
-                      {bands?.data?.map((band: BandType) => (
+                      {bands?.data?.data?.map((band: BandType) => (
                         <BandItem
                           key={band.id}
                           band={band}
@@ -247,7 +248,7 @@ const HomeView: FC = () => {
         <Text
           textAlign="center"
         >
-          {t('version')}<Text as="strong" color="secondary.500">1.8.3</Text>
+          {t('version')}<Text as="strong" color="secondary.500">1.9.0</Text>
         </Text>
       </Container>
     </div>

@@ -1,5 +1,6 @@
 export type AccountType = {
   id: string,
+  userId: string,
   createdAt: string,
   updatedAt: string,
   avatar: string,

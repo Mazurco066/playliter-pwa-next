@@ -12,12 +12,19 @@ async function resendVerificationRoute(req: NextApiRequest, res: NextApiResponse
   if (req.session.user) {
 
     // Resend verificarion email endpoint
-    const response = await requestApi(`/accounts/resend_verification_email`, 'post', undefined, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+    const response = await requestApi(
+      `/accounts/resend_verification_email`,
+      'post',
+      undefined,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
+        }
       }
-    })
+    )
 
     // Verify if request was sucessfull
     if (response.status < 400) {

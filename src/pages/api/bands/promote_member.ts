@@ -14,12 +14,18 @@ async function promoteMemberRoute(req: NextApiRequest, res: NextApiResponse) {
     const { accountId, bandId } = req.body
 
     // Request promote member endpoint
-    const response = await requestApi(`/bands/promote_member/${bandId}`, 'post', { accountId }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+    const response = await requestApi(
+      `/bands/${bandId}/members/${accountId}`, 'put',
+      { role: 'moderator' },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
+        }
       }
-    })
+    )
 
     // Verify if request was sucessfull
     if (response.status < 400) {

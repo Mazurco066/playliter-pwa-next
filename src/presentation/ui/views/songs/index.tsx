@@ -53,8 +53,8 @@ const SongsView: FC = () => {
     refetch
   } = useInfiniteQuery(
     ['public_songs'],
-    async ({ pageParam = 0 }) => {
-      const response = await requestClient(`/api/songs/public?limit=${PAGE_SIZE}&offset=${pageParam}&filter=${encodeURI(filterSearch)}`, 'get')
+    async ({ pageParam = 1 }) => {
+      const response = await requestClient(`/api/songs/public?limit=${PAGE_SIZE}&page=${pageParam}&filter=${encodeURI(filterSearch)}`, 'get')
       return response.data
     }, {
       getPreviousPageParam: (firstPage) => firstPage.previousId ?? undefined,
@@ -165,7 +165,7 @@ const SongsView: FC = () => {
               data.pages.map((page) => (
                 <Fragment key={page.nextId}>
                   {
-                    page?.data.map((song: SongType) => (
+                    page?.data?.map((song: SongType) => (
                       <SongItem 
                         key={song.id}
                         song={song}

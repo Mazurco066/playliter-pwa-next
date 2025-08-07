@@ -55,8 +55,8 @@ export const SongsComponent: FC<{
     refetch
   } = useInfiniteQuery(
     [`band-songs-${bandId}`],
-    async ({ pageParam = 0 }) => {
-      const response = await requestClient(`/api/songs/band?band=${bandId}&limit=${PAGE_SIZE}&offset=${pageParam}&filter=${encodeURI(filterSearch)}`, 'get')
+    async ({ pageParam = 1 }) => {
+      const response = await requestClient(`/api/songs/band?band=${bandId}&limit=${PAGE_SIZE}&page=${pageParam}&filter=${encodeURI(filterSearch)}`, 'get')
       return response.data
     }, {
       getPreviousPageParam: (firstPage) => firstPage.previousId ?? undefined,
