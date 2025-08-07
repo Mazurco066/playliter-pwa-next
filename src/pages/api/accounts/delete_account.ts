@@ -2,7 +2,7 @@
 import { withIronSessionApiRoute } from 'iron-session/next'
 import { sessionOptions } from 'infra/services/session'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { requestApiV2 } from 'infra/services/http'
+import { requestApi } from 'infra/services/http'
 
 // Types
 import type { AccountType } from 'domain/models'
@@ -11,12 +11,19 @@ import type { AccountType } from 'domain/models'
 async function deleteAccountRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Request promote member endpoint
-    const response = await requestApiV2('/songs/wipe_account_data', 'delete', undefined, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+    const response = await requestApi(
+      `/users/${req.session.user?.id}`,
+      'delete',
+      undefined,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
+        }
       }
-    })
+    )
 
     // Verify if request was sucessfull
     if (response.status < 400) {

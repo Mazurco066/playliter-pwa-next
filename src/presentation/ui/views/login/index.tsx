@@ -67,7 +67,7 @@ const LogInView: FC = () => {
     if ([200].includes(response.status)) {
       mutateUser(response.data)
     } else {
-      if ([401, 403, 404].includes(response.status)) {
+      if ([400, 401, 403, 404].includes(response.status)) {
         toast({
           title: t('messages.incorrect_login_title'),
           description: t('messages.incorrect_login_msg'),

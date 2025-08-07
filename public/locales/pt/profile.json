@@ -10,8 +10,20 @@
   "respond_desc": "Deseja aceitar o convite e participar da banda ",
   "accept": "Aceitar",
   "deny": "Negar",
+  "change_password": "Alterar senha",
   "delete": "Deletar minha conta",
   "delete_warning": "Certifique-se de verificar se você não é o líder de alguma banda. Se for o líder, transfira a liderança para outro membro, pois, caso contrário, a banda e as músicas salvas nela serão removidas, e terceiros podem acabar usando as músicas públicas de sua banda em suas apresentações.",
+  "form": {
+    "title": "Alteração de senha",
+    "old_password_label": "Senha atual",
+    "old_password_placeholder": "Senha atual",
+    "old_password_hint": "Digite a Senha atual",
+    "new_password_label": "Nova senha",
+    "new_password_placeholder": "Nova senha",
+    "new_password_hint": "Digite uma nova senha",
+    "cancel_action": "Cancelar",
+    "confirm_action": "Salvar"
+  },
   "messages": {
     "avatar_update_title": "Sucesso!",
     "avatar_update_msg": "O avatar de sua conta foi alterado!",
@@ -37,6 +49,10 @@
     "deleteAccount_title": "Conta removida com sucesso!",
     "deleteAccount_msg": "Os dados da sua conta foram removidos dos servidores do aplicativo!",
     "deleteAccountError_title": "Opss...",
-    "deleteAccountError_msg": "Ocorreu um erro ao remover os dados da sua conta, os servidores devem estar ocupados no momento. Tente novamente mais tarde.!"
+    "deleteAccountError_msg": "Ocorreu um erro ao remover os dados da sua conta, os servidores devem estar ocupados no momento. Tente novamente mais tarde.!",
+    "required_field_msg": "Esse campo é requerido.",
+    "min_length_msg": "Mínimo de 8 caracteres.",
+    "invalid_old_password_msg": "Senha atual está incorreta!",
+    "password_update_msg": "A senha de sua conta foi alterada!"
   }
 }
