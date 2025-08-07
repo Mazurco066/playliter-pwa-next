@@ -287,10 +287,11 @@ const ProfileView: FC = () => {
     }
   }
 
-  const onRespondInvite = async(id: string, response: string) => {
+  const onRespondInvite = async(id: string, band: string, response: string) => {
     // Respond invite request
     const inviteResponse = await mutateInvite({
       id: id,
+      band,
       user_response: response
     })
 
@@ -493,7 +494,7 @@ const ProfileView: FC = () => {
                     <InviteItem
                       key={i}
                       invite={invite}
-                      onResponse={(resp: string) => onRespondInvite(invite.id, resp)}
+                      onResponse={(resp: string) => onRespondInvite(invite.id, invite.band.id, resp)}
                       isLoading={accountLoading || inviteLoading || invitesLoading}
                     />
                   ))}

@@ -4,25 +4,28 @@ import { sessionOptions } from 'infra/services/session'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { requestApi } from 'infra/services/http'
 
-// Api types
-import type { BandType } from 'domain/models'
-
 // Respond invite endpoint
 async function respondInviteRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.session.user) {
     // Retrieve login parameters
-    const { id, user_response } = req.body
+    const { id, band, user_response } = req.body
 
     // Request login endpoint
-    const response = await requestApi(`/invitations/respond`, 'post', {
-      inviteId: id,
-      response: user_response
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.session.user?.token}`
+    const response = await requestApi(
+      `/bands/${band}/invite/${id}`,
+      'put', 
+      {
+        status: user_response
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'access_token': req.session.user?.token,
+          'refresh_token': req.session.user?.refreshToken,
+          'uuid': req.session.user?.id,
+        }
       }
-    })
+    )
 
     // Verify if request was sucessfull
     if (response.status < 400) {
@@ -30,7 +33,7 @@ async function respondInviteRoute(req: NextApiRequest, res: NextApiResponse) {
       const { data } = response.data
 
       // Returns created account
-      res.status(200).json(data as BandType)
+      res.status(200).json(data)
 
     } else {
       return res.status(response.status).json(response.data)
