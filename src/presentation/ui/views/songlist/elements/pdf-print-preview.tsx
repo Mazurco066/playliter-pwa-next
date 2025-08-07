@@ -15,7 +15,7 @@ export const PDFPrintPreview: FC<{
   const { t } = useTranslation('songList')
 
   // Destruct show data
-  const { title, description, date, band: { title: bandTitle }, observations } = show
+  const { title, description, date, band: { title: bandTitle }, observations = [] } = show
 
   const hasText = observations.find(obs => obs.title === 'Evangelho')
 

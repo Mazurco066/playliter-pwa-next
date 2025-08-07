@@ -248,7 +248,7 @@ const HomeView: FC = () => {
         <Text
           textAlign="center"
         >
-          {t('version')}<Text as="strong" color="secondary.500">1.8.3</Text>
+          {t('version')}<Text as="strong" color="secondary.500">1.9.0</Text>
         </Text>
       </Container>
     </div>
