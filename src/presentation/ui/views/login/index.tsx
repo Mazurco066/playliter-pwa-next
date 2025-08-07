@@ -44,7 +44,7 @@ const LogInView: FC = () => {
 
   // Color hooks
   const bgBox = useColorModeValue('gray.50', 'gray.800')
-  const logoImg =  useColorModeValue('/logo-black.svg', '/logo.svg')
+  const logoImg = useColorModeValue('/logo-black.svg', '/logo.svg')
 
   // Login request
   const { isLoading, mutateAsync } = useMutation((data: any) => {
@@ -80,7 +80,7 @@ const LogInView: FC = () => {
       }
     }
   }
-  
+
   // View JSX
   return (
     <Container maxWidth="6xl">
@@ -98,8 +98,9 @@ const LogInView: FC = () => {
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
-                children={<Icon as={FaUser} />}
-              />
+              >
+                <Icon as={FaUser} />
+              </InputLeftElement>
               <Input
                 type="email"
                 placeholder={t('form.user_label')}
@@ -117,8 +118,9 @@ const LogInView: FC = () => {
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
-                children={<Icon as={FaKey} />}
-              />
+              >
+                <Icon as={FaKey} />
+              </InputLeftElement>
               <Input
                 type="password"
                 placeholder={t('form.password_label')}
